@@ -10,6 +10,9 @@ interface Props {
   boardWidth: number;
   boardOrientation?: BoardOrientation;
   customSquareStyles?: Record<string, CSSProperties>;
+  customDarkSquareStyle?: Record<string, string>;
+  customLightSquareStyle?: Record<string, string>;
+  animationDuration?: number;
   onSquareSelect: (sq: Square) => void;
   getSquareLabel?: (sq: Square) => string;
   ariaLabel: string;
@@ -37,7 +40,9 @@ const CURSOR_STYLE: CSSProperties = { outline: '3px solid #58a6ff', outlineOffse
 
 export default function AccessibleBoard({
   position, boardWidth, boardOrientation = 'white',
-  customSquareStyles, onSquareSelect, getSquareLabel,
+  customSquareStyles, customDarkSquareStyle, customLightSquareStyle,
+  animationDuration = 0,
+  onSquareSelect, getSquareLabel,
   ariaLabel, initialCursor = 'a1' as Square, disabled = false,
 }: Props) {
   const [cursor, setCursor]   = useState<Square>(initialCursor);
@@ -96,7 +101,9 @@ export default function AccessibleBoard({
         arePiecesDraggable={false}
         onSquareClick={disabled ? undefined : onSquareSelect}
         customSquareStyles={mergedStyles}
-        animationDuration={0}
+        animationDuration={animationDuration}
+        {...(customDarkSquareStyle  ? { customDarkSquareStyle }  : {})}
+        {...(customLightSquareStyle ? { customLightSquareStyle } : {})}
       />
     </div>
   );

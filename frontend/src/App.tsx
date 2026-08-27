@@ -13,6 +13,7 @@ import EndgameStudy from './components/exercises/EndgameStudy';
 import OpeningRecall from './components/exercises/OpeningRecall';
 import CalculationTrainer from './components/exercises/CalculationTrainer';
 import OpeningTrainerComponent from './components/exercises/OpeningTrainer';
+import PuzzleDrill from './components/exercises/PuzzleDrill';
 import { findGame } from './data/classicalGames';
 import { findGameAcrossPlayers } from './data/playerRegistry';
 import { findTrainer } from './data/openingTrainers';
@@ -46,7 +47,7 @@ export default function App() {
   return (
     <AppLayout>
       <Routes>
-        <Route path="/"                   element={<Navigate to="/cross-search" replace />} />
+        <Route path="/"                   element={<Navigate to="/blind-pathing" replace />} />
         <Route path="/cell-guesser"       element={<CellGuesser />} />
         <Route path="/square-color"       element={<SquareColorDrill />} />
         <Route path="/blind-pathing"      element={<BlindPathing />} />
@@ -59,6 +60,7 @@ export default function App() {
         <Route path="/endgame"             element={<EndgameStudy />} />
         <Route path="/calculation"         element={<CalculationTrainer />} />
         <Route path="/opening-trainer/:id" element={<OpeningTrainerPage />} />
+        <Route path="/puzzle"              element={<PuzzleDrill />} />
       </Routes>
     </AppLayout>
   );

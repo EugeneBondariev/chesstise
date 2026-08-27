@@ -1206,7 +1206,6 @@ button { cursor: pointer; border: none; font-family: inherit; }
 .sidebar-group-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   padding: 0.5rem 1.25rem;
   font-size: 0.65rem;
@@ -1221,9 +1220,19 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 
 .sidebar-group-btn::-webkit-details-marker { display: none; }
-.sidebar-group-btn::after { content: '›'; font-size: 0.85rem; transition: transform .2s; }
+.sidebar-group-btn::after { content: '›'; font-size: 0.85rem; margin-left: auto; transition: transform .2s; }
+.sidebar-group-btn:has(.sidebar-wip)::after { margin-left: 0.4em; }
 details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 .sidebar-group-btn:hover { color: var(--text); }
+.sidebar-wip {
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: lowercase;
+  color: var(--muted);
+  opacity: 0.6;
+  margin-left: auto;
+}
 
 .sidebar-drills-wrapper { position: relative; }
 
@@ -2275,6 +2284,179 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   background: rgba(0,0,0,0.55);
   z-index: 99;
 }
+
+/* ── Puzzle Drill ─────────────────────────────────────── */
+.puzzle-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0 0.75rem;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+.puzzle-auth-user { color: var(--text); font-weight: 600; }
+.puzzle-auth-rating { color: var(--muted); }
+.puzzle-signin-btn, .puzzle-disconnect-btn {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--border, #444);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background .15s;
+}
+.puzzle-signin-btn:hover, .puzzle-disconnect-btn:hover { background: var(--surface, #1e2230); }
+
+.puzzle-depth-filter { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.puzzle-depth-label { font-size: 0.8rem; color: var(--muted); margin-right: 0.25rem; }
+.puzzle-depth-btn {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  border-radius: 999px;
+  border: 1px solid var(--border, #3a3f55);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.puzzle-depth-btn:hover { background: var(--surface, #1e2230); }
+.puzzle-depth-btn.selected { background: var(--accent, #4a9eff); border-color: var(--accent, #4a9eff); color: #fff; }
+
+.puzzle-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.puzzle-tab {
+  padding: 0.35rem 1rem;
+  border: 1px solid var(--border, #444);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  transition: all .15s;
+}
+.puzzle-tab.active { background: var(--accent, #4a9eff); color: #fff; border-color: transparent; }
+.puzzle-tab:hover:not(.active) { color: var(--text); }
+
+.puzzle-themes { display: flex; flex-direction: column; gap: 1.25rem; }
+.puzzle-theme-group-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.puzzle-theme-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.puzzle-theme-btn {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border, #444);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all .15s;
+}
+.puzzle-theme-btn:hover { color: var(--text); border-color: var(--text); }
+.puzzle-theme-btn.selected { background: var(--accent, #4a9eff); color: #fff; border-color: transparent; }
+
+.puzzle-failed-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.puzzle-failed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border, #444);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.puzzle-failed-item button {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border, #444);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+}
+.puzzle-failed-item button:hover { color: var(--text); }
+
+.puzzle-loading { padding: 2rem 0; color: var(--muted); font-size: 0.9rem; }
+.puzzle-error { color: #f56; font-size: 0.85rem; padding: 1rem 0; }
+
+.puzzle-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+}
+.puzzle-meta-id { color: var(--muted); }
+.puzzle-meta-rating { color: var(--text); font-weight: 600; }
+.puzzle-meta-themes { color: var(--muted); font-style: italic; }
+.puzzle-back {
+  margin-left: auto;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border, #444);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+}
+.puzzle-back:hover { color: var(--text); }
+
+.puzzle-layout { display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap; }
+
+.puzzle-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+.puzzle-status--replay { background: rgba(255,255,255,0.04); color: var(--muted); }
+.puzzle-hint-text { font-size: 0.68rem; color: var(--muted); opacity: 0.7; }
+.puzzle-status--solving { background: rgba(74,158,255,0.1); color: var(--accent, #4a9eff); }
+.puzzle-status--correct { background: rgba(34,197,94,0.12); color: #22c55e; }
+.puzzle-status--wrong { background: rgba(239,68,68,0.12); color: #ef4444; }
+.puzzle-next {
+  margin-left: auto;
+  padding: 0.25rem 0.8rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.puzzle-replay-controls {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+.puzzle-replay-controls button {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border, #444);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: color .15s;
+}
+.puzzle-replay-controls button:hover { color: var(--text); }
 
 /* ── Mobile breakpoint ── */
 @media (max-width: 640px) {

@@ -6,7 +6,6 @@ import { TRAINER_WHITE, TRAINER_BLACK } from '../../data/openingTrainers';
 import { STRUCTURES } from '../../data/structures';
 import { PLAYER_REGISTRY } from '../../data/playerRegistry';
 import { CURATED_GAMES, PATTERN_LABELS } from '../../data/classicalGamesSelection';
-import { useAuthStore } from '../../store/authStore';
 import { useProfileStore } from '../../store/profileStore';
 import { setGlobalSpeechRate } from '../../utils/speechUtils';
 
@@ -89,10 +88,7 @@ function PlayerSearch() {
   );
 }
 
-export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; isOpen?: boolean }) {
-  const displayName  = useAuthStore(s => s.displayName);
-  const logout       = useAuthStore(s => s.logout);
-  const clearRuns        = useProfileStore(s => s.cellGuesserRuns);
+export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
   const cellRuns         = useProfileStore(s => s.cellGuesserRuns);
   const colorRuns        = useProfileStore(s => s.squareColorRuns);
   const blindRuns        = useProfileStore(s => s.blindPathingRuns);
@@ -120,42 +116,15 @@ export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; is
 
   useEffect(() => { setGlobalSpeechRate(speechRate); }, [speechRate]);
 
-  const handleLogout = () => {
-    logout();
-    // Keep local runs intact — they'll reload from API on next login
-    void clearRuns;
-  };
 
   return (
     <nav className={`sidebar${isOpen ? ' sidebar-open' : ''}`} aria-label="Main navigation">
       <div className="sidebar-logo" aria-hidden="true">♟ Chesstíse</div>
       <h2 className="sr-only">Chesstíse – Blindfold Chess Trainer</h2>
 
-      {/* ── Classical Games ── */}
-      <details className="sidebar-group" open>
-        <summary className="sidebar-group-btn">Classical Games</summary>
-        <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {CURATED_GAMES.map(g => (
-            <SimpleNavItem
-              key={g.id}
-              to={`/games/${g.id}`}
-              label={g.label}
-              title={g.patterns.map(k => PATTERN_LABELS[k]).filter(Boolean).join(' · ')}
-            />
-          ))}
-        </ul>
-      </details>
-
-      {/* ── Masters Games ── */}
-      <details className="sidebar-group" open>
-        <summary className="sidebar-group-btn">Masters Games</summary>
-        <SimpleNavItem to="/cross-search" label="⇄ Cross-player search" />
-        <PlayerSearch />
-      </details>
-
       {/* ── Drills ── */}
       <div className="sidebar-drills-wrapper">
-        <details className="sidebar-group">
+        <details className="sidebar-group" open>
           <summary className="sidebar-group-btn">Drills</summary>
           <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {DRILLS.map(d => <NavItem key={d.to} {...d} />)}
@@ -171,6 +140,36 @@ export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; is
           </button>
         )}
       </div>
+
+      {/* ── Puzzles ── */}
+      <details className="sidebar-group">
+        <summary className="sidebar-group-btn">Puzzles</summary>
+        <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          <SimpleNavItem to="/puzzle" label="Lichess Puzzles" />
+        </ul>
+      </details>
+
+      {/* ── Classical Games ── */}
+      <details className="sidebar-group">
+        <summary className="sidebar-group-btn">Classical Games</summary>
+        <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          {CURATED_GAMES.map(g => (
+            <SimpleNavItem
+              key={g.id}
+              to={`/games/${g.id}`}
+              label={g.label}
+              title={g.patterns.map(k => PATTERN_LABELS[k]).filter(Boolean).join(' · ')}
+            />
+          ))}
+        </ul>
+      </details>
+
+      {/* ── Masters Games ── */}
+      <details className="sidebar-group">
+        <summary className="sidebar-group-btn">Masters Games</summary>
+        <SimpleNavItem to="/cross-search" label="⇄ Cross-player search" />
+        <PlayerSearch />
+      </details>
 
       {showDrillStats && dailyRows.length > 0 && createPortal(
         <div className="modal-backdrop" onClick={() => setShowDrillStats(false)}>
@@ -197,7 +196,7 @@ export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; is
 
       {/* ── Openings ── */}
       <details className="sidebar-group">
-        <summary className="sidebar-group-btn">Openings</summary>
+        <summary className="sidebar-group-btn">Openings <span className="sidebar-wip">in progress</span></summary>
         <div className="sidebar-sub-label" aria-hidden="true">Interactive — White</div>
         <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {TRAINER_WHITE.map(o => (
@@ -238,7 +237,7 @@ export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; is
 
       {/* ── Middlegame ── */}
       <details className="sidebar-group">
-        <summary className="sidebar-group-btn">Middlegame</summary>
+        <summary className="sidebar-group-btn">Middlegame <span className="sidebar-wip">in progress</span></summary>
         <div className="sidebar-sub-label" aria-hidden="true">Pawn Structures</div>
         <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {STRUCTURES.map(s => (
@@ -251,7 +250,7 @@ export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; is
 
       {/* ── Endgame ── */}
       <details className="sidebar-group">
-        <summary className="sidebar-group-btn">Endgame</summary>
+        <summary className="sidebar-group-btn">Endgame <span className="sidebar-wip">in progress</span></summary>
         <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           <SimpleNavItem to="/endgame" label="Endgame Drills" />
         </ul>
@@ -274,7 +273,7 @@ export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; is
       </div>
 
       {/* ── Auth ── */}
-      <div className="sidebar-auth">
+      {/* <div className="sidebar-auth">
         {displayName ? (
           <>
             <span className="sidebar-user" title={displayName}>{displayName}</span>
@@ -283,7 +282,7 @@ export default function Sidebar({ onSignIn, isOpen }: { onSignIn: () => void; is
         ) : (
           <button className="sidebar-signin" onClick={onSignIn}>Sign in</button>
         )}
-      </div>
+      </div> */}
     </nav>
   );
 }

@@ -1,11 +1,9 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import AuthModal from '../auth/AuthModal';
 import MotivationBar from './MotivationBar';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
-  const [authOpen,    setAuthOpen]    = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -32,17 +30,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
         )}
 
-        <Sidebar
-          onSignIn={() => setAuthOpen(true)}
-          isOpen={sidebarOpen}
-        />
+        <Sidebar isOpen={sidebarOpen} />
 
         <main id="main-content" className="main-content" tabIndex={-1}>
           {children}
         </main>
       </div>
 
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </>
   );
 }

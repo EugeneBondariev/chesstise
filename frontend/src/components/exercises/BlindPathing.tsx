@@ -578,7 +578,7 @@ export default function BlindPathing() {
   const [finalCorrect, setFinalCorrect] = useState(0);
   const [isNewBest, setIsNewBest]       = useState(false);
   useEffect(() => { if (isNewBest) playCongratsSound(); }, [isNewBest]);
-  const [knightNotation, setKnightNotation] = useState<KnightNotation>('compass');
+  const [knightNotation, setKnightNotation] = useState<KnightNotation>('clock');
 
   const appRef     = useRef<HTMLDivElement>(null);
   const correctRef = useRef(0);
