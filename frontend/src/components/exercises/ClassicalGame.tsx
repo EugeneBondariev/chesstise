@@ -94,33 +94,62 @@ function spokenMove(san: string): string {
   return `${piece}${dis ? ' ' + dis : ''} to ${dest}${suffix}`;
 }
 
-// Convert SAN to "piece-char + destination-square" for comparison with decoded 3-key input.
-// Captures and disambiguation are stripped; castling is mapped to king's destination square.
-function sanToComparableKey(san: string, plyIndex: number): string {
-  if (san === 'O-O'   || san === '0-0')   return plyIndex % 2 === 0 ? 'kg1' : 'kg8';
-  if (san === 'O-O-O' || san === '0-0-0') return plyIndex % 2 === 0 ? 'kc1' : 'kc8';
+type DisambigType = 'file' | 'rank' | null;
+
+// Parse SAN into a comparable key (piece+[disambig]+dest) and disambiguation type.
+// For ambiguous piece moves, the key includes the source file or rank so both knights must be distinguished.
+function moveInfo(san: string, plyIndex: number): { compareKey: string; disambigType: DisambigType } {
+  if (san === 'O-O'   || san === '0-0')   return { compareKey: plyIndex % 2 === 0 ? 'kg1' : 'kg8', disambigType: null };
+  if (san === 'O-O-O' || san === '0-0-0') return { compareKey: plyIndex % 2 === 0 ? 'kc1' : 'kc8', disambigType: null };
   const s = san.replace(/[+#!?]/g, '');
   const pieceChar = /^[RNBQK]/.test(s) ? s[0].toLowerCase() : 'p';
   const dest = s.match(/([a-h][1-8])(?:=[RNBQ])?$/)?.[1] ?? '';
-  return pieceChar + dest;
+  if (pieceChar === 'p') return { compareKey: 'p' + dest, disambigType: null };
+  // Everything between piece letter and destination (minus the capture 'x')
+  const inner = s.slice(1).replace('x', '').replace(dest, '');
+  const fileD = inner.match(/[a-h]/)?.[0] ?? '';
+  const rankD = inner.match(/[1-8]/)?.[0] ?? '';
+  if (fileD) return { compareKey: pieceChar + fileD + dest, disambigType: 'file' };
+  if (rankD) return { compareKey: pieceChar + rankD + dest, disambigType: 'rank' };
+  return { compareKey: pieceChar + dest, disambigType: null };
 }
 
-// Decode 3 raw keystroke chars (piece + file + rank) → "piece-char + destination-square"
-function decodeThreeKeys(buf: string): string | null {
-  if (buf.length !== 3) return null;
+// Decode user keystrokes into a comparable key.
+// 3 keys for unambiguous moves (piece + dest-file + dest-rank).
+// 4 keys for disambiguated moves (piece + source + dest-file + dest-rank).
+function decodeInputKeys(buf: string, disambigType: DisambigType): string | null {
   const piece = PIECE_FROM_KEY[buf[0]];
-  const file  = FILE_FROM_KEY[buf[1]];
-  const rank  = RANK_FROM_KEY[buf[2]];
-  if (!piece || !file || !rank) return null;
-  return piece + file + rank;
+  if (!piece) return null;
+  if (disambigType === null) {
+    if (buf.length !== 3) return null;
+    const file = FILE_FROM_KEY[buf[1]];
+    const rank = RANK_FROM_KEY[buf[2]];
+    if (!file || !rank) return null;
+    return piece + file + rank;
+  }
+  if (buf.length !== 4) return null;
+  const src = disambigType === 'file'
+    ? FILE_FROM_KEY[buf[1]]
+    : (RANK_FROM_KEY[buf[1]] ? String(RANK_FROM_KEY[buf[1]]) : null);
+  const destFile = FILE_FROM_KEY[buf[2]];
+  const destRank = RANK_FROM_KEY[buf[3]];
+  if (!src || !destFile || !destRank) return null;
+  return piece + src + destFile + destRank;
 }
 
-// Convert the raw 3-key buffer into human-readable chess notation, slot by slot
-function bufferSlotDisplay(buf: string, slot: 0 | 1 | 2): string {
+// Convert the raw keystroke buffer into human-readable notation, slot by slot.
+// 3-slot mode: piece / dest-file / dest-rank
+// 4-slot mode (disambig): piece / source / dest-file / dest-rank
+function bufferSlotDisplay(buf: string, slot: number, disambigType: DisambigType): string {
   if (slot >= buf.length) return '·';
   if (slot === 0) {
     const p = PIECE_FROM_KEY[buf[0]];
     return p ? (p === 'p' ? 'P' : p.toUpperCase()) : '?';
+  }
+  if (disambigType !== null) {
+    if (slot === 1) return disambigType === 'file' ? (FILE_FROM_KEY[buf[1]] ?? '?') : String(RANK_FROM_KEY[buf[1]] ?? '?');
+    if (slot === 2) return FILE_FROM_KEY[buf[2]] ?? '?';
+    return String(RANK_FROM_KEY[buf[3]] ?? '?');
   }
   if (slot === 1) return FILE_FROM_KEY[buf[1]] ?? '?';
   return String(RANK_FROM_KEY[buf[2]] ?? '?');
@@ -297,12 +326,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
   function handleRecallSubmitBuffer(buf: string) {
     if (!recallPending || plyIdx >= game.moves.length) return;
-    const decoded = decodeThreeKeys(buf);
+    const { compareKey, disambigType } = moveInfo(game.moves[plyIdx], plyIdx);
+    const decoded = decodeInputKeys(buf, disambigType);
     if (!decoded) {
       playSound(false);
       return;
     }
-    const correct = decoded === sanToComparableKey(game.moves[plyIdx], plyIdx);
+    const correct = decoded === compareKey;
     if (!correct) {
       playSound(false);
       setRecallAttempts(a => a + 1);
@@ -448,7 +478,9 @@ export default function ClassicalGame({ game }: { game: GameData }) {
         e.preventDefault();
         recallBufferRef.current += key;
         setRecallBuffer(recallBufferRef.current);
-        if (recallBufferRef.current.length === 3) {
+        const { disambigType } = plyIdx < game.moves.length ? moveInfo(game.moves[plyIdx], plyIdx) : { disambigType: null };
+        const targetLen = disambigType !== null ? 4 : 3;
+        if (recallBufferRef.current.length === targetLen) {
           const buf = recallBufferRef.current;
           recallBufferRef.current = '';
           setRecallBuffer('');
@@ -519,18 +551,22 @@ export default function ClassicalGame({ game }: { game: GameData }) {
             <span className="round-counter">{plyIdx} / {game.moves.length}</span>
           </div>
 
-          {recallPending && (
-            <div className="cg-recall-row">
-              <span className="cg-recall-keys">
-                {([0, 1, 2] as const).map(i => (
-                  <span key={i} className={`cg-recall-key${recallBuffer[i] ? ' filled' : ''}`}>
-                    {bufferSlotDisplay(recallBuffer, i)}
-                  </span>
-                ))}
-              </span>
-              <button className="cg-recall-btn cg-recall-skip" onClick={handleRecallSkip}>Skip</button>
-            </div>
-          )}
+          {recallPending && (() => {
+            const { disambigType } = plyIdx < game.moves.length ? moveInfo(game.moves[plyIdx], plyIdx) : { disambigType: null as DisambigType };
+            const slotCount = disambigType !== null ? 4 : 3;
+            return (
+              <div className="cg-recall-row">
+                <span className="cg-recall-keys">
+                  {Array.from({ length: slotCount }, (_, i) => (
+                    <span key={i} className={`cg-recall-key${recallBuffer[i] ? ' filled' : ''}`}>
+                      {bufferSlotDisplay(recallBuffer, i, disambigType)}
+                    </span>
+                  ))}
+                </span>
+                <button className="cg-recall-btn cg-recall-skip" onClick={handleRecallSkip}>Skip</button>
+              </div>
+            );
+          })()}
 
           <div ref={boardContainerRef} style={{ width: '100%' }}>
             {!recallMode && (
