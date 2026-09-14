@@ -122,6 +122,19 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
       <div className="sidebar-logo" aria-hidden="true">♟ Chesstíse</div>
       <h2 className="sr-only">Chesstíse – Blindfold Chess Trainer</h2>
 
+      {/* ── Foundations ── */}
+      <NavLink
+        to="/foundations"
+        className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
+        aria-label="Foundations — core curriculum"
+      >
+        <span className="nav-icon" aria-hidden="true">📖</span>
+        <span className="nav-text-group">
+          <span className="nav-label">Foundations</span>
+          <span className="nav-desc" aria-hidden="true">18-game core curriculum</span>
+        </span>
+      </NavLink>
+
       {/* ── Drills ── */}
       <div className="sidebar-drills-wrapper">
         <details className="sidebar-group" open>

@@ -14,6 +14,7 @@ import OpeningRecall from './components/exercises/OpeningRecall';
 import CalculationTrainer from './components/exercises/CalculationTrainer';
 import OpeningTrainerComponent from './components/exercises/OpeningTrainer';
 import PuzzleDrill from './components/exercises/PuzzleDrill';
+import BlueprintCorpus from './components/exercises/BlueprintCorpus';
 import { findGame } from './data/classicalGames';
 import { findGameAcrossPlayers } from './data/playerRegistry';
 import { findTrainer } from './data/openingTrainers';
@@ -47,7 +48,8 @@ export default function App() {
   return (
     <AppLayout>
       <Routes>
-        <Route path="/"                   element={<Navigate to="/blind-pathing" replace />} />
+        <Route path="/"                   element={<Navigate to="/foundations" replace />} />
+        <Route path="/foundations"         element={<BlueprintCorpus />} />
         <Route path="/cell-guesser"       element={<CellGuesser />} />
         <Route path="/square-color"       element={<SquareColorDrill />} />
         <Route path="/blind-pathing"      element={<BlindPathing />} />

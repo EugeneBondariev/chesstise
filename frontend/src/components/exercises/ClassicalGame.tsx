@@ -7,10 +7,15 @@ import { fetchLichessEval, fetchGeminiExplain, fetchGroqIntro, fetchGroqQuestion
 import type { LichessEval } from '../../api/ai';
 import type { ClassicalGame as GameData } from '../../data/classicalGames';
 import CollapsibleBoard from '../common/CollapsibleBoard';
+import { useGameStatsStore } from '../../store/gameStatsStore';
+import GameStats from './GameStats';
 
 const FILE_FROM_KEY: Record<string, string> = { a: 'a', s: 'b', d: 'c', f: 'd', j: 'e', k: 'f', l: 'g', ';': 'h' };
 const RANK_FROM_KEY: Record<string, number>  = { a: 1, s: 2, d: 3, f: 4, j: 5, k: 6, l: 7, ';': 8 };
 const FILE_RANK_KEYS = new Set(Object.keys(FILE_FROM_KEY));
+// piece keys: s=king, d=rook, f=pawn, j=knight, k=bishop, l=queen
+const PIECE_FROM_KEY: Record<string, string> = { s: 'k', d: 'r', f: 'p', j: 'n', k: 'b', l: 'q' };
+const ALL_PIECE_KEYS = new Set(Object.keys(PIECE_FROM_KEY));
 
 interface PositionData {
   fens:   string[];
@@ -89,6 +94,27 @@ function spokenMove(san: string): string {
   return `${piece}${dis ? ' ' + dis : ''} to ${dest}${suffix}`;
 }
 
+// Convert SAN to "piece-char + destination-square" for comparison with decoded 3-key input.
+// Captures and disambiguation are stripped; castling is mapped to king's destination square.
+function sanToComparableKey(san: string, plyIndex: number): string {
+  if (san === 'O-O'   || san === '0-0')   return plyIndex % 2 === 0 ? 'kg1' : 'kg8';
+  if (san === 'O-O-O' || san === '0-0-0') return plyIndex % 2 === 0 ? 'kc1' : 'kc8';
+  const s = san.replace(/[+#!?]/g, '');
+  const pieceChar = /^[RNBQK]/.test(s) ? s[0].toLowerCase() : 'p';
+  const dest = s.match(/([a-h][1-8])(?:=[RNBQ])?$/)?.[1] ?? '';
+  return pieceChar + dest;
+}
+
+// Decode 3 raw keystroke chars (piece + file + rank) → "piece-char + destination-square"
+function decodeThreeKeys(buf: string): string | null {
+  if (buf.length !== 3) return null;
+  const piece = PIECE_FROM_KEY[buf[0]];
+  const file  = FILE_FROM_KEY[buf[1]];
+  const rank  = RANK_FROM_KEY[buf[2]];
+  if (!piece || !file || !rank) return null;
+  return piece + file + rank;
+}
+
 interface Commentary {
   lichess: LichessEval | null;
   gemini: string | null;
@@ -106,6 +132,10 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const [customQ,        setCustomQ]       = useState('');
   const [boardWidth,     setBoardWidth]    = useState(() => Math.min(360, window.innerWidth - 32));
   const [highlightedSquare, setHighlightedSquare] = useState<Square | null>(null);
+  const [recallMode,     setRecallMode]    = useState(false);
+  const [recallPending,  setRecallPending] = useState(false);
+  const [recallBuffer,   setRecallBuffer]  = useState('');
+  const [recallAttempts, setRecallAttempts] = useState(0);
   const lastSpokenRef      = useRef('');
   const prevQRef           = useRef('');
   const keyHandlerRef      = useRef<((e: KeyboardEvent) => void) | null>(null);
@@ -113,6 +143,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const boardContainerRef  = useRef<HTMLDivElement>(null);
   const highlightBufferRef = useRef('');
   const highlightTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentReplayIdRef = useRef<string | null>(null);
+  const moveStartTimeRef   = useRef<number | null>(null);
+  const recallBufferRef    = useRef('');
+
+  const startReplay  = useGameStatsStore(s => s.startReplay);
+  const recordMove   = useGameStatsStore(s => s.recordMove);
+  const finishReplay = useGameStatsStore(s => s.finishReplay);
 
   useEffect(() => {
     const el = boardContainerRef.current;
@@ -124,6 +161,15 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     return () => obs.disconnect();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (currentReplayIdRef.current) {
+        finishReplay(currentReplayIdRef.current);
+        currentReplayIdRef.current = null;
+      }
+    };
+  }, [finishReplay]);
+
   const currentFen = fens[Math.min(plyIdx, fens.length - 1)];
   const isGameOver = plyIdx >= game.moves.length;
 
@@ -133,11 +179,19 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   }
 
   useEffect(() => {
+    if (currentReplayIdRef.current) {
+      finishReplay(currentReplayIdRef.current);
+      currentReplayIdRef.current = null;
+    }
     setPlyIdx(0);
     setCommentary(null);
     setMoveClassifications({});
     setPositionEvals([]);
     setHighlightedSquare(null);
+    setRecallPending(false);
+    recallBufferRef.current = '';
+    setRecallBuffer('');
+    setRecallAttempts(0);
     highlightBufferRef.current = '';
     if (highlightTimerRef.current) { clearTimeout(highlightTimerRef.current); highlightTimerRef.current = null; }
     say(`${game.white} versus ${game.black}. Press J to advance moves, A or Space for commentary.`);
@@ -161,18 +215,39 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     return () => { cancelled = true; };
   }, [game]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  function advanceWithSpeech(idx: number) {
+    const cls = moveClassifications[idx];
+    say(spokenMove(game.moves[idx]) + (cls ? `, ${cls}` : ''));
+    setPlyIdx(idx + 1);
+    setCommentary(null);
+  }
+
   function handleJ() {
-    if (plyIdx < game.moves.length) {
-      const cls = moveClassifications[plyIdx];
-      say(spokenMove(game.moves[plyIdx]) + (cls ? `, ${cls}` : ''));
-      setPlyIdx(p => p + 1);
-      setCommentary(null);
-    } else {
-      say(`End of game. ${game.result}.`);
+    if (plyIdx >= game.moves.length) { say(`End of game. ${game.result}.`); return; }
+    if (recallMode) {
+      if (!currentReplayIdRef.current) {
+        currentReplayIdRef.current = startReplay(game.id, game.moves.length);
+      }
+      moveStartTimeRef.current = Date.now();
+      const moveNum = Math.ceil((plyIdx + 1) / 2);
+      const side = plyIdx % 2 === 0 ? 'White' : 'Black';
+      say(`${side}, move ${moveNum}`);
+      setRecallPending(true);
+      recallBufferRef.current = '';
+      setRecallBuffer('');
+      setRecallAttempts(0);
+      return;
     }
+    advanceWithSpeech(plyIdx);
   }
 
   function handleF() {
+    if (recallPending) {
+      recallBufferRef.current = '';
+      setRecallBuffer('');
+      setRecallPending(false);
+      return;
+    }
     if (plyIdx > 0) {
       const prevIdx = plyIdx - 1;
       setPlyIdx(prevIdx);
@@ -181,6 +256,69 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     } else {
       say('Already at the start.');
     }
+  }
+
+  function handleRecallSubmitBuffer(buf: string) {
+    if (!recallPending || plyIdx >= game.moves.length) return;
+    const decoded = decodeThreeKeys(buf);
+    if (!decoded) {
+      say('Invalid input');
+      return;
+    }
+    const correct = decoded === sanToComparableKey(game.moves[plyIdx], plyIdx);
+    if (!correct) {
+      say('Wrong, try again');
+      setRecallAttempts(a => a + 1);
+      return;
+    }
+    const cls = moveClassifications[plyIdx];
+    say((recallAttempts === 0 ? 'Correct. ' : 'Got it. ') + spokenMove(game.moves[plyIdx]) + (cls ? `, ${cls}` : ''));
+    setRecallPending(false);
+    setRecallAttempts(0);
+    setPlyIdx(p => p + 1);
+    setCommentary(null);
+    const timeMs = moveStartTimeRef.current != null ? Date.now() - moveStartTimeRef.current : 0;
+    if (currentReplayIdRef.current) {
+      recordMove(currentReplayIdRef.current, plyIdx, { attempts: recallAttempts + 1, timeMs });
+      if (plyIdx + 1 >= game.moves.length) {
+        finishReplay(currentReplayIdRef.current);
+        currentReplayIdRef.current = null;
+      }
+    }
+  }
+
+  function handleRecallSkip() {
+    if (!recallPending || plyIdx >= game.moves.length) return;
+    recallBufferRef.current = '';
+    setRecallBuffer('');
+    advanceWithSpeech(plyIdx);
+    setRecallPending(false);
+    setRecallAttempts(0);
+    const timeMs = moveStartTimeRef.current != null ? Date.now() - moveStartTimeRef.current : 0;
+    if (currentReplayIdRef.current) {
+      recordMove(currentReplayIdRef.current, plyIdx, { attempts: 0, timeMs });
+      if (plyIdx + 1 >= game.moves.length) {
+        finishReplay(currentReplayIdRef.current);
+        currentReplayIdRef.current = null;
+      }
+    }
+  }
+
+  function handleJumpTo(targetPlyIdx: number) {
+    if (currentReplayIdRef.current) {
+      finishReplay(currentReplayIdRef.current);
+    }
+    currentReplayIdRef.current = startReplay(game.id, game.moves.length);
+    moveStartTimeRef.current = Date.now();
+    setPlyIdx(targetPlyIdx);
+    setRecallMode(true);
+    setRecallPending(true);
+    recallBufferRef.current = '';
+    setRecallBuffer('');
+    setRecallAttempts(0);
+    const moveNum = Math.ceil((targetPlyIdx + 1) / 2);
+    const side = targetPlyIdx % 2 === 0 ? 'White' : 'Black';
+    say(`${side}, move ${moveNum}`);
   }
 
   function handleK() {
@@ -238,16 +376,58 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   keyHandlerRef.current = (e: KeyboardEvent) => {
     const active = document.activeElement as HTMLElement | null;
     if (active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
-    const { key, code } = e;
+    const { key } = e;
 
     if (key === 'Control') { highlightBufferRef.current = ''; stopSpeaking(); return; }
+
+    // Recall key capture — must come before navigation keys so they don't interfere
+    if (recallPending) {
+      if (key === 'Escape') { e.preventDefault(); handleRecallSkip(); return; }
+      if (key === 'Backspace' && recallBufferRef.current.length > 0) {
+        e.preventDefault();
+        recallBufferRef.current = recallBufferRef.current.slice(0, -1);
+        setRecallBuffer(recallBufferRef.current);
+        return;
+      }
+      const bufLen = recallBufferRef.current.length;
+      const validKey = bufLen === 0 ? ALL_PIECE_KEYS.has(key) : FILE_RANK_KEYS.has(key);
+      if (validKey) {
+        e.preventDefault();
+        recallBufferRef.current += key;
+        setRecallBuffer(recallBufferRef.current);
+        if (recallBufferRef.current.length === 3) {
+          const buf = recallBufferRef.current;
+          recallBufferRef.current = '';
+          setRecallBuffer('');
+          handleRecallSubmitBuffer(buf);
+        }
+      }
+      return;
+    }
+
+    if (key === 'm') {
+      e.preventDefault();
+      const next = !recallMode;
+      setRecallMode(next);
+      if (!next) {
+        setRecallPending(false);
+        recallBufferRef.current = '';
+        setRecallBuffer('');
+        if (currentReplayIdRef.current) {
+          finishReplay(currentReplayIdRef.current);
+          currentReplayIdRef.current = null;
+        }
+      }
+      say(next ? 'Memorize on' : 'Memorize off');
+      return;
+    }
     if (key === 'ArrowLeft'  || key === 'g') { highlightBufferRef.current = ''; e.preventDefault(); handleF(); return; }
     if (key === 'ArrowRight' || key === 'h') { highlightBufferRef.current = ''; e.preventDefault(); handleJ(); return; }
     if (key === 'ArrowDown')  { highlightBufferRef.current = ''; e.preventDefault(); handleK(); return; }
     if (key === 'ArrowUp')    { highlightBufferRef.current = ''; e.preventDefault(); questionInputRef.current?.focus(); return; }
     if (key === 'r')          { highlightBufferRef.current = ''; e.preventDefault(); speak(lastSpokenRef.current); return; }
-    if (code === 'Numpad0')       { e.preventDefault(); setBoardExpanded(b => !b); return; }
-    if (code === 'NumpadDecimal') { e.preventDefault(); speak(lastSpokenRef.current); return; }
+    if (e.code === 'Numpad0')       { e.preventDefault(); setBoardExpanded(b => !b); return; }
+    if (e.code === 'NumpadDecimal') { e.preventDefault(); speak(lastSpokenRef.current); return; }
 
     if (FILE_RANK_KEYS.has(key)) {
       e.preventDefault();
@@ -292,8 +472,41 @@ export default function ClassicalGame({ game }: { game: GameData }) {
         <div className="board-col">
           <div className="prompt-card" style={{ justifyContent: 'space-between' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{posLabel}</span>
+            <button
+              className={`cg-recall-toggle${recallMode ? ' active' : ''}`}
+              onClick={() => {
+                const next = !recallMode;
+                setRecallMode(next);
+                if (!next) {
+                  setRecallPending(false);
+                  recallBufferRef.current = '';
+                  setRecallBuffer('');
+                  if (currentReplayIdRef.current) {
+                    finishReplay(currentReplayIdRef.current);
+                    currentReplayIdRef.current = null;
+                  }
+                }
+                say(next ? 'Memorize on' : 'Memorize off');
+              }}
+              title="Toggle memorize mode (m)"
+            >
+              {recallMode ? '🎯 Memorize' : 'Memorize'}
+            </button>
             <span className="round-counter">{plyIdx} / {game.moves.length}</span>
           </div>
+
+          {recallPending && (
+            <div className="cg-recall-row">
+              <span className="cg-recall-keys">
+                {[0, 1, 2].map(i => (
+                  <span key={i} className={`cg-recall-key${recallBuffer[i] ? ' filled' : ''}`}>
+                    {recallBuffer[i] ?? '·'}
+                  </span>
+                ))}
+              </span>
+              <button className="cg-recall-btn cg-recall-skip" onClick={handleRecallSkip}>Skip</button>
+            </div>
+          )}
 
           <div ref={boardContainerRef} style={{ width: '100%' }}>
             <CollapsibleBoard isExpanded={boardExpanded} onToggle={() => setBoardExpanded(b => !b)}>
@@ -414,8 +627,11 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           </div>
 
           <div className="cg-legend">
-            g/← = back | h/→ = next | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | Calc 0 = board | [file][rank] = highlight
+            g/← = back | h/→ = next | m = memorize | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | Calc 0 = board | [file][rank] = highlight
+            {recallMode && ' | memorize: [piece][file][rank] — s=K d=R f=P j=N k=B l=Q | Esc=skip'}
           </div>
+
+          <GameStats game={game} onJumpTo={handleJumpTo} />
         </div>
       </div>
     </div>
