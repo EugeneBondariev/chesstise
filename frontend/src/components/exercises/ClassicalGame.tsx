@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { Chess } from 'chess.js';
 import type { Square } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
-import { speak, stopSpeaking } from '../../utils/speechUtils';
+import { speak, stopSpeaking, playSound, playCongratsSound } from '../../utils/speechUtils';
 import { fetchLichessEval, fetchGeminiExplain, fetchGroqIntro, fetchGroqQuestion, formatEval } from '../../api/ai';
 import type { LichessEval } from '../../api/ai';
 import type { ClassicalGame as GameData } from '../../data/classicalGames';
@@ -223,6 +223,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   }
 
   function enterMemorize() {
+    stopSpeaking();
     if (currentReplayIdRef.current) finishReplay(currentReplayIdRef.current);
     currentReplayIdRef.current = startReplay(game.id, game.moves.length);
     moveStartTimeRef.current = Date.now();
@@ -233,10 +234,10 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     setRecallBuffer('');
     setRecallAttempts(0);
     setCommentary(null);
-    say('White, move 1');
   }
 
   function exitMemorize() {
+    stopSpeaking();
     setRecallMode(false);
     setRecallPending(false);
     recallBufferRef.current = '';
@@ -245,7 +246,6 @@ export default function ClassicalGame({ game }: { game: GameData }) {
       finishReplay(currentReplayIdRef.current);
       currentReplayIdRef.current = null;
     }
-    say('Memorize off');
   }
 
   function handleJ() {
@@ -288,16 +288,15 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     if (!recallPending || plyIdx >= game.moves.length) return;
     const decoded = decodeThreeKeys(buf);
     if (!decoded) {
-      say('Invalid input');
+      playSound(false);
       return;
     }
     const correct = decoded === sanToComparableKey(game.moves[plyIdx], plyIdx);
     if (!correct) {
-      say('Wrong, try again');
+      playSound(false);
       setRecallAttempts(a => a + 1);
       return;
     }
-    const cls = moveClassifications[plyIdx];
     const timeMs = moveStartTimeRef.current != null ? Date.now() - moveStartTimeRef.current : 0;
     if (currentReplayIdRef.current) {
       recordMove(currentReplayIdRef.current, plyIdx, { attempts: recallAttempts + 1, timeMs });
@@ -305,37 +304,39 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     const nextPly = plyIdx + 1;
     setPlyIdx(nextPly);
     setCommentary(null);
-    const moveAnnounce = (recallAttempts === 0 ? 'Correct. ' : 'Got it. ') + spokenMove(game.moves[plyIdx]) + (cls ? `, ${cls}` : '');
     if (nextPly >= game.moves.length) {
       setRecallPending(false);
       setRecallAttempts(0);
       if (currentReplayIdRef.current) { finishReplay(currentReplayIdRef.current); currentReplayIdRef.current = null; }
-      say(moveAnnounce + `. Game over. ${game.result}.`);
+      playCongratsSound();
     } else {
       recallBufferRef.current = '';
       setRecallBuffer('');
       setRecallAttempts(0);
       moveStartTimeRef.current = Date.now();
-      const side = nextPly % 2 === 0 ? 'White' : 'Black';
-      const moveNum = Math.ceil((nextPly + 1) / 2);
-      say(moveAnnounce + `. ${side}, move ${moveNum}`);
+      playSound(true);
     }
   }
 
   function handleRecallSkip() {
     if (!recallPending || plyIdx >= game.moves.length) return;
-    recallBufferRef.current = '';
-    setRecallBuffer('');
-    advanceWithSpeech(plyIdx);
-    setRecallPending(false);
-    setRecallAttempts(0);
+    playSound(false);
     const timeMs = moveStartTimeRef.current != null ? Date.now() - moveStartTimeRef.current : 0;
     if (currentReplayIdRef.current) {
       recordMove(currentReplayIdRef.current, plyIdx, { attempts: 0, timeMs });
-      if (plyIdx + 1 >= game.moves.length) {
-        finishReplay(currentReplayIdRef.current);
-        currentReplayIdRef.current = null;
-      }
+    }
+    const nextPly = plyIdx + 1;
+    setPlyIdx(nextPly);
+    setCommentary(null);
+    if (nextPly >= game.moves.length) {
+      setRecallPending(false);
+      setRecallAttempts(0);
+      if (currentReplayIdRef.current) { finishReplay(currentReplayIdRef.current); currentReplayIdRef.current = null; }
+    } else {
+      recallBufferRef.current = '';
+      setRecallBuffer('');
+      setRecallAttempts(0);
+      moveStartTimeRef.current = Date.now();
     }
   }
 
