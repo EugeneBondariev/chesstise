@@ -262,11 +262,11 @@ export const BLUEPRINT_GAMES: BlueprintGame[] = [
     category: 'tactics-attack',
   },
   {
-    id:       null,
-    title:    'Skewer, Overloading & Trapping',
-    label:    'A dedicated tactical game (pending selection)',
-    concepts: ['t-skewer', 't-overload', 't-trap'],
-    note:     'Three motifs that decide games at every level: the skewer forces material loss, overloading makes one piece fail two duties, trapping removes a piece silently from the board.',
+    id:       'karpov-480',
+    title:    'Trapping & Overloading — The Silent Kill',
+    label:    'Karpov vs Miles, Tilburg 1977',
+    concepts: ['t-trap', 't-overload', 't-fork'],
+    note:     "Karpov's knight manoeuvres to c7, forks and traps the a8 rook, then repositions to b6 and traps the bishop on c8. No fireworks — just two pieces removed from the board without the opponent being able to do anything about it.",
     category: 'tactics-attack',
   },
 
@@ -288,11 +288,11 @@ export const BLUEPRINT_GAMES: BlueprintGame[] = [
     category: 'endgame',
   },
   {
-    id:       null,
-    title:    'Endgame Drawing Kit',
-    label:    'Perpetual check · stalemate · Philidor · bishop endings · fortress (pending)',
-    concepts: ['t-perpetual', 't-stalemate', 'e-philidor-end', 'e-queen', 'e-bishop-same', 'e-bishop-opp', 'e-fortress'],
-    note:     'The complete defensive toolkit — perpetual check as salvation, the stalemate trap, Philidor passive rook defense, same/opposite-colour bishop endgames, and the fortress hold.',
+    id:       'smyslov-539',
+    title:    'Perpetual Check — The Drawing Weapon',
+    label:    'Smyslov vs Botvinnik, World Championship 1954  (Game 5)',
+    concepts: ['t-perpetual', 'e-king-active', 'f-zugzwang'],
+    note:     "Smyslov sacrifices material to reach a drawn position, then finds himself forced into perpetual check: Qc1+, Qd2+, Qxb2+ — the same squares over and over, inescapably. Knowing when to bail out with perpetual and how to construct the checking sequence is a game-saving skill at every level.",
     category: 'endgame',
   },
 ];
