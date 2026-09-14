@@ -222,6 +222,32 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     setCommentary(null);
   }
 
+  function enterMemorize() {
+    if (currentReplayIdRef.current) finishReplay(currentReplayIdRef.current);
+    currentReplayIdRef.current = startReplay(game.id, game.moves.length);
+    moveStartTimeRef.current = Date.now();
+    setRecallMode(true);
+    setPlyIdx(0);
+    setRecallPending(true);
+    recallBufferRef.current = '';
+    setRecallBuffer('');
+    setRecallAttempts(0);
+    setCommentary(null);
+    say('White, move 1');
+  }
+
+  function exitMemorize() {
+    setRecallMode(false);
+    setRecallPending(false);
+    recallBufferRef.current = '';
+    setRecallBuffer('');
+    if (currentReplayIdRef.current) {
+      finishReplay(currentReplayIdRef.current);
+      currentReplayIdRef.current = null;
+    }
+    say('Memorize off');
+  }
+
   function handleJ() {
     if (plyIdx >= game.moves.length) { say(`End of game. ${game.result}.`); return; }
     if (recallMode) {
@@ -407,18 +433,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
     if (key === 'm') {
       e.preventDefault();
-      const next = !recallMode;
-      setRecallMode(next);
-      if (!next) {
-        setRecallPending(false);
-        recallBufferRef.current = '';
-        setRecallBuffer('');
-        if (currentReplayIdRef.current) {
-          finishReplay(currentReplayIdRef.current);
-          currentReplayIdRef.current = null;
-        }
-      }
-      say(next ? 'Memorize on' : 'Memorize off');
+      if (!recallMode) enterMemorize(); else exitMemorize();
       return;
     }
     if (key === 'ArrowLeft'  || key === 'g') { highlightBufferRef.current = ''; e.preventDefault(); handleF(); return; }
@@ -474,20 +489,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
             <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{posLabel}</span>
             <button
               className={`cg-recall-toggle${recallMode ? ' active' : ''}`}
-              onClick={() => {
-                const next = !recallMode;
-                setRecallMode(next);
-                if (!next) {
-                  setRecallPending(false);
-                  recallBufferRef.current = '';
-                  setRecallBuffer('');
-                  if (currentReplayIdRef.current) {
-                    finishReplay(currentReplayIdRef.current);
-                    currentReplayIdRef.current = null;
-                  }
-                }
-                say(next ? 'Memorize on' : 'Memorize off');
-              }}
+              onClick={() => recallMode ? exitMemorize() : enterMemorize()}
               title="Toggle memorize mode (m)"
             >
               {recallMode ? '🎯 Memorize' : 'Memorize'}
@@ -509,19 +511,21 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           )}
 
           <div ref={boardContainerRef} style={{ width: '100%' }}>
-            <CollapsibleBoard isExpanded={boardExpanded} onToggle={() => setBoardExpanded(b => !b)}>
-              <Chessboard
-                position={currentFen}
-                boardWidth={boardWidth}
-                arePiecesDraggable={false}
-                customArrows={arrows}
-                animationDuration={200}
-                showBoardNotation={false}
-                customDarkSquareStyle={{ backgroundColor: '#3d5a6e' }}
-                customLightSquareStyle={{ backgroundColor: '#7a96a8' }}
-                customSquareStyles={highlightedSquare ? { [highlightedSquare]: { backgroundColor: '#e8c240' } } : {}}
-              />
-            </CollapsibleBoard>
+            {!recallMode && (
+              <CollapsibleBoard isExpanded={boardExpanded} onToggle={() => setBoardExpanded(b => !b)}>
+                <Chessboard
+                  position={currentFen}
+                  boardWidth={boardWidth}
+                  arePiecesDraggable={false}
+                  customArrows={arrows}
+                  animationDuration={200}
+                  showBoardNotation={false}
+                  customDarkSquareStyle={{ backgroundColor: '#3d5a6e' }}
+                  customLightSquareStyle={{ backgroundColor: '#7a96a8' }}
+                  customSquareStyles={highlightedSquare ? { [highlightedSquare]: { backgroundColor: '#e8c240' } } : {}}
+                />
+              </CollapsibleBoard>
+            )}
           </div>
 
           <div className="prompt-card" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem' }}>
@@ -547,7 +551,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
           </div>
 
-          <div className="cg-pgn">
+          {!recallMode && <div className="cg-pgn">
             {Array.from({ length: Math.ceil(game.moves.length / 2) }, (_, pair) => {
               const wi = pair * 2;
               const bi = pair * 2 + 1;
@@ -586,7 +590,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                 </div>
               );
             })}
-          </div>
+          </div>}
 
           <div className="cg-question">
             <input
