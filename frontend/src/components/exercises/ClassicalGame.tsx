@@ -115,6 +115,17 @@ function decodeThreeKeys(buf: string): string | null {
   return piece + file + rank;
 }
 
+// Convert the raw 3-key buffer into human-readable chess notation, slot by slot
+function bufferSlotDisplay(buf: string, slot: 0 | 1 | 2): string {
+  if (slot >= buf.length) return '·';
+  if (slot === 0) {
+    const p = PIECE_FROM_KEY[buf[0]];
+    return p ? (p === 'p' ? 'P' : p.toUpperCase()) : '?';
+  }
+  if (slot === 1) return FILE_FROM_KEY[buf[1]] ?? '?';
+  return String(RANK_FROM_KEY[buf[2]] ?? '?');
+}
+
 interface Commentary {
   lichess: LichessEval | null;
   gemini: string | null;
@@ -511,9 +522,9 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           {recallPending && (
             <div className="cg-recall-row">
               <span className="cg-recall-keys">
-                {[0, 1, 2].map(i => (
+                {([0, 1, 2] as const).map(i => (
                   <span key={i} className={`cg-recall-key${recallBuffer[i] ? ' filled' : ''}`}>
-                    {recallBuffer[i] ?? '·'}
+                    {bufferSlotDisplay(recallBuffer, i)}
                   </span>
                 ))}
               </span>
