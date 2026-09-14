@@ -145,7 +145,7 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         <span className="nav-icon" aria-hidden="true">📖</span>
         <span className="nav-text-group">
           <span className="nav-label">Blindfold Literacy (B1)</span>
-          <span className="nav-desc" aria-hidden="true">Curated corpus · 23 games</span>
+          <span className="nav-desc" aria-hidden="true">Curated corpus · 27 games</span>
         </span>
       </NavLink>
 
