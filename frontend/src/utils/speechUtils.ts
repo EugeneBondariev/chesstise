@@ -14,6 +14,14 @@ export function stopSpeaking(): void {
   if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel();
 }
 
+function pickVoice(): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis.getVoices();
+  return voices.find(v => v.name.toLowerCase().includes('david'))
+    ?? voices.find(v => v.lang.startsWith('en') && v.localService)
+    ?? voices.find(v => v.lang.startsWith('en'))
+    ?? null;
+}
+
 export function speak(text: string): void {
   if (typeof window === 'undefined' || !window.speechSynthesis) return;
   const synth = window.speechSynthesis;
@@ -23,6 +31,8 @@ export function speak(text: string): void {
   if (synth.paused) synth.resume();
   const utt = new SpeechSynthesisUtterance(processText(text));
   utt.rate = globalSpeechRate;
+  const voice = pickVoice();
+  if (voice) utt.voice = voice;
   synth.speak(utt);
 }
 
