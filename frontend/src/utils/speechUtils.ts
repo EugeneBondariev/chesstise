@@ -14,12 +14,24 @@ export function stopSpeaking(): void {
   if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel();
 }
 
+let cachedVoice: SpeechSynthesisVoice | null | undefined = undefined;
+
 function pickVoice(): SpeechSynthesisVoice | null {
+  if (cachedVoice !== undefined) return cachedVoice;
   const voices = window.speechSynthesis.getVoices();
-  return voices.find(v => v.name.toLowerCase().includes('david'))
+  cachedVoice = voices.find(v => v.name.toLowerCase().includes('david'))
     ?? voices.find(v => v.lang.startsWith('en') && v.localService)
     ?? voices.find(v => v.lang.startsWith('en'))
     ?? null;
+  return cachedVoice;
+}
+
+// Pre-load voices and cache preferred one as soon as they're available
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  window.speechSynthesis.addEventListener('voiceschanged', () => {
+    cachedVoice = undefined; // reset so pickVoice re-selects from full list
+    pickVoice();
+  });
 }
 
 export function speak(text: string): void {
