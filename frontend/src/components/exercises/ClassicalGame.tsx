@@ -406,6 +406,12 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
     if (key === 'Control') { highlightBufferRef.current = ''; stopSpeaking(); return; }
 
+    if (key === 'm') {
+      e.preventDefault();
+      if (!recallMode) enterMemorize(); else exitMemorize();
+      return;
+    }
+
     // Recall key capture — must come before navigation keys so they don't interfere
     if (recallPending) {
       if (key === 'Escape') { e.preventDefault(); handleRecallSkip(); return; }
@@ -431,11 +437,6 @@ export default function ClassicalGame({ game }: { game: GameData }) {
       return;
     }
 
-    if (key === 'm') {
-      e.preventDefault();
-      if (!recallMode) enterMemorize(); else exitMemorize();
-      return;
-    }
     if (key === 'ArrowLeft'  || key === 'g') { highlightBufferRef.current = ''; e.preventDefault(); handleF(); return; }
     if (key === 'ArrowRight' || key === 'h') { highlightBufferRef.current = ''; e.preventDefault(); handleJ(); return; }
     if (key === 'ArrowDown')  { highlightBufferRef.current = ''; e.preventDefault(); handleK(); return; }
