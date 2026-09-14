@@ -2,12 +2,13 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { Chess } from 'chess.js';
 import type { Square } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
-import { speak, stopSpeaking, playSound, playCongratsSound } from '../../utils/speechUtils';
+import { speak, stopSpeaking, playSound, playCongratsSound, playAlertSound, playFlagSound } from '../../utils/speechUtils';
 import { fetchLichessEval, fetchGeminiExplain, fetchGroqIntro, fetchGroqQuestion, formatEval } from '../../api/ai';
 import type { LichessEval } from '../../api/ai';
 import type { ClassicalGame as GameData } from '../../data/classicalGames';
 import CollapsibleBoard from '../common/CollapsibleBoard';
 import { useGameStatsStore } from '../../store/gameStatsStore';
+import { useProfileStore } from '../../store/profileStore';
 import GameStats from './GameStats';
 
 const FILE_FROM_KEY: Record<string, string> = { a: 'a', s: 'b', d: 'c', f: 'd', j: 'e', k: 'f', l: 'g', ';': 'h' };
@@ -176,6 +177,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const [recallPending,  setRecallPending] = useState(false);
   const [recallBuffer,   setRecallBuffer]  = useState('');
   const [recallAttempts, setRecallAttempts] = useState(0);
+  const [isPlaying,      setIsPlaying]     = useState(false);
   const lastSpokenRef      = useRef('');
   const prevQRef           = useRef('');
   const keyHandlerRef      = useRef<((e: KeyboardEvent) => void) | null>(null);
@@ -186,10 +188,19 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const currentReplayIdRef = useRef<string | null>(null);
   const moveStartTimeRef   = useRef<number | null>(null);
   const recallBufferRef    = useRef('');
+  const isPlayingRef       = useRef(false);
+  const lastInteractionRef = useRef(Date.now());
+  const hasLoggedReadRef   = useRef(false);
 
   const startReplay  = useGameStatsStore(s => s.startReplay);
   const recordMove   = useGameStatsStore(s => s.recordMove);
   const finishReplay = useGameStatsStore(s => s.finishReplay);
+  const flagMove     = useGameStatsStore(s => s.flagMove);
+
+  const autoAdvanceMs      = useProfileStore(s => s.autoAdvanceMs);
+  const noveltyMultiplier  = useProfileStore(s => s.noveltyMultiplier);
+  const logRead            = useProfileStore(s => s.logRead);
+  const readCounts         = useProfileStore(s => s.readCounts);
 
   useEffect(() => {
     const el = boardContainerRef.current;
@@ -200,6 +211,26 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
+  // Keep ref in sync so timeout callbacks can read current playing state without stale closure
+  useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
+
+  // Auto-advance: each completed advance reschedules the next via plyIdx dep change
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (plyIdx >= game.moves.length) { setIsPlaying(false); return; }
+    const id = setTimeout(() => {
+      if (!isPlayingRef.current) return;
+      if (Date.now() - lastInteractionRef.current > autoAdvanceMs * noveltyMultiplier) {
+        setIsPlaying(false);
+        playAlertSound();
+        speak(lastSpokenRef.current);
+        return;
+      }
+      advanceWithSpeech(plyIdx);
+    }, autoAdvanceMs);
+    return () => clearTimeout(id);
+  }, [isPlaying, plyIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     return () => {
@@ -223,6 +254,8 @@ export default function ClassicalGame({ game }: { game: GameData }) {
       finishReplay(currentReplayIdRef.current);
       currentReplayIdRef.current = null;
     }
+    setIsPlaying(false);
+    hasLoggedReadRef.current = false;
     setPlyIdx(0);
     setCommentary(null);
     setMoveClassifications({});
@@ -234,7 +267,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     setRecallAttempts(0);
     highlightBufferRef.current = '';
     if (highlightTimerRef.current) { clearTimeout(highlightTimerRef.current); highlightTimerRef.current = null; }
-    say(`${game.white} versus ${game.black}. Press J to advance moves, A or Space for commentary.`);
+    say(`${game.white} versus ${game.black}. Press Space to auto-advance, J for manual.`);
 
     let cancelled = false;
     const evals: (LichessEval | null)[] = [];
@@ -258,8 +291,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   function advanceWithSpeech(idx: number) {
     const cls = moveClassifications[idx];
     say(spokenMove(game.moves[idx]) + (cls ? `, ${cls}` : ''));
-    setPlyIdx(idx + 1);
+    const newIdx = idx + 1;
+    setPlyIdx(newIdx);
     setCommentary(null);
+    if (newIdx >= game.moves.length && !hasLoggedReadRef.current) {
+      hasLoggedReadRef.current = true;
+      logRead(game.id);
+    }
   }
 
   function enterMemorize() {
@@ -455,7 +493,25 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     if (active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
     const { key } = e;
 
+    lastInteractionRef.current = Date.now();
+
     if (key === 'Control') { highlightBufferRef.current = ''; stopSpeaking(); return; }
+
+    if (key === ' ') {
+      e.preventDefault();
+      setIsPlaying(p => !p);
+      lastInteractionRef.current = Date.now();
+      return;
+    }
+
+    if (key === 'n') {
+      e.preventDefault();
+      if (plyIdx > 0 && plyIdx <= game.moves.length) {
+        flagMove(game.id, plyIdx - 1, game.moves[plyIdx - 1]);
+        playFlagSound();
+      }
+      return;
+    }
 
     if (key === 'm') {
       e.preventDefault();
@@ -542,13 +598,28 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           <div className="prompt-card" style={{ justifyContent: 'space-between' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{posLabel}</span>
             <button
+              className={`cg-play-btn${isPlaying ? ' playing' : ''}`}
+              onClick={() => { setIsPlaying(p => !p); lastInteractionRef.current = Date.now(); }}
+              title={isPlaying ? 'Pause (Space)' : 'Auto-advance with TTS (Space)'}
+              aria-label={isPlaying ? 'Pause auto-advance' : 'Start auto-advance'}
+            >
+              {isPlaying ? '⏸' : '▶'}
+            </button>
+            <button
               className={`cg-recall-toggle${recallMode ? ' active' : ''}`}
               onClick={() => recallMode ? exitMemorize() : enterMemorize()}
               title="Toggle memorize mode (m)"
             >
               {recallMode ? '🎯 Memorize' : 'Memorize'}
             </button>
-            <span className="round-counter">{plyIdx} / {game.moves.length}</span>
+            <span className="round-counter">
+              {plyIdx} / {game.moves.length}
+              {(readCounts[game.id] ?? 0) > 0 && (
+                <span className="cg-read-badge" title={`Read ${readCounts[game.id]} time${readCounts[game.id] !== 1 ? 's' : ''}`}>
+                  ×{readCounts[game.id]}
+                </span>
+              )}
+            </span>
           </div>
 
           {recallPending && (() => {
@@ -681,15 +752,15 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           </div>
 
           <div className="cg-mobile-bar">
+            <button className="cg-mob-btn" onClick={() => { setIsPlaying(p => !p); lastInteractionRef.current = Date.now(); }} aria-label={isPlaying ? 'Pause' : 'Play'}>{isPlaying ? '⏸' : '▶'}</button>
             <button className="cg-mob-btn" onClick={handleF} aria-label="Back">← Back</button>
             <button className="cg-mob-btn" onClick={handleJ} aria-label="Next move">Next →</button>
             <button className="cg-mob-btn" onClick={handleK} aria-label="Commentary">💬</button>
-            <button className="cg-mob-btn" onClick={() => questionInputRef.current?.focus()} aria-label="Ask question">❓ Ask</button>
             <button className="cg-mob-btn" onClick={() => speak(lastSpokenRef.current)} aria-label="Re-read">↺</button>
           </div>
 
           <div className="cg-legend">
-            g/← = back | h/→ = next | m = memorize | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | Calc 0 = board | [file][rank] = highlight
+            Space = play/pause | g/← = back | h/→ = next | n = flag novelty | m = memorize | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | [file][rank] = highlight
             {recallMode && ' | memorize: [piece][file][rank] — s=K d=R f=P j=N k=B l=Q | Esc=skip'}
           </div>
 

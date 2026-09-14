@@ -109,6 +109,30 @@ export function playCongratsSound(): void {
   } catch { /* AudioContext unavailable */ }
 }
 
+// Short two-note chime — used when the user flags a move as a novelty.
+export function playFlagSound(): void {
+  try {
+    const ctx = new AudioContext();
+    const t = ctx.currentTime;
+    const note = (freq: number, start: number, dur: number) => {
+      const osc = ctx.createOscillator();
+      const g   = ctx.createGain();
+      osc.type = 'sine';
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(0.18, start + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+      osc.start(start);
+      osc.stop(start + dur + 0.05);
+    };
+    note(880,     t,        0.12);
+    note(1174.66, t + 0.11, 0.20);
+    setTimeout(() => { try { ctx.close(); } catch { /**/ } }, 500);
+  } catch { /* noop */ }
+}
+
 // Three urgent beeps — used when you've fallen behind your chess practice schedule.
 export function playAlertSound(): void {
   try {

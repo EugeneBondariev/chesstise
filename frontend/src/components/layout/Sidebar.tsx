@@ -89,11 +89,25 @@ function PlayerSearch() {
 }
 
 export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
-  const cellRuns         = useProfileStore(s => s.cellGuesserRuns);
-  const colorRuns        = useProfileStore(s => s.squareColorRuns);
-  const blindRuns        = useProfileStore(s => s.blindPathingRuns);
-  const speechRate       = useProfileStore(s => s.speechRate);
-  const setSpeechRate    = useProfileStore(s => s.setSpeechRate);
+  const cellRuns            = useProfileStore(s => s.cellGuesserRuns);
+  const colorRuns           = useProfileStore(s => s.squareColorRuns);
+  const blindRuns           = useProfileStore(s => s.blindPathingRuns);
+  const speechRate          = useProfileStore(s => s.speechRate);
+  const setSpeechRate       = useProfileStore(s => s.setSpeechRate);
+  const autoAdvanceMs       = useProfileStore(s => s.autoAdvanceMs);
+  const setAutoAdvanceMs    = useProfileStore(s => s.setAutoAdvanceMs);
+  const noveltyMultiplier   = useProfileStore(s => s.noveltyMultiplier);
+  const setNoveltyMultiplier = useProfileStore(s => s.setNoveltyMultiplier);
+  const dailyTarget         = useProfileStore(s => s.dailyTarget);
+  const setDailyTarget      = useProfileStore(s => s.setDailyTarget);
+  const readsByDate         = useProfileStore(s => s.readsByDate);
+
+  const today     = new Date().toISOString().slice(0, 10);
+  const todayCount = readsByDate[today] ?? 0;
+  const weekCount  = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    return readsByDate[d.toISOString().slice(0, 10)] ?? 0;
+  }).reduce((a, b) => a + b, 0);
 
   const totalDrillMs = [...cellRuns, ...colorRuns, ...blindRuns].reduce((sum, r) => sum + r.timeMs, 0);
 
@@ -121,6 +135,30 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
     <nav className={`sidebar${isOpen ? ' sidebar-open' : ''}`} aria-label="Main navigation">
       <div className="sidebar-logo" aria-hidden="true">♟ Chesstíse</div>
       <h2 className="sr-only">Chesstíse – Blindfold Chess Trainer</h2>
+
+      {/* ── Session log ── */}
+      <div className="sidebar-session">
+        <span className="sidebar-session-label">Today</span>
+        <span className={`sidebar-session-count${todayCount >= dailyTarget ? ' done' : ''}`}>
+          {todayCount}
+        </span>
+        <span className="sidebar-session-sep">/</span>
+        <input
+          className="sidebar-session-target"
+          type="number"
+          min={1}
+          max={200}
+          value={dailyTarget}
+          onChange={e => { const n = Number(e.target.value); if (n > 0) setDailyTarget(n); }}
+          aria-label="Daily reading target"
+          title="Daily reading target"
+        />
+        {weekCount > 0 && (
+          <span className="sidebar-session-week" title={`${weekCount} games read in the last 7 days`}>
+            {weekCount} wk
+          </span>
+        )}
+      </div>
 
       {/* ── Foundations ── */}
       <NavLink
@@ -283,6 +321,39 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
           aria-label="Voice speed"
         />
         <span className="sidebar-speech-value">{speechRate}×</span>
+      </div>
+
+      {/* ── Playback cadence ── */}
+      <div className="sidebar-speech">
+        <span className="sidebar-speech-label">▶ Cadence</span>
+        <input
+          type="range"
+          min={1000}
+          max={12000}
+          step={500}
+          value={autoAdvanceMs}
+          onChange={e => setAutoAdvanceMs(Number(e.target.value))}
+          className="sidebar-speech-slider"
+          aria-label="Auto-advance cadence"
+        />
+        <span className="sidebar-speech-value">{(autoAdvanceMs / 1000).toFixed(1)}s</span>
+      </div>
+
+      {/* ── Novelty sensitivity ── */}
+      <div className="sidebar-speech">
+        <span className="sidebar-speech-label">⚡ Novelty</span>
+        <input
+          type="range"
+          min={1}
+          max={3}
+          step={0.25}
+          value={noveltyMultiplier}
+          onChange={e => setNoveltyMultiplier(Number(e.target.value))}
+          className="sidebar-speech-slider"
+          aria-label="Novelty sensitivity"
+          title={`Pause if no tap for ${(autoAdvanceMs * noveltyMultiplier / 1000).toFixed(1)}s`}
+        />
+        <span className="sidebar-speech-value">{noveltyMultiplier}×</span>
       </div>
 
       {/* ── Auth ── */}

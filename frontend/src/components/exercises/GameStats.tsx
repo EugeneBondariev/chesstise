@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { ClassicalGame as GameData } from '../../data/classicalGames';
 import { useGameStatsStore } from '../../store/gameStatsStore';
-import type { GameReplay } from '../../store/gameStatsStore';
+import type { GameReplay, FlaggedMove } from '../../store/gameStatsStore';
+import { BLUEPRINT_GAMES } from '../../data/blueprintCorpus';
+import { CURATED_GAMES, PATTERN_LABELS } from '../../data/classicalGamesSelection';
 
 function fmtMs(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -112,16 +115,141 @@ function MoveChart({ replay, allReplays, moveCount }: {
   );
 }
 
+// ── Flagged-move analysis ──────────────────────────────────────────────────────
+
+interface Pattern { label: string; conceptIds: string[] }
+
+function analyzeMove(san: string): Pattern[] {
+  const patterns: Pattern[] = [];
+  if (san === 'O-O' || san === '0-0' || san === 'O-O-O' || san === '0-0-0') {
+    patterns.push({ label: 'Castling', conceptIds: [] });
+    return patterns;
+  }
+  const s = san.replace(/[+#!?]/g, '');
+  const piece = /^[RNBQK]/.test(s) ? s[0] : 'P';
+  const isCapture = san.includes('x');
+  const isCheck   = san.includes('+') && !san.includes('++');
+  const isDblChk  = san.includes('++');
+  const isPromo   = san.includes('=');
+
+  if (isPromo)   patterns.push({ label: 'Promotion',        conceptIds: ['t-back-rank', 's-passed'] });
+  if (isDblChk)  patterns.push({ label: 'Double check',     conceptIds: ['t-dbl-check', 't-discovered'] });
+  else if (isCheck && (piece === 'N' || piece === 'P'))
+                 patterns.push({ label: 'Knight/pawn check — possible fork or discovery',
+                                 conceptIds: ['t-fork', 't-discovered'] });
+  else if (isCheck)
+                 patterns.push({ label: 'Check',             conceptIds: ['t-discovered', 't-dbl-check'] });
+  if (isCapture && piece === 'Q')
+                 patterns.push({ label: 'Queen capture — possible sacrifice',
+                                 conceptIds: ['t-queen-sac', 't-deflection', 't-decoy'] });
+  else if (isCapture)
+                 patterns.push({ label: 'Capture',           conceptIds: ['t-exch-sac', 't-remove-def', 't-clearance'] });
+  if (piece === 'N' && !isCheck)
+                 patterns.push({ label: 'Knight manoeuvre',  conceptIds: ['t-fork', 'f-outpost'] });
+  if (piece === 'R')
+                 patterns.push({ label: 'Rook move',         conceptIds: ['f-7th-rank', 'f-open-file', 'e-rook'] });
+  return patterns;
+}
+
+function suggestGames(
+  currentGameId: string,
+  gameConcepts: string[],
+  patterns: Pattern[],
+): typeof BLUEPRINT_GAMES[0][] {
+  const patternConceptIds = [...new Set(patterns.flatMap(p => p.conceptIds))];
+  return BLUEPRINT_GAMES
+    .filter(g => g.id !== null && g.id !== currentGameId)
+    .map(g => {
+      const overlap   = g.concepts.filter(c => gameConcepts.includes(c)).length;
+      const tactical  = g.concepts.filter(c => patternConceptIds.includes(c)).length;
+      return { g, score: overlap * 1 + tactical * 3 };
+    })
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(x => x.g);
+}
+
+function FlaggedPanel({ game, flags }: { game: GameData; flags: FlaggedMove[] }) {
+  const navigate    = useNavigate();
+  const unflagMove  = useGameStatsStore(s => s.unflagMove);
+
+  const corpusEntry = BLUEPRINT_GAMES.find(g => g.id === game.id);
+  const curatedEntry = CURATED_GAMES.find(g => g.id === game.id);
+  const gameConcepts = [
+    ...(corpusEntry?.concepts ?? []),
+    ...(curatedEntry?.patterns.map(p => `curated-${p}`) ?? []),
+  ];
+
+  if (flags.length === 0) return null;
+
+  return (
+    <div className="gs-flagged">
+      <div className="gs-section-title">Flagged moves</div>
+      {flags.map(f => {
+        const moveNum  = Math.ceil((f.plyIdx + 1) / 2);
+        const side     = f.plyIdx % 2 === 0 ? 'W' : 'B';
+        const patterns = analyzeMove(f.san);
+        const suggested = suggestGames(game.id, gameConcepts, patterns);
+        return (
+          <div key={f.id} className="gs-flagged-row">
+            <div className="gs-flagged-header">
+              <span className="gs-flagged-move">{moveNum}{side}. {f.san}</span>
+              <span className="gs-flagged-date">{new Date(f.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+              <button className="gs-replay-del" onClick={() => unflagMove(f.id)} aria-label="Remove flag">×</button>
+            </div>
+            {patterns.length > 0 && (
+              <div className="gs-flagged-patterns">
+                {patterns.map((p, i) => (
+                  <span key={i} className="gs-flagged-tag">{p.label}</span>
+                ))}
+              </div>
+            )}
+            {suggested.length > 0 && (
+              <div className="gs-flagged-suggestions">
+                <span className="gs-flagged-suggest-label">See also: </span>
+                {suggested.map((g, i) => (
+                  <span key={g.id!}>
+                    {i > 0 && <span className="bp-cov-sep"> · </span>}
+                    <button className="bp-cov-game-link" onClick={() => navigate(`/games/${g.id}`)}>
+                      {g.title}
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+            {suggested.length === 0 && (
+              <div className="gs-flagged-suggestions" style={{ color: 'var(--muted)' }}>
+                {patterns.flatMap(p => p.conceptIds).length === 0
+                  ? 'No matching corpus games — strategic or positional novelty'
+                  : 'No additional corpus games found for this pattern'}
+              </div>
+            )}
+            {curatedEntry && curatedEntry.patterns.length > 0 && (
+              <div className="gs-flagged-themes">
+                {curatedEntry.patterns.map(k => PATTERN_LABELS[k]).filter(Boolean).slice(0, 4).map((label, i) => (
+                  <span key={i} className="gs-flagged-theme">{label}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function GameStats({ game, onJumpTo }: {
   game: GameData;
   onJumpTo: (plyIdx: number) => void;
 }) {
-  const allReplays      = useGameStatsStore(s => s.replays.filter(r => r.gameId === game.id));
+  const allReplays       = useGameStatsStore(s => s.replays.filter(r => r.gameId === game.id));
   const completedReplays = allReplays.filter(r => r.moves.length > 0 && r.moves[r.moves.length - 1] !== null);
-  const deleteReplay = useGameStatsStore(s => s.deleteReplay);
+  const flags            = useGameStatsStore(s => s.flaggedMoves.filter(f => f.gameId === game.id));
+  const deleteReplay     = useGameStatsStore(s => s.deleteReplay);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  if (completedReplays.length === 0 && allReplays.length === 0) return null;
+  if (completedReplays.length === 0 && allReplays.length === 0 && flags.length === 0) return null;
 
   const selected = completedReplays.find(r => r.id === selectedId) ?? completedReplays[completedReplays.length - 1];
 
@@ -179,6 +307,8 @@ export default function GameStats({ game, onJumpTo }: {
           <MoveChart replay={selected} allReplays={completedReplays} moveCount={moveCount} />
         </>
       )}
+
+      <FlaggedPanel game={game} flags={flags} />
 
       {bottlenecks.length > 0 && (
         <div className="gs-bottleneck">
