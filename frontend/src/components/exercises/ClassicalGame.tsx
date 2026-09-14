@@ -298,18 +298,27 @@ export default function ClassicalGame({ game }: { game: GameData }) {
       return;
     }
     const cls = moveClassifications[plyIdx];
-    say((recallAttempts === 0 ? 'Correct. ' : 'Got it. ') + spokenMove(game.moves[plyIdx]) + (cls ? `, ${cls}` : ''));
-    setRecallPending(false);
-    setRecallAttempts(0);
-    setPlyIdx(p => p + 1);
-    setCommentary(null);
     const timeMs = moveStartTimeRef.current != null ? Date.now() - moveStartTimeRef.current : 0;
     if (currentReplayIdRef.current) {
       recordMove(currentReplayIdRef.current, plyIdx, { attempts: recallAttempts + 1, timeMs });
-      if (plyIdx + 1 >= game.moves.length) {
-        finishReplay(currentReplayIdRef.current);
-        currentReplayIdRef.current = null;
-      }
+    }
+    const nextPly = plyIdx + 1;
+    setPlyIdx(nextPly);
+    setCommentary(null);
+    const moveAnnounce = (recallAttempts === 0 ? 'Correct. ' : 'Got it. ') + spokenMove(game.moves[plyIdx]) + (cls ? `, ${cls}` : '');
+    if (nextPly >= game.moves.length) {
+      setRecallPending(false);
+      setRecallAttempts(0);
+      if (currentReplayIdRef.current) { finishReplay(currentReplayIdRef.current); currentReplayIdRef.current = null; }
+      say(moveAnnounce + `. Game over. ${game.result}.`);
+    } else {
+      recallBufferRef.current = '';
+      setRecallBuffer('');
+      setRecallAttempts(0);
+      moveStartTimeRef.current = Date.now();
+      const side = nextPly % 2 === 0 ? 'White' : 'Black';
+      const moveNum = Math.ceil((nextPly + 1) / 2);
+      say(moveAnnounce + `. ${side}, move ${moveNum}`);
     }
   }
 
