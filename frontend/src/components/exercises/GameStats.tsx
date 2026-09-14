@@ -20,12 +20,25 @@ function accuracy(replay: GameReplay): number {
   return Math.round((correct / practiced.length) * 100);
 }
 
-// Progress sparkline: total time per replay
+function mistakeCount(replay: GameReplay): number {
+  return replay.moves.filter(m => m !== null && m.attempts !== 1).length;
+}
+
+function dotColor(mistakes: number): string {
+  if (mistakes === 0) return '#4ade80';
+  if (mistakes <= 4)  return '#facc15';
+  return '#f87171';
+}
+
+// Progress sparkline: total time per replay — only completed runs (last move recorded)
 function ProgressChart({ replays }: { replays: GameReplay[] }) {
-  const finished = replays.filter(r => r.totalTimeMs != null);
-  if (finished.length < 2) return null;
+  const completed = replays.filter(r =>
+    r.totalTimeMs != null && r.moves.length > 0 && r.moves[r.moves.length - 1] !== null
+  );
+  if (completed.length < 2) return null;
   const W = 300, H = 36;
-  const times = finished.map(r => r.totalTimeMs!);
+  const times    = completed.map(r => r.totalTimeMs!);
+  const mistakes = completed.map(mistakeCount);
   const maxT = Math.max(...times, 1);
   const pts = times.map((t, i) => {
     const x = (i / (times.length - 1)) * (W - 4) + 2;
@@ -34,19 +47,23 @@ function ProgressChart({ replays }: { replays: GameReplay[] }) {
   }).join(' ');
   return (
     <div className="gs-progress-chart">
-      <span className="gs-progress-label">Total time per replay</span>
+      <span className="gs-progress-label">Total time per completed replay</span>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: H }}>
         <polyline points={pts} fill="none" stroke="var(--accent,#4a9eff)" strokeWidth="2" />
         {times.map((t, i) => {
           const x = (i / (times.length - 1)) * (W - 4) + 2;
           const y = H - 4 - ((t / maxT) * (H - 8));
-          return <circle key={i} cx={x} cy={y} r="3" fill="var(--accent,#4a9eff)" />;
+          return (
+            <circle key={i} cx={x} cy={y} r="3.5" fill={dotColor(mistakes[i])}>
+              <title>{fmtMs(t)} · {mistakes[i]} mistake{mistakes[i] !== 1 ? 's' : ''}</title>
+            </circle>
+          );
         })}
       </svg>
       <div className="gs-progress-times">
-        <span>{fmtMs(times[0])}</span>
+        <span>{fmtMs(times[0])} · {mistakes[0]}✗</span>
         <span style={{ color: times[times.length-1] < times[0] ? '#4ade80' : '#facc15' }}>
-          {fmtMs(times[times.length-1])}
+          {fmtMs(times[times.length-1])} · {mistakes[times.length-1]}✗
         </span>
       </div>
     </div>
