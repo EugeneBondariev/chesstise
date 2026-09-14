@@ -116,19 +116,20 @@ export default function GameStats({ game, onJumpTo }: {
   game: GameData;
   onJumpTo: (plyIdx: number) => void;
 }) {
-  const replays = useGameStatsStore(s => s.replays.filter(r => r.gameId === game.id));
+  const allReplays      = useGameStatsStore(s => s.replays.filter(r => r.gameId === game.id));
+  const completedReplays = allReplays.filter(r => r.moves.length > 0 && r.moves[r.moves.length - 1] !== null);
   const deleteReplay = useGameStatsStore(s => s.deleteReplay);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  if (replays.length === 0) return null;
+  if (completedReplays.length === 0 && allReplays.length === 0) return null;
 
-  const selected = replays.find(r => r.id === selectedId) ?? replays[replays.length - 1];
+  const selected = completedReplays.find(r => r.id === selectedId) ?? completedReplays[completedReplays.length - 1];
 
-  // Bottleneck: average time per move across all finished replays
+  // Bottleneck: average time per move — include all replays (full + partial) for richer data
   const moveCount = game.moves.length;
   const avgTimes: { plyIdx: number; avgMs: number; avgAttempts: number }[] = [];
   for (let i = 0; i < moveCount; i++) {
-    const records = replays.map(r => r.moves[i]).filter(Boolean) as NonNullable<GameReplay['moves'][0]>[];
+    const records = allReplays.map(r => r.moves[i]).filter(Boolean) as NonNullable<GameReplay['moves'][0]>[];
     if (records.length === 0) continue;
     const practiced = records.filter(r => r.attempts > 0);
     if (practiced.length === 0) continue;
@@ -140,12 +141,14 @@ export default function GameStats({ game, onJumpTo }: {
   }
   const bottlenecks = [...avgTimes].sort((a, b) => b.avgMs - a.avgMs).slice(0, 8);
 
+  if (completedReplays.length === 0 && bottlenecks.length === 0) return null;
+
   return (
     <div className="game-stats">
-      <ProgressChart replays={replays} />
+      <ProgressChart replays={completedReplays} />
 
       <div className="gs-replay-list">
-        {replays.map((r, i) => (
+        {completedReplays.map((r, i) => (
           <div
             key={r.id}
             className={`gs-replay-row${r.id === selected.id ? ' selected' : ''}`}
@@ -173,7 +176,7 @@ export default function GameStats({ game, onJumpTo }: {
               <span style={{ color: '#555' }}>■</span> skipped
             </span>
           </div>
-          <MoveChart replay={selected} allReplays={replays} moveCount={moveCount} />
+          <MoveChart replay={selected} allReplays={completedReplays} moveCount={moveCount} />
         </>
       )}
 
