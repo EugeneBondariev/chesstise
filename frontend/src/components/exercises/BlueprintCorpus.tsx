@@ -34,10 +34,10 @@ export default function BlueprintCorpus() {
 
       <div className="bp-hero">
         <div className="bp-hero-text">
-          <h1 className="bp-title">Foundations</h1>
+          <h1 className="bp-title">Blindfold Literacy</h1>
           <p className="bp-subtitle">
             {BLUEPRINT_GAMES.length} games · {coveredConceptIds.size} of {totalConcepts} concepts covered ·
-            memorise this corpus and you will have no surprises in a live game
+            memorise this corpus and no position in a live game will be foreign to you
           </p>
         </div>
         <div className="bp-view-toggle">

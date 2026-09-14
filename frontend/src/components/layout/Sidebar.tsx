@@ -126,12 +126,12 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
       <NavLink
         to="/foundations"
         className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
-        aria-label="Foundations — core curriculum"
+        aria-label="Blindfold Literacy — curated game corpus"
       >
         <span className="nav-icon" aria-hidden="true">📖</span>
         <span className="nav-text-group">
-          <span className="nav-label">Foundations</span>
-          <span className="nav-desc" aria-hidden="true">18-game core curriculum</span>
+          <span className="nav-label">Blindfold Literacy</span>
+          <span className="nav-desc" aria-hidden="true">Curated corpus · 23 games</span>
         </span>
       </NavLink>
 
