@@ -136,7 +136,33 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
       <div className="sidebar-logo" aria-hidden="true">♟ Chesstíse</div>
       <h2 className="sr-only">Chesstíse – Blindfold Chess Trainer</h2>
 
-      {/* ── Session log ── */}
+      {/* ── Blindfold Literacy B1 ── */}
+      <NavLink
+        to="/foundations"
+        className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
+        aria-label="Blindfold Literacy B1 — curated game corpus"
+      >
+        <span className="nav-icon" aria-hidden="true">📖</span>
+        <span className="nav-text-group">
+          <span className="nav-label">Blindfold Literacy (B1)</span>
+          <span className="nav-desc" aria-hidden="true">Curated corpus · 23 games</span>
+        </span>
+      </NavLink>
+
+      {/* ── Blindfold Literacy B2 ── */}
+      <NavLink
+        to="/foundations-b2"
+        className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
+        aria-label="Blindfold Literacy B2 — subconcepts and secondary openings"
+      >
+        <span className="nav-icon" aria-hidden="true">📗</span>
+        <span className="nav-text-group">
+          <span className="nav-label">Blindfold Literacy (B2)</span>
+          <span className="nav-desc" aria-hidden="true">Subconcepts · 32 games</span>
+        </span>
+      </NavLink>
+
+      {/* ── Session log + Masters Games (C1) ── */}
       <div className="sidebar-session">
         <span className="sidebar-session-label">Today</span>
         <span className={`sidebar-session-count${todayCount >= dailyTarget ? ' done' : ''}`}>
@@ -160,22 +186,15 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         )}
       </div>
 
-      {/* ── Foundations ── */}
-      <NavLink
-        to="/foundations"
-        className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
-        aria-label="Blindfold Literacy — curated game corpus"
-      >
-        <span className="nav-icon" aria-hidden="true">📖</span>
-        <span className="nav-text-group">
-          <span className="nav-label">Blindfold Literacy</span>
-          <span className="nav-desc" aria-hidden="true">Curated corpus · 23 games</span>
-        </span>
-      </NavLink>
+      <details className="sidebar-group">
+        <summary className="sidebar-group-btn">Masters Games (C1)</summary>
+        <SimpleNavItem to="/cross-search" label="⇄ Cross-player search" />
+        <PlayerSearch />
+      </details>
 
       {/* ── Drills ── */}
       <div className="sidebar-drills-wrapper">
-        <details className="sidebar-group" open>
+        <details className="sidebar-group">
           <summary className="sidebar-group-btn">Drills</summary>
           <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {DRILLS.map(d => <NavItem key={d.to} {...d} />)}
@@ -213,13 +232,6 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
             />
           ))}
         </ul>
-      </details>
-
-      {/* ── Masters Games ── */}
-      <details className="sidebar-group">
-        <summary className="sidebar-group-btn">Masters Games</summary>
-        <SimpleNavItem to="/cross-search" label="⇄ Cross-player search" />
-        <PlayerSearch />
       </details>
 
       {showDrillStats && dailyRows.length > 0 && createPortal(
