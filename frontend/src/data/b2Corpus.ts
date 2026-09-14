@@ -87,11 +87,11 @@ export const B2_GAMES: B2Game[] = [
   // ── Tactical Subconcepts ───────────────────────────────────────────────────
 
   {
-    id:       null,
+    id:       'morphy-15',
     title:    'Knight Fork — Decisive Blow',
-    label:    'A short combinational game ending with a knight fork (pending)',
+    label:    'Morphy vs NN, New Orleans 1850',
     concepts: ['b2-t-fork-knight', 'b2-t-fork-pawn'],
-    note:     'The knight fork is the most-missed tactic at all levels: both pieces attacked simultaneously, neither can be defended. This game isolates the pure fork pattern from setup to execution.',
+    note:     '13.Nd6+! Kd8 14.Bg5 1-0 — the knight leaps to d6 with check, simultaneously attacking the king on e8 and the unmoved bishop on c8. After Kd8, Bg5 pins the queen and the bishop is lost. A 14-move miniature where the fork ends the game on the spot.',
     category: 'tactics-sub',
   },
   {
@@ -103,11 +103,11 @@ export const B2_GAMES: B2Game[] = [
     category: 'tactics-sub',
   },
   {
-    id:       null,
+    id:       'morphy-167',
     title:    'Royal Fork — Knight Humbles the King',
-    label:    'A game decided by a knight forking king and queen (pending)',
+    label:    'Morphy vs Anderssen, Paris match 1858',
     concepts: ['b2-t-royal-fork', 'b2-t-fork-knight'],
-    note:     'The royal fork is game-ending: king must move, queen is lost. Seeing it five moves ahead — planning the knight route to that magic square — is what separates tactical players from beginners.',
+    note:     '12.Nd5+! Kd8 13.Nxe7 — after 11.Bxc7+ Kxc7, the knight jumps to d5 with check, simultaneously attacking the king on c7 and the queen on e7. King forced to d8, knight captures queen. A 23-move demolition of one of the greatest players in history.',
     category: 'tactics-sub',
   },
   {
@@ -119,11 +119,11 @@ export const B2_GAMES: B2Game[] = [
     category: 'tactics-sub',
   },
   {
-    id:       null,
+    id:       'morphy-145',
     title:    'Absolute Pin — Paralysed Piece',
-    label:    'A game decided by an absolute pin on the king file (pending)',
+    label:    'Morphy vs De Riviere, Paris match 1858',
     concepts: ['b2-t-pin-absolute', 'b2-t-fork-knight'],
-    note:     "An absolute pin is total paralysis: the pinned piece cannot move at all — moving it exposes the king to check. Exploiting a pin means piling more attackers on the pinned piece than the opponent can bring defenders.",
+    note:     "13.Re1+ Be6 — Morphy forces the bishop to e6 as the only legal interpose. The bishop is now absolutely pinned to the king; it cannot move without exposing the king to check. 14.d5! attacks the pinned piece; 16.dxe6! captures it — the bishop never escaped. A 22-move clinic on exploiting an absolute pin by piling pressure until the pinned piece falls.",
     category: 'tactics-sub',
   },
   {
@@ -159,19 +159,19 @@ export const B2_GAMES: B2Game[] = [
     category: 'tactics-sub',
   },
   {
-    id:       null,
-    title:    'X-ray Attack — Invisible Threat',
-    label:    'A game where an x-ray through a piece wins material (pending)',
+    id:       'capablanca-19',
+    title:    'X-ray Attack — Through the King',
+    label:    'Capablanca vs Marshall, New York 1909',
     concepts: ['b2-t-xray', 'b2-t-pin-absolute'],
-    note:     "The x-ray (or skewer's cousin) attacks through a piece: the front piece is forced to move, exposing the piece behind to capture. Rooks and bishops create x-ray pressure constantly — learning to see through pieces is fundamental to calculation.",
+    note:     "37.Rxh7+! Kc8 38.Rxa7 1-0 — the rook attacks through the king on the 7th rank: king, rook, and White's rook all aligned. When the king moves off the rank, the rook behind is captured. A 38-move game where the x-ray finishes it cleanly.",
     category: 'tactics-sub',
   },
   {
-    id:       null,
-    title:    'Underpromotion — Knight Saves the Day',
-    label:    'A game with a forced underpromotion to knight (pending)',
+    id:       'tal-38',
+    title:    'Underpromotion — Knight Wins the Queen',
+    label:    'Tal vs Spassky, Leningrad 1954  (Spassky wins)',
     concepts: ['b2-t-underpromo', 'b2-t-mating-net'],
-    note:     "Underpromotion to a knight — the most counterintuitive move in chess — sometimes avoids stalemate, creates a fork, or escapes a mating net. Remembering to consider all four promotion options is a calculation discipline.",
+    note:     "42...f1=N+! 43.Qxf1 Rxf1 0-1 — Spassky promotes to a knight, not a queen. A queen on f1 would not give check; the knight on f1 attacks the king on h2. White must capture Qxf1, then Rxf1 wins the queen. The only move that works, and it requires seeing past the instinct to promote to a queen.",
     category: 'tactics-sub',
   },
   {
@@ -269,11 +269,11 @@ export const B2_GAMES: B2Game[] = [
     category: 'endgame-sub',
   },
   {
-    id:       null,
+    id:       'capablanca-251',
     title:    'Triangulation — Losing a Tempo',
-    label:    'A king-and-pawn endgame where triangulation transfers the move (pending)',
+    label:    'Capablanca vs Tartakower, Moscow 1925',
     concepts: ['b2-e-triangulation', 'b2-e-opposition'],
-    note:     "When direct opposition fails, triangulation lets the king take three steps to do one step's work, losing a tempo to transfer the move to the opponent. It looks impossible from the outside — the king takes three moves to reach the square one move away.",
+    note:     "61.Kd4 62.Ke4 63.Ke5 — the king traces the triangle d4→e4→e5 instead of going directly. Three moves to cover what one move could cover, deliberately wasting a tempo to place Black in zugzwang. Capablanca converts against Tartakower in 73 moves with a technique that looks impossible until you understand it.",
     category: 'endgame-sub',
   },
   {
@@ -293,11 +293,11 @@ export const B2_GAMES: B2Game[] = [
     category: 'endgame-sub',
   },
   {
-    id:       null,
-    title:    'Queen vs Advanced Pawn — Stalling',
-    label:    'A game demonstrating queen vs. 7th-rank pawn technique (pending)',
+    id:       'karpov-1489',
+    title:    'Queen vs Advanced Pawn — 20 Checks',
+    label:    'Karpov vs Georgiev, Biel 1992  (Georgiev wins)',
     concepts: ['b2-e-queen-vs-pawn', 'b2-e-opposition'],
-    note:     "Queen vs. advanced pawn (other than bishop pawn) is a win, but requires precise technique: the queen keeps checking, forcing the defending king to block the pawn, and the attacking king advances each time. Centre and knight pawns draw; rook and bishop pawns draw.",
+    note:     "77.g7 Qh3+ — Georgiev's queen gives 20 consecutive checks to drive Karpov's king away from the pawn, then stops it from queening. The queen harassment technique: check, force king in front of pawn, advance your king, repeat. A 96-move game where the technique is demonstrated against a world-class player.",
     category: 'endgame-sub',
   },
   {
