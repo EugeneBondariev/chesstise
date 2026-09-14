@@ -16,10 +16,14 @@ export function stopSpeaking(): void {
 
 export function speak(text: string): void {
   if (typeof window === 'undefined' || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  // Chrome bug: after a blocked autoplay attempt the synth stays paused;
+  // resume() unblocks it so subsequent user-triggered calls actually fire.
+  if (synth.paused) synth.resume();
   const utt = new SpeechSynthesisUtterance(processText(text));
   utt.rate = globalSpeechRate;
-  window.speechSynthesis.speak(utt);
+  synth.speak(utt);
 }
 
 export function playCongratsSound(): void {
