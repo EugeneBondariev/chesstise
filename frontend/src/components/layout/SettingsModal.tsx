@@ -1,13 +1,6 @@
 import { useState, useRef } from 'react';
 import { useProfileStore } from '../../store/profileStore';
-
-const STORAGE_KEYS = [
-  'chesstise-game-stats',
-  'chesstise-motivation',
-  'chesstise-profile',
-  'chesstise-puzzle',
-  'chesstise-auth',
-];
+import { buildExportBundle, applyImportBundle, exportToFile } from '../../utils/backup';
 
 type Tab = 'training' | 'data';
 
@@ -129,18 +122,7 @@ function DataTab() {
   const [importStatus, setImportStatus] = useState<'idle' | 'ok' | 'error'>('idle');
 
   function handleExport() {
-    const bundle: Record<string, unknown> = {};
-    for (const key of STORAGE_KEYS) {
-      const raw = localStorage.getItem(key);
-      if (raw) bundle[key] = JSON.parse(raw);
-    }
-    const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `chesstise-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    exportToFile(buildExportBundle());
   }
 
   function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
@@ -149,12 +131,7 @@ function DataTab() {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const bundle = JSON.parse(reader.result as string);
-        for (const key of STORAGE_KEYS) {
-          if (bundle[key] !== undefined) {
-            localStorage.setItem(key, JSON.stringify(bundle[key]));
-          }
-        }
+        applyImportBundle(JSON.parse(reader.result as string));
         setImportStatus('ok');
         setTimeout(() => window.location.reload(), 800);
       } catch {
