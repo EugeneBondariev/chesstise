@@ -201,6 +201,9 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const noveltyMultiplier  = useProfileStore(s => s.noveltyMultiplier);
   const logRead            = useProfileStore(s => s.logRead);
   const readCounts         = useProfileStore(s => s.readCounts);
+  const markedGames        = useProfileStore(s => s.markedGames);
+  const toggleMarkedGame   = useProfileStore(s => s.toggleMarkedGame);
+  const isFavorite         = markedGames.includes(game.id);
 
   useEffect(() => {
     const el = boardContainerRef.current;
@@ -591,6 +594,14 @@ export default function ClassicalGame({ game }: { game: GameData }) {
         {game.year  ? ` (${game.year})`  : ''}
         {game.event ? ` · ${game.event}` : ''}
         {' '}— {game.result}
+        <button
+          className={`cg-favorite-btn${isFavorite ? ' active' : ''}`}
+          onClick={() => toggleMarkedGame(game.id)}
+          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          {isFavorite ? '★' : '☆'}
+        </button>
       </h1>
 
       <div className="exercise-body">

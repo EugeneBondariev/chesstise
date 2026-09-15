@@ -2,9 +2,11 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import MotivationBar from './MotivationBar';
+import SettingsModal from './SettingsModal';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const location = useLocation();
 
   // Close sidebar on navigation (mobile)
@@ -37,6 +39,16 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </main>
       </div>
 
+      <button
+        className="settings-gear-btn"
+        onClick={() => setSettingsOpen(true)}
+        aria-label="Open settings"
+        title="Settings"
+      >
+        ⚙
+      </button>
+
+      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} />}
     </>
   );
 }
