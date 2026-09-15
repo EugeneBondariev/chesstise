@@ -11,6 +11,7 @@ import {
   type ConceptGroup,
 } from '../../data/blueprintCorpus';
 import { useGameStatsStore } from '../../store/gameStatsStore';
+import { B1_ANNOTATIONS_MAP } from '../../data/b1Annotations';
 
 const GROUP_COLORS: Record<ConceptGroup, string> = {
   opening:   'bp-tag-opening',
@@ -106,6 +107,9 @@ function GamesView({ navigate, verifiedCount }: { navigate: ReturnType<typeof us
                     <div className="bp-card-header">
                       <span className="bp-game-num">#{globalIdx}</span>
                       <span className="bp-card-title">{game.title}</span>
+                      {verified && game.id && B1_ANNOTATIONS_MAP.has(game.id) && (
+                        <span className="bp-annotated-badge">annotated</span>
+                      )}
                       {verified ? (
                         <span className="bp-study-btn">Study →</span>
                       ) : (

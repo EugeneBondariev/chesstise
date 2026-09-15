@@ -732,6 +732,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                   >
                     {game.moves[wi]}{wCls && <span className={`cg-move-cls cg-move-${wCls}`}>{CLASS_ICON[wCls]}</span>}
                   </span>
+                  {annotationMap?.has(wi) && (
+                    <button
+                      className="cg-ann-hint"
+                      title="Read annotation"
+                      onClick={e => { e.stopPropagation(); say(annotationMap.get(wi)!); }}
+                    >◆</button>
+                  )}
                   {game.moves[bi] !== undefined && (
                     <span
                       className={`cg-pgn-move cg-pgn-move-btn${bi === plyIdx - 1 ? ' current' : ''}`}
@@ -742,6 +749,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                     >
                       {game.moves[bi]}{bCls && <span className={`cg-move-cls cg-move-${bCls}`}>{CLASS_ICON[bCls]}</span>}
                     </span>
+                  )}
+                  {game.moves[bi] !== undefined && annotationMap?.has(bi) && (
+                    <button
+                      className="cg-ann-hint"
+                      title="Read annotation"
+                      onClick={e => { e.stopPropagation(); say(annotationMap.get(bi)!); }}
+                    >◆</button>
                   )}
                 </div>
               );

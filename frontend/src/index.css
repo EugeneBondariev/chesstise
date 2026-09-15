@@ -2169,6 +2169,18 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 .cg-pgn-move-btn { cursor: pointer; }
 .cg-pgn-move-btn:hover { color: var(--accent); }
 .cg-move-cls { font-size: 0.72em; font-weight: 700; margin-left: 0.1em; }
+.cg-ann-hint {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0 0.15em;
+  cursor: pointer;
+  font-size: 0.6em;
+  color: rgba(192,132,252,0.55);
+  vertical-align: middle;
+  line-height: 1;
+}
+.cg-ann-hint:hover { color: #c084fc; }
 .cg-move-inaccuracy { color: #c8a000; }
 .cg-move-mistake    { color: #d06000; }
 .cg-move-blunder    { color: #cc2020; }
@@ -2461,6 +2473,15 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   border: 1px solid rgba(250,204,21,0.3);
   border-radius: 4px;
   padding: 0.1rem 0.45rem;
+}
+.bp-annotated-badge {
+  font-size: 0.68rem;
+  background: rgba(192,132,252,0.12);
+  color: #c084fc;
+  border: 1px solid rgba(192,132,252,0.3);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  white-space: nowrap;
 }
 .bp-card-label {
   font-size: 0.8rem;
