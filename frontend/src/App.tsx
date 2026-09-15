@@ -17,6 +17,7 @@ import PuzzleDrill from './components/exercises/PuzzleDrill';
 import BlueprintCorpus from './components/exercises/BlueprintCorpus';
 import BlueprintCorpusB2 from './components/exercises/BlueprintCorpusB2';
 import MastersCorpus from './components/exercises/MastersCorpus';
+import E1CorpusPage from './components/exercises/E1CorpusPage';
 import FavoritesPage from './components/exercises/FavoritesPage';
 import { findGame } from './data/classicalGames';
 import { findGameAcrossPlayers } from './data/playerRegistry';
@@ -56,6 +57,8 @@ export default function App() {
         <Route path="/foundations-b2"      element={<BlueprintCorpusB2 />} />
         <Route path="/masters"             element={<MastersCorpus />} />
         <Route path="/favorites"           element={<FavoritesPage />} />
+        <Route path="/e1"                  element={<E1CorpusPage />} />
+        <Route path="/e1/:chapterId"       element={<E1CorpusPage />} />
         <Route path="/cell-guesser"       element={<CellGuesser />} />
         <Route path="/square-color"       element={<SquareColorDrill />} />
         <Route path="/blind-pathing"      element={<BlindPathing />} />

@@ -1,0 +1,997 @@
+[Event "100 Endgames You Must Know by Jesus de la Villa: Introduction"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Introduction"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/E2f4GRlx"]
+[Annotator "https://lichess.org/@/anorakii"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:19:08"]
+
+{ This study will cover the necessary endings Villa recommends for sub 2000 players. This amounts to Chapter 1, 3, 4 and endings 41, 42, 44, 45, 46, 65, 79, 80, 82, 86, 89, 90, 91, 92. Study chapters will be labelled as in the book, with the position number in (). }
+ *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 2: Pawn on 6th vs King (1.4)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 2: Pawn on 6th vs King (1.4)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/TcNcb5cg"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "6k1/8/5PK1/8/8/8/8/8 b - - 0 1"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:46:49"]
+
+{ Black has to move out of opposition and thus loses. Drawn if white to play (see 1.5). }
+1... Kf8 2. f7 Ke7 3. Kg7 Ke6 4. f8=Q *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 2: Pawn on 6th vs King (1.5)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 2: Pawn on 6th vs King (1.5)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/Ec5JUY6F"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "5k2/8/5PK1/8/8/8/8/8 b - - 0 1"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:27:00"]
+
+1... Kg8 { The side moving into opposition almost always has the advantage in King + Pawn vs King endgames, and the side to move is at the disadvantage. } 2. f7+ (2. Kf5 Kf7 3. Ke5 Kf8 4. Ke6 Ke8 5. f7+ Kf8 6. Kf6) 2... Kf8 3. Kf6 { Stalemate } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 2: Pawn on the 6th vs King (1.6)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 2: Pawn on the 6th vs King (1.6)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/O37Ud62r"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "k7/8/2P5/K7/8/8/8/8 w - - 1 2"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:31:40"]
+
+2. Ka6 { We take the opposition with Ka6. Kb6 would allow black to take opposition and draw. } 2... Kb8 3. Kb6 Kc8 (3... Ka8 4. Kc7) 4. c7 Kd7 5. Kb7 Kd6 6. c8=Q *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 2: Pawn on the 6th vs King (1.7)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 2: Pawn on the 6th vs King (1.7)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/DRxDqmLT"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/6k1/4P3/6K1/8/8/8/8 b - - 2 2"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:34:45"]
+
+{ Here we see a position where maintaining opposition is blocked and black loses regardless of who's move it is. If white to play, 1.Kf5, Kf8, 2. Kf6 wins and if 1. ...Kg8, 2. Kg6 wins. }
+2... Kf8 (2... Kg8 3. Kg6 Kf8 4. Kf6) 3. Kf6 Ke8 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 3: Key squares (1.9)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 3: Key squares (1.9)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/dzhmjorG"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "5k2/8/4K3/5P2/8/8/8/8 w - - 2 2"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:40:08"]
+
+{ If the strong king occupies one of the key squares, the pawn promotes. When the pawn is on the 5th rank, its key squares are the three in front of it (e6, f6, g6 here). }
+2. Kf6 Ke8 3. Kg7 Ke7 4. f6+ Ke6 5. f7 { Promotion is secured, 1-0. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 3: Key squares (1.9.1)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 3: Key squares (1.9.1)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/1y2mYffz"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "5k2/8/5K2/5P2/8/8/8/8 w - - 2 2"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:44:48"]
+
+2. Ke6 (2. Kg6 Kg8 3. f6 Kf8 4. f7) 2... Ke8 3. f6 { We play f6 to take the opposition and return to a known winning position (see 1.4). } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 3: Knight's pawn (1.10)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 3: Knight's pawn (1.10)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/ZP8emHVh"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "7k/5K2/8/6P1/8/8/8/8 w - - 0 3"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:49:37"]
+
+{ The knight's pawn poses extra difficulties, but the key squares still win. We just need to be slightly more careful. }
+3. Kg6 { The winning technique is to move our king to the other side of the pawn to avoid stalemating the black king on h1. } (3. Kf6 Kh7 4. Kf7 Kh8 { Kf6 does not lose our advantage, but forces us to repeat back into the starting position. }) 3... Kg8 4. Kh6 (4. Kf6 Kf8 (4... Kh7 5. Kf7 Kh8) 5. g6 Kg8 6. g7 Kh7) 4... Kh8 5. g6 Kg8 6. g7 Kf7 7. Kh7 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 3: Key squares when pawn has not reached 5th rank (1.11)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 3: Key squares when pawn has not reached 5th rank (1.11)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/qKPfadYM"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "5k2/8/8/8/3PK3/8/8/8 w - - 4 5"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:54:34"]
+
+{ For a pawn on the fourth rank, the key squares are still those of the pawn on the 5th. For a pawn on the 2nd or 3rd ranks, the key squares are two ranks above the pawn. } { [%csl Gc6,Gd6,Ge6] }
+5. Kd5 (5. Ke5 Ke7 6. Kd5 Kd7 7. Kc5 Kc7 { Ke5 is a mistake, as it allows black to draw with opposition. } 8. d5 Kd7 9. d6 Kd8 10. Kc6 Kc8) 5... Ke7 6. Kc6 { We reach one of the key squares and win as seen previously. } 6... Ke8 7. d5 Kd8 8. Kd6 Ke8 9. Kc7 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 3: Distant opposition (1.12)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 3: Distant opposition (1.12)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/M3E8suI6"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/1kp5/8/8/8/K7 w - - 10 8"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "13:59:18"]
+
+{ [%csl Gb3,Gc3,Gd3] }
+8. Kb1 { Here we can successfully defend with distant opposition, which is when both kings are on the same file separated by an odd number of squares. } 8... Kb4 (8... Kc4 9. Kc2 Kd5 10. Kc3 Ke5 11. Kc4 Kd6 12. Kc3 Kd5 13. Kd3) 9. Kb2 Kc4 10. Kc2 { And now we can prevent black from entering the key squares with direct opposition. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 3: Using reserve moves (1.13)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 3: Using reserve moves (1.13)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/JZHBFJ1j"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/6k1/8/6K1/8/6P1/8/8 w - - 10 8"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "14:01:51"]
+
+{ The white king occupies the key squares in front of the pawn, but how do we outflank the black king? This is possible thanks to a reserve move with the pawn. }
+8. g4 Kh7 (8... Kg8 9. Kg6 Kh8 10. g5 Kg8 11. Kh6 Kh8 12. g6 Kg8) 9. Kf6 Kh8 (9... Kh6 10. g5+ Kh7 11. Kf7) 10. Kg6 Kg8 11. g5 { Another critical reserve move to force black out of opposition. } 11... Kh8 12. Kf7 Kh7 13. g6+ Kh8 14. g7+ Kh7 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 4: Rook's pawn, defending king in front of pawn (1.14)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 4: Rook's pawn, defending king in front of pawn (1.14)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/ZpHPz0zS"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/8/6kp/8/6K1 w - - 1 15"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "14:05:12"]
+
+{ The rook's pawn is the most difficult to promote. This requires the path to be completely clear, and our key squares and opposition no longer help us. This position is always a draw, regardless of who is to move. }
+15. Kh1 h2 (15... Kf2 16. Kh2 Kf3 17. Kxh3) *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 5: Imprisoning the stronger side's king (1.16)"]
+[Date "2022.10.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 5: Imprisoning the stronger side's king (1.16)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/KoBZL38y"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/p7/8/1k6/3K4/8 w - - 0 17"]
+[SetUp "1"]
+[UTCDate "2022.10.14"]
+[UTCTime "14:08:26"]
+
+{ Unfortunately for the strong side, standing in the pawn's path is not the only way for the defender to draw this ending. The vicinity of the edge to the board can also dramatically restrict the mobility of the stronger side's king. } { [%csl Gc2,Gc1,Gb3][%cal Ga4a1] }
+17. Kc1 { [%csl Ga1][%cal Gc1a1] } 17... Ka2 { The only move to prevent white getting in front of the pawn, which would draw as seen in (1.14) } { [%csl Gb1,Ga1][%cal Gb1a1] } (17... a4 18. Kb1 Kb4 19. Ka2) 18. Kc2 { Now white will not allow the king out of the corner. } { [%csl Gc1][%cal Gc1c2] } 18... a4 19. Kc1 (19. Kc3) 19... a3 20. Kc2 Ka1 21. Kc1 a2 { We draw by stalemate or three-fold repetition. Thus we can see the key squares for the defender are c1 and c2. } { [%csl Ga1] } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 41: Pawns on the 6th rank (opposite bishops) (9.1)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 41: Pawns on the 6th rank (opposite bishops) (9.1)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/jOYIy22D"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "4k3/8/4PP2/4K3/1b6/3B4/8/8 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "00:25:43"]
+
+1. Bb5+ { We start with a check to activate our bishop and force the king to define his position. } (1. e7 Bxe7 2. fxe7 { e7 immediately draws to the bishop sacrifice. }) (1. f7+ Ke7 { f7 also draws, as there is no way to remove the blockade on the dark squares. }) 1... Kd8 2. Kf5 { And now we outflank the other king, to guard the promotion square. } 2... Bc5 3. Kg6 Bb4 4. Kf7 Bc5 5. e7+ { And now we support the promotion, 1-0. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 41: (bishop in front of pawns) (9.2)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 41: (bishop in front of pawns) (9.2)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/1vzZCxYA"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "3bk3/8/4PP2/4K3/8/8/4B3/8 w - - 0 5"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "00:30:58"]
+
+5. Bb5+ Kf8 6. Kf5 { Black is in zugzwang. e7 is unstoppable, as one of the defenders must move away. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 41: (rook's and knight's pawns) (9.3)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 41: (rook's and knight's pawns) (9.3)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/cxz688yK"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "6k1/8/6PP/5K2/2B5/2b5/8/8 b - - 3 6"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "00:32:49"]
+
+6... Kf8 (6... Kh8 7. Ke6 Kg8 8. Ke7+ Kh8 9. Kf7 Bb2 10. g7+ { We can see that Kh8 is the only way to draw. }) 7. Ke6 Bb2 { And now black simply waits by shuffling the bishop, there is no progress possible for white. Thus, rook + knight pawns are a draw when the bishop is on the long diagonal. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 42: Pawns on the 5th rank or behind (opposite bishops) (9.4)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 42: Pawns on the 5th rank or behind (opposite bishops) (9.4)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/6XunDxt0"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/4k3/8/4PP2/4K3/1b6/3B4/8 w - - 6 8"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "00:36:30"]
+
+{ In the previous ending, we saw that 6th rank pawns are a win unless they are rook and knight pawns. However, here we will see that 5th rank pawns are not enough to win. }
+8. Bg5+ { First, we force the king to choose which side to move to. There are two checks to choose from, and a big difference. White will push the e-pawn, and the bishop must control both squares in front of the pawns. } (8. Bb4+ Kf7 9. Kd4 (9. Be1 { But white can still return to the winning plan. } 9... Ke7 10. Bh4+) 9... Bc2 { And this is the crux of the choice between bishop checks, now the pawns are disrupted and black can blockade. } 10. f6 Ke6) 8... Kd7 (8... Kf7 9. Kd4 { Kf7 is the wrong choice, now we outflank to control promotion. }) 9. Kf4 { We move to outflank on the other side, to secure the e6-square from f6. } 9... Ba2 10. Bh4 Bf7 11. Kg5 Ke7 12. Kh6+ Kd7 13. Kg7 Bd5 14. Kf6 Bb3 15. e6+ Ke8 16. Ke5 { And now we convert to ending 41, two 6th rank pawns are a win. But there is a defensive procedure to prevent this conversion! } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 42: Pawns on the 5th rank or behind (opposite bishops) (9.5)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 42: Pawns on the 5th rank or behind (opposite bishops) (9.5)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/79O05plr"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "2b5/4k3/8/4PP2/4K3/8/3B4/8 w - - 2 16"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "00:45:19"]
+
+{ From c8 (or d7), the bishop attacks the f5 pawn, thus hindering outflanking maneuvers and allows a sacrifice against an eventual e5-e6. }
+16. Bg5+ { [%csl Ge6][%cal Ge5e6,Gc8e6] } 16... Kf7 { [%csl Gd5,Gf5][%cal Ge4d5] } 17. Kf4 (17. f6 Be6) 17... Bd7 { And there is no progress to be made for white. We must maintain a defense of our f5 pawn, and if we push either pawn, it allows a blockade (after f6) or a sacrifice (after e6). } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 42: Pawns on the 4th rank (opposite bishops) (9.6)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 42: Pawns on the 4th rank (opposite bishops) (9.6)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/7SkLnCdc"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/3k4/8/3PP3/4K3/8/4Bb2 b - - 6 18"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "00:48:38"]
+
+{ Here the defender has more options. The correct defensive position can be reached when pawns are on the 4th rank or 5th. }
+18... Bc4 { Only move, black must reach the key squares. } { [%csl Gf7,Gg8] } 19. Bg3+ Kc6 (19... Ke6 20. Bf4 Ba2 { [%csl Gf7,Gg8] } 21. Kd2 Bb3 22. Kc3 Ba2 23. Kb4 Bb1 24. d5+ Kf6 25. e5+ Ke7 26. Kb5 Bf5 27. Kc6 Bd7+ 28. Kc7 Bh3 29. Bg5+ { And thus, we can see that Ke6 loses, as the bishop cannot get to the key squares, allowing for the king to outflank. }) 20. Kf4 Bf7 21. Ke5 Kd7 22. d5 Bg8 23. Kd4 Bf7 24. e5 Bg8 { And we can see that white will never be able to progress from here without allowing the blockade or sacrifice. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 44: Pawns separated by just one file (opposite bishops) (9.9)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 44: Pawns separated by just one file (opposite bishops) (9.9)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/ZvWnWvmV"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "3k4/1K6/2PbP3/3B4/8/8/8/8 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "00:58:04"]
+
+{ The defensive procedure is simple, the king waits while the bishop shuffles maintaining control of the pawn supported by the king (c-pawn in this example). }
+1. Bb3 Be5 2. Kb6 Bd6 3. Kb5 Bc7 4. Kc4 Bd6 5. Kd5 Bc7 6. Ke4 Bd6 7. Kf5 Bc7 8. Kf6 Bd6 9. Kf7 Bc5 { And now we switch to defend e7, simple draw. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 45: Controlling both pawns along the same diagonal(opposite bishops(9.10)"]
+[Date "2022.12.13"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 45: Controlling both pawns along the same diagonal(opposite bishops(9.10)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/n4YCn0Jl"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/2bB4/2P5/6k1/4K3/5P2/8/8 w - - 18 10"]
+[SetUp "1"]
+[UTCDate "2022.12.13"]
+[UTCTime "01:01:03"]
+
+10. Kd5 { [%csl Ge6] } 10... Kf6 { Kf6! controlling the critical e6 square. } { [%csl Ge6] } 11. Kc5 Ke7 12. Kb5 Bf4 13. Kb6 Kd8 { And clearly, we can draw from here. } *
+
+
+[Event "UVM Endgame Lesson: Lucena (win)"]
+[Site "https://lichess.org/study/33e9w0gx/TT6PUuJE"]
+[Date "2023.06.07"]
+[Result "*"]
+[Annotator "https://lichess.org/@/AnorakII"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Lucena (Rook + Pawn vs Rook, win)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/DSR01Kqb"]
+[FEN "4K3/4P1k1/8/8/8/8/r7/5R2 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2023.06.07"]
+[UTCTime "14:34:55"]
+
+1. Rg1+ { [%csl Gf8][%cal Ge8f8] } (1. Kd7 Ra7+ 2. Ke8 Ra8+) 1... Kh7 (1... Kf6 2. Kf8 { [%cal Ge7e8] } 2... Ra8+ 3. e8=Q) (1... Kh6 2. Rg4 { [%cal Gf7g5] } (2. Kf8 Rf2+ { [%csl Ge8][%cal Gf8e8] })) 2. Rg4 { [%csl Gg4][%cal Gg1g4] } (2. Rg5 Kh6 3. Re5 (3. Rg1 Kh7) 3... Kg6 { [%csl Gg6] }) 2... Kh6 3. Kf7 Rf2+ 4. Ke6 Re2+ 5. Kf6 Rf2+ 6. Ke5 Re2+ 7. Re4 { [%cal Gg4e4] } 7... Rxe4+ 8. Kxe4 { [%cal Gg7h7,Gg7h6,Gg7h8] } 8... Kg7 9. e8=Q *
+
+
+[Event "UVM Endgame Lesson: Philidor (draw)"]
+[Site "https://lichess.org/study/33e9w0gx/YtJ62TxW"]
+[Date "2023.06.07"]
+[Result "*"]
+[Annotator "https://lichess.org/@/AnorakII"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Philidor (Rook vs Rook + Pawn, draw)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/RxcTKQBj"]
+[FEN "8/8/8/8/4pk2/R7/7r/4K3 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2023.06.07"]
+[UTCTime "14:35:47"]
+
+1. Ra7 Rg2 2. Ra6 Rh2 3. Rb6 Kf3 4. Re6 (4. Ra6 Kf4 5. Ra5 Rh1+ 6. Ke2 Rh2+ 7. Ke1 { [%csl Ge1] } 7... e3 8. Ra8 { [%csl Ge3,Ga8] } 8... Kf3 9. Rf8+ Ke4 10. Re8+ Kd4 11. Rd8+ Kc3 12. Rc8+ Kd4 13. Rd8+ Ke4 14. Re8+ Kf3 (14... Kd5 15. Rd8+ Ke6 (15... Kc6 16. Re8 { [%csl Ge3] } 16... Rh3 17. Ke2 Kd5 18. Rxe3 Rh2+ 19. Kd3) 16. Re8+ { [%csl Ge3] }) 15. Rf8+ Kg2 16. Rg8+ Kh1 17. Rg7 Ra2 18. Rh7+ Kg2 19. Rg7+ Kf3 { [%csl Ga1][%cal Ga2a1] }) (4. Rf6+ Ke3) 4... Ke3 5. Kf1 Rh1+ 6. Kg2 Ra1 7. Re8 Ra2+ 8. Kf1 Rf2+ 9. Ke1 Ra2 10. Kf1 { [%csl Ge4] } *
+
+
+[Event "UVM Endgame Lesson: Philidor earlier (draw)"]
+[Site "https://lichess.org/study/33e9w0gx/QX9VZKM1"]
+[Date "2023.06.07"]
+[Result "*"]
+[Annotator "https://lichess.org/@/AnorakII"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Philidor (Rook vs Rook + Pawn, draw) Earlier"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/PQMYhBVI"]
+[FEN "R7/4p3/5k2/8/8/8/7r/4K3 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2023.06.07"]
+[UTCTime "14:36:31"]
+
+1. Ra3 e6 2. Rb3 e5 3. Ra3 Kf5 4. Rb3 e4 5. Ra3 Kf4 6. Rb3 e3 7. Rb8 Kf3 (7... Rh5 8. Rf8+ Rf5 9. Re8 Re5 10. Rf8+ Rf5 11. Rd8 (11. Rxf5+) (11. Re8 Kf3 12. Re7 Rh5 13. Rf7+ Ke4 14. Re7+ Re5 15. Rd7 Rd5 16. Re7+)) 8. Rf8+ Ke4 9. Re8+ Kd5 10. Rd8+ Ke4 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Queen v Knight (apparently trivial)"]
+[Date "2023.06.07"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Queen v Knight (apparently trivial)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/zd9RlxOi"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "6Q1/7K/8/4kn2/8/8/8/8 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2023.06.07"]
+[UTCTime "14:39:45"]
+
+1. Qg5 (1. Qg4 Ne3 2. Qg5+ Ke4 3. Kg6 Nd5 4. Qg4+ Nf4+ (4... Ke5 5. Kg5 Kd6 6. Qd4 Ke6 7. Qb2 Ne7 8. Qf6+ Kd7 9. Qe5 Nc6 10. Qd5+ Kc7 11. Kf6 Nd8 12. Qc5+ Kd7 13. Qe7+ Kc8 14. Qg7 Nb7 15. Ke6 Nc5+ 16. Kd6 Nb7+ 17. Kc6 Nd8+ 18. Kb6 Nf7 19. Qxf7 Kd8 20. Kc6 Kc8 21. Qc7#) 5. Kg5) 1... Ke4 2. Kg6 Ne3 3. Qg3 Kd3 4. Kf6 Kd4 5. Qe5+ Kd3 6. Ke6 Nc4 7. Qd5+ Kc3 8. Qe4 Na3 9. Kd5 Nc2 10. Qc4+ Kd2 11. Ke4 Ne1 12. Qb4+ Ke2 13. Qb2+ Kd1 14. Ke3 Nc2+ 15. Kd3 Ne1+ 16. Kc3 Nc2 17. Qxc2+ Ke1 18. Qg2 Kd1 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 19: Queen vs 7th rank pawn (playing for tricks with far king)"]
+[Date "2026.04.14"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 19: Queen vs 7th rank pawn (playing for tricks with far king)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/xJruUZLt"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/3K4/8/4Q3/2p5/1k6 w - - 3 19"]
+[SetUp "1"]
+[UTCDate "2026.04.14"]
+[UTCTime "23:59:27"]
+
+19. Qb3+ Ka1 20. Qe3 Kb1 21. Qe4 Kb2 22. Qe2 Kb1?? (22... Ka1!) (22... Kc3 23. Qe5+ Kd2 (23... Kb3 24. Qa1)) 23. Kc4 c1=Q+ 24. Kb3 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 16: Queen vs 7th rank pawn"]
+[Date "2026.04.15"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 16: Queen vs 7th rank pawn"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/gNZmKiKQ"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "6K1/8/3Q4/8/8/8/5kp1/8 w - - 7 39"]
+[SetUp "1"]
+[UTCDate "2026.04.15"]
+[UTCTime "00:38:53"]
+
+39. Qf4+ Ke2 40. Qg3 Kf1 41. Qf3+ Kg1 42. Kg7 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 10: Knight vs 7th rank bishop/center pawn (3.1)"]
+[Date "2026.04.15"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 10: Knight vs 7th rank bishop/center pawn (3.1)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/SG4W4IPH"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/K7/8/8/8/1k6/1N1p4/8 w - - 13 24"]
+[SetUp "1"]
+[UTCDate "2026.04.15"]
+[UTCTime "00:08:09"]
+
+24. Nd1 Kc2 25. Nf2 $10 Kc3 (25... Kc1 26. Kb6) 26. Ne4+ *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 10: Knight vs 7th rank bishop/center pawn (3.2)"]
+[Date "2026.04.15"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 10: Knight vs 7th rank bishop/center pawn (3.2)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/KHWIZbUG"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/5N2/8/2p4K/2k5 w - - 18 26"]
+[SetUp "1"]
+[UTCDate "2026.04.15"]
+[UTCTime "00:13:03"]
+
+26. Ne2+ (26. Nd3+ Kd2 27. Nc5 Kc3 28. Ne4+ Kd3) 26... Kd2 (26... Kd1 27. Nc3+ Kd2 28. Na2) 27. Nd4 c1=Q 28. Nb3+ *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 11: Knight vs 7th rank knights pawn (3.3)"]
+[Date "2026.04.15"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 11: Knight vs 7th rank knights pawn (3.3)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/b1ccUq5a"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/4N3/1p6/7K/1k6 b - - 19 26"]
+[SetUp "1"]
+[UTCDate "2026.04.15"]
+[UTCTime "00:16:48"]
+
+26... b2 (26... Kc2 27. Nd6 Kc3 28. Ne4+ Kd4 29. Nd2 b2 30. Nb1 Kd3 31. Kg2 Kc2 32. Na3+ Kb3 33. Nb1) 27. Nd2+ Kc1 28. Nb3+ Kd1 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 12: The 6th rank rook's pawn (3.4)"]
+[Date "2026.04.15"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 12: The 6th rank rook's pawn (3.4)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/AOzr9Rwj"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/K7/4N3/8/7p/7k/8 w - - 4 29"]
+[SetUp "1"]
+[UTCDate "2026.04.15"]
+[UTCTime "00:21:58"]
+
+{ [%csl Gg4,Ge3,Gf1] }
+29. Ng4+ Kg3 30. Ne3 Kf3 31. Nf1 Kf2 32. Nh2 { [%csl Gf1][%cal Gh2g4,Gg4e3,Ge3f1,Gf1h2] } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 13: The 7th rank rook's pawn (3.5)"]
+[Date "2026.04.15"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 13: The 7th rank rook's pawn (3.5)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/rlzdAWF7"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "K7/8/8/5N2/8/3k3p/8/8 w - - 4 29"]
+[SetUp "1"]
+[UTCDate "2026.04.15"]
+[UTCTime "00:24:58"]
+
+{ [%csl Ge4,Ge3,Ge2,Gd2] }
+29. Ng3 { [%csl Ge4,Ge3,Ge2,Gd2] } 29... h2 (29... Ke3 30. Nf1+ { [%csl Gh2][%cal Gf1h2] }) 30. Kb7 { [%csl Ge4,Ge3,Ge2,Gd2] } 30... Kd4 (30... Kc2 31. Kc6 Kd1 32. Kd5 Ke1 33. Ke4 Kf2 34. Kf4) 31. Kc6 Ke5 32. Kc5 Kf4 33. Nh1 Kf3 34. Kd4 Kg2 35. Ke3 Kxh1 36. Kf2 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 13: The 7th rank rook's pawn (3.7)"]
+[Date "2026.04.15"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 13: The 7th rank rook's pawn (3.7)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/G4Z81We8"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/2K5/8/8/4N3/2k5/7p/8 b - - 1 36"]
+[SetUp "1"]
+[UTCDate "2026.04.15"]
+[UTCTime "00:28:58"]
+
+36... Kc2 (36... Kd3 37. Ng3) (36... Kd4 37. Nf2 { [%csl Ge5,Ge4,Ge3,Gd3] } (37. Ng3?? Ke5) 37... Kd5 38. Kd7 Kd4 39. Kd6) 37. Ng3 Kd1 38. Kd6 Ke1 39. Ke5 Kf2 40. Kf4 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 21: Rook vs Pawn - Just counting (5.2)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 21: Rook vs Pawn - Just counting (5.2)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/CQavvl7P"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/5K2/8/8/4pk2/8/8/R7 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "18:38:17"]
+
+{ Draw if the king is on any marked squares. } { [%csl Ga8,Gb8,Gc8,Gd8,Ge8,Gf8,Gg8,Gg7,Gh7,Gh8,Gh6,Gg6] }
+1. Ke6 e3 2. Kd5 e2 3. Kd4 Kf3 4. Kd3 Kf2 5. Kd2 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 22: Rook vs Pawn - Defending king on 3rd rank cut off along a rank"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 22: Rook vs Pawn - Defending king on 3rd rank cut off along a rank"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/nkKlB2Sd"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "7K/6R1/1k6/p7/8/8/8/8 w - - 5 5"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "18:41:39"]
+
+5. Rg5! a4 6. Kg7 a3 7. Rg3 a2 8. Ra3 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 23: Rook vs Pawn - Strong king behind the pawn (5.4)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 23: Rook vs Pawn - Strong king behind the pawn (5.4)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/ieYyVmAz"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "7R/8/2K5/8/1pk5/8/8/8 w - - 1 8"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "18:44:53"]
+
+8. Rh4+ Kc3 9. Kc5 b3 10. Rh3+ Kc2 11. Kc4 b2 12. Rh2+ Kc1 13. Kc3 { [%csl Gb1,Gh1][%cal Gb2b1,Gh2h1] } 13... b1=N+! *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 23: Rook vs Pawn - Strong king behind the pawn - Outflanking (5.5)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 23: Rook vs Pawn - Strong king behind the pawn - Outflanking (5.5)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/chmKFpvo"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/3K3R/8/2pk4/8/8/8/8 w - - 1 8"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "18:49:23"]
+
+{ It is winning even if it is black to move if the rook starts on h8 or h1 } { [%csl Gh1,Gh8][%cal Gh7h8] }
+8. Rh5+ (8. Rh8 c4 9. Rc8! Kd4 10. Kc6 Kd3 11. Kb5 c3 12. Kb4 c2 13. Kb3 Kd2 14. Kb2 { [%cal Gh1c1] }) (8. Rh1 { Similar to the Rh8 line, but the rook controls the promotion square from the side instead of the rear, and the king flanks to get to b2. }) 8... Kd4 9. Kc6 c4 10. Kb5 c3 11. Kb4 c2 12. Rc5 Kd3 13. Kb3 Kd2 14. Kb2 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 24: Rook vs Pawn - Stronger side's king on one side (5.6)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 24: Rook vs Pawn - Stronger side's king on one side (5.6)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/6RrPOLF0"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/7K/3pk3/8/8/3R4 w - - 5 14"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "18:57:41"]
+
+14. Kg4 Ke3 15. Kg3 d3 16. Re1+ Kd2 17. Kf2 Kc2 18. Rh1 { [%csl Ge2][%cal Gd3d2,Gf2e2] } 18... Kd2 19. Ra1 Kc2 20. Ke3 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 24: Stronger side's king on one side - time gaining check (5.7)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 24: Stronger side's king on one side - time gaining check (5.7)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/KhiYpbJh"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "R7/8/8/8/2K3p1/8/5k2/8 w - - 8 15"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:01:26"]
+
+15. Rf8+! { Note that this check is ONLY good when the king is already in the optimal position, i.e. f2 supporting the promotion square. If the king can improve its position, do NOT check. } (15. Kd3?? g3 16. Rf8+ Ke1 17. Rg8 Kf2 { [%csl Gg2][%cal Gg3g2,Gg2g1] } 18. Kd2 g2 19. Rf8+ Kg3 20. Rg8+ $10) 15... Ke2 16. Rg8 Kf3 17. Kd3 g3 18. Rf8+ Kg2 19. Ke2 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 24: Rook vs pawn (5.8)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 24: Rook vs pawn (5.8)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/Sszee4l1"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/4p3/7K/5k2/R7 w - - 3 19"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:05:21"]
+
+19. Ra2+! Kf3 20. Ra8 { [%cal Gf2f3] } 20... e3 21. Rf8+ Ke2 22. Kg2 $18 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 25: Rook vs Pawn - rook in front of the pawn - zugzwang (5.9)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 25: Rook vs Pawn - rook in front of the pawn - zugzwang (5.9)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/aHJFbwiR"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/5K2/8/4pk2/4R3/8/8/8 w - - 3 22"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:08:05"]
+
+22. Re2! (22. Re3 $18) (22. Re1? e4 23. Ke7 Ke5 24. Kd7 Kd5) 22... e4 23. Re1 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 26: Rook vs Pawn - special themes with knights pawn (5.11)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 26: Rook vs Pawn - special themes with knights pawn (5.11)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/cIAw2CSS"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "3K4/4R3/8/1p6/8/2k5/8/8 w - - 1 23"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:15:12"]
+
+23. Rc7+! { A time gaining check - note that the king was in optimal position to support the pawn advance } 23... Kb3 (23... Kd3 24. Rb7 { The check has won a tempo, as the king must now go back to the pawn but with the rook in correct position } 24... Kc4 25. Kc7 b4 26. Kb6) 24. Kd7 b4 25. Kd6 Ka2 26. Kc5 b3 27. Kb4 b2 28. Ra7+ Kb1 29. Kb3 Kc1 30. Rc7+ Kb1 31. Rb7 { [%cal Rb1c1,Rb3a2,Gb1a1,Gb3c2] } (31. Rc2? Ka1 $10) 31... Kc1 32. Ka2 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 27: Rook vs pawn - rook's pawn, pushing from the rear (5.12)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 27: Rook vs pawn - rook's pawn, pushing from the rear (5.12)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/YwrXNnw7"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "7R/8/1K6/8/pk6/8/8/8 w - - 8 32"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:22:18"]
+
+32. Rh4+ Kb3 33. Kb5 a3 34. Rh3+ Kb2 35. Kb4 a2 36. Rh2+ Kb1 37. Kb3 a1=N+ 38. Kc3 { The knight is lost. Thus the underpromotion is not a saving resource for the defender with a rook pawn. } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 28: Rook vs pawn - rook's pawn, lateral push"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 28: Rook vs pawn - rook's pawn, lateral push"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/5qzSK23t"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/7R/8/8/8/pk1K4/8/8 w - - 1 38"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:27:07"]
+
+{ This is the critical position, it is a draw if it is black to move and a win if it is white to move. }
+38. Rb7+ (38. Rh8 { If it it black to move here, then it draws due to stalemating resources } 38... Kb2 39. Rb8+ Kc1 40. Kc3 a2 41. Ra8 Kb1 42. Rb8+ Kc1 $10) 38... Ka2 39. Kc2 Ka1 40. Rb1+ Ka2 41. Rb3 Ka1 42. Rxa3# *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 29: Rook vs pawn - pawn wins (5.15)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 29: Rook vs pawn - pawn wins (5.15)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/bVxAjBq4"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/2P2k2/3K4/5r2/8/8/8/8 b - - 4 43"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:33:45"]
+
+{ The rook only loses this position when it starts on either the f5 or b5 squares. } { [%csl Gc8][%cal Gh8c8] }
+43... Rf6+ 44. Kd5 { [%csl Ge4][%cal Gd5e4] } 44... Rf5+ 45. Kd4 Rf4+ 46. Kd3 Rf3+ 47. Kc2 Rf2+ 48. Kb3 Rf3+ 49. Kb4 Rf4+ 50. Kb5 Rf5+ 51. Kb6 Rf6+ 52. Kb7 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 30: Rook vs 2 pawns - kings play no part"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 30: Rook vs 2 pawns - kings play no part"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/K3RSVFIq"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/P7/1P5k/8/8/7K/5r2 w - - 4 43"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:39:13"]
+
+{ Extreme position, rook behind the pawns. The side to move wins easily. White plays 1.b6 or a7 and promotes, and if black is to move then Ra1 is easy.
+
+If the rook is in front of the pawns, it can stop them but not capture them, ex rook on a8 stops either pawn from pushing, then the king race decides. } { [%csl Ga8] }
+43. b6 (43. Kh3 Ra1 44. Kg3 Ra5 { [%csl Gb5][%cal Ga5b5] }) 43... Rb1 44. a7 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 31: Rook vs 2 pawns - both kings play a part"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 31: Rook vs 2 pawns - both kings play a part"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/RCSY4fF4"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/8/3p4/3kpK2/7R w - - 4 43"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:46:16"]
+
+{ If the rook's king is in front of the pawns, it is almost always a straightforward win for the rook. Here, with the king supporting from the side, it is more interesting. }
+43. Ra1! { A waiting move - black is in zugzwang } 43... Kc3 44. Ke3 Kc2 45. Rh1 Kc3 46. Rc1+ Kb2 47. Kd2 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 31: Rook vs 2 pawns - both kings play a part - two files to the left (=)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 31: Rook vs 2 pawns - both kings play a part - two files to the left (=)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/PGhjcZfZ"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/8/1p6/1kpK4/7R w - - 13 47"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "19:51:06"]
+
+47. Rg1 (47. Rc1 Ka2 48. Kc3 b2 49. Rxc2 Ka1) 47... Ka2 48. Kc3 (48. Kc1 Ka1 49. Rh1 Ka2) 48... c1=Q+ 49. Rxc1 b2 50. Rh1 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 32: Rook vs 2 pawns - only the defending king plays a part (6.4)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 32: Rook vs 2 pawns - only the defending king plays a part (6.4)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/O56IGELE"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/5KP1/5P2/8/2k4r/8/8 b - - 0 1"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "21:40:16"]
+
+1... Rf3 (1... Rg3? 2. Kg7 { [%csl Gf8][%cal Gf5f8] } 2... Kd4 3. f6 Ke5 4. f7 Rf3 5. f8=Q) 2. g7 Rg3 3. Kf7 Kd4 4. f6 Ke5 $10 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 32: Rook vs 2 pawns - only defending king plays a part - (6.6)"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 32: Rook vs 2 pawns - only defending king plays a part - (6.6)"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/X7NPQRf4"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "5K2/7R/8/6kp/6p1/8/8/8 b - - 0 1"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "21:45:39"]
+
+1... g3 2. Ke7 (2. Rg7+ Kf4 3. Rf7+) 2... h4 3. Ke6 Kg4 4. Rg7+! (4. Ke5? g2 5. Ke4 Kh3 6. Rg7 Kh2 7. Kf3 (7. Kf4?) 7... h3 (7... g1=Q 8. Rxg1 Kxg1 9. Kg4) 8. Kf2) 4... Kf3 5. Rf7+ Kg2 6. Kf5 h3 7. Kg4 h2 8. Rh7 Kf2 9. Kf4 $10 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 8: Rook vs Knight - edge of board"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 8: Rook vs Knight - edge of board"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/esvgGVNH"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/8/3k4/r7/3NK3 w - - 0 1"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "21:51:29"]
+
+1. Nf2+ Ke3 2. Nd1+ Kf3 3. Nc3 (3. Kf1 Re2 4. Nc3) 3... Rc2 (3... Ra1+) 4. Nd1 (4. Nd5?? Rc4 5. Nb6 (5. Nf6 Rd4 6. Nh7 Kf4 7. Nf8 Kf5 $19) 5... Rb4 6. Nc8 (6. Nd5 Re4+ 7. Kf1 Rd4) 6... Rb7 { [%csl Gd7][%cal Gb7e7,Ge7d7] } 7. Kd2 Kf4 8. Ke2 Ke5 { [%csl Ge7,Gd6,Ga7,Gb6] }) 4... Re2+ 5. Kf1 Ra2 6. Ke1 Rc2 7. Kf1 Rc1 8. Ke1 { [%cal Ge1d2] } 8... Rc2 9. Kf1 Ra2 10. Ke1 { [%cal Gd1c3,Gc3d1] } *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 8: Kamsky - Bacrot"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 8: Kamsky - Bacrot"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/sbsfwk4W"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "8/8/8/8/8/5K2/7R/4nk2 w - - 19 10"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "22:03:37"]
+
+10. Kg3 Nd3 11. Rd2 Ne1 12. Rf2+ Kg1 13. Rf8 Nc2 (13... Ng2 14. Kf3 Kf1? 15. Rf7! (15. Kg3+ Kg1 16. Kf3 Kf1 17. Rf7 Ne1+ { [%csl Ge1,Gd1,Gf1][%cal Gf1d1] }) 15... Ne1+ 16. Ke3+ Kg1 17. Ke2 Ng2 18. Rh7 Nf4+ 19. Kf3 Nd3 20. Rh4 Ne5+ 21. Ke3) (13... Nd3?? 14. Kf3 { [%csl Ge3][%cal Gf3e3] } 14... Ne1+ 15. Ke2) 14. Kf3 Kf1 15. Kg3+ Kg1 16. Kf3 Kf1 17. Rf7 Ke1 *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 6: Rook vs Bishop - the wrong corner"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 6: Rook vs Bishop - the wrong corner"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/YbYtWAE3"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "6k1/5R2/6K1/8/8/8/8/6b1 w - - 34 17"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "23:46:06"]
+
+17. Rf1 Bh2 18. Rh1 Bg3 19. Rg1 Bh2 20. Rg2 Bd6 21. Rd2 Be7 22. Rc2 Bf8 23. Rc8 Kh8 24. Rxf8# *
+
+
+[Event "100 Endgames You Must Know by Jesus de la Villa: Ending 6: Rook vs Bishop - the right corner"]
+[Date "2026.04.19"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "100 Endgames You Must Know by Jesus de la Villa"]
+[ChapterName "Ending 6: Rook vs Bishop - the right corner"]
+[ChapterURL "https://lichess.org/study/h6HmRwJi/ZDIQrxjr"]
+[Annotator "https://lichess.org/@/anorakii"]
+[FEN "7k/R7/7K/8/8/1b6/8/8 w - - 0 24"]
+[SetUp "1"]
+[UTCDate "2026.04.19"]
+[UTCTime "23:48:49"]
+
+24. Ra8+ Bg8 25. Ra7 Bb3 26. Kg6 Bc4 27. Rh7+ Kg8 28. Rc7 Bd3+ 29. Kh6 Be4?! { [%cal Gg8h8,Ge6g8] } *
+
+

@@ -3423,3 +3423,89 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   flex-shrink: 0;
 }
 .fav-remove-btn:hover { opacity: 1; }
+
+/* ── E1 sidebar icon ─────────────────────────────────────────────────────────── */
+.bp-icon-e1 { color: #c084fc; }   /* soft violet — distinguishable from B1/B2/C1 */
+
+/* ── E1 corpus index ─────────────────────────────────────────────────────────── */
+.e1-group-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1.25rem 0 1rem;
+}
+.e1-group-tab {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  border: 1px solid var(--border, rgba(255,255,255,0.1));
+  border-radius: 20px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.e1-group-tab:hover  { color: #c084fc; border-color: #c084fc; }
+.e1-group-tab.active { color: #c084fc; border-color: #c084fc; background: rgba(192,132,252,0.08); }
+
+.e1-chapter-list { display: flex; flex-direction: column; gap: 0.4rem; max-width: 720px; }
+.e1-chapter-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--card-bg, rgba(255,255,255,0.03));
+  border: 1px solid var(--border, rgba(255,255,255,0.07));
+  border-radius: 6px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.e1-chapter-card:hover { border-color: rgba(192,132,252,0.35); }
+.e1-card-num {
+  font-size: 0.72rem;
+  color: var(--muted);
+  min-width: 1.8em;
+  padding-top: 0.15rem;
+  flex-shrink: 0;
+}
+.e1-card-body { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.e1-card-title { font-size: 0.875rem; color: var(--text, #e2e8f0); font-weight: 500; }
+.e1-card-intro  { font-size: 0.76rem; color: var(--muted); line-height: 1.4; }
+.e1-card-group {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2em 0.5em;
+  border-radius: 3px;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+  align-self: flex-start;
+  margin-top: 0.1rem;
+  white-space: nowrap;
+}
+.e1-group-pawn-endgame  { background: rgba(250,204,21,0.12); color: #facc15; }
+.e1-group-rook-endgame  { background: rgba(96,165,250,0.12); color: #60a5fa; }
+.e1-group-minor-piece   { background: rgba(52,211,153,0.12); color: #34d399; }
+.e1-group-queen-endgame { background: rgba(251,113,133,0.12); color: #fb7185; }
+
+/* ── E1 chapter replay ───────────────────────────────────────────────────────── */
+.e1-chapter-title { font-size: 1.1rem; }
+.e1-intro {
+  font-size: 0.875rem;
+  color: var(--muted);
+  max-width: 540px;
+  line-height: 1.55;
+  margin: 0.25rem 0 1rem;
+  font-style: italic;
+}
+.e1-annotation {
+  font-size: 0.85rem;
+  color: #c084fc;
+  max-width: 520px;
+  line-height: 1.55;
+  margin: 0.5rem 0;
+  border-left: 2px solid rgba(192,132,252,0.3);
+  padding-left: 0.75rem;
+}
+.e1-attempts { font-size: 0.75rem; color: var(--muted); margin-left: 0.75rem; }
+.e1-complete  { font-size: 0.85rem; color: #4ade80; margin-top: 0.75rem; }

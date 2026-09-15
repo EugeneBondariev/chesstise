@@ -11,6 +11,7 @@ import { setGlobalSpeechRate } from '../../utils/speechUtils';
 import { BLUEPRINT_GAMES, CONCEPTS as B1_CONCEPTS } from '../../data/blueprintCorpus';
 import { B2_GAMES, B2_CONCEPTS } from '../../data/b2Corpus';
 import { PLAYER_REGISTRY } from '../../data/playerRegistry';
+import { E1_CHAPTERS } from '../../data/e1Corpus';
 
 function formatDuration(ms: number): string {
   const totalMin = Math.floor(ms / 60000);
@@ -134,6 +135,19 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         <span className="nav-text-group">
           <span className="nav-label">Masters Games (C1)</span>
           <span className="nav-desc" aria-hidden="true">Open exploration · {PLAYER_REGISTRY.length} players</span>
+        </span>
+      </NavLink>
+
+      {/* ── Endgames E1 ── */}
+      <NavLink
+        to="/e1"
+        className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
+        aria-label="Endgames E1 — De la Villa annotated technique"
+      >
+        <span className="nav-icon bp-icon-e1" aria-hidden="true">♔</span>
+        <span className="nav-text-group">
+          <span className="nav-label">Endgames (E1)</span>
+          <span className="nav-desc" aria-hidden="true">Technique · {E1_CHAPTERS.length} positions · annotated</span>
         </span>
       </NavLink>
 
