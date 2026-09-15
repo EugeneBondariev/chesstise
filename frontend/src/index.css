@@ -3326,6 +3326,7 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   flex-wrap: wrap;
   gap: 0.35rem;
 }
+.pos-drill-chips-errors { margin-top: 0.4rem; opacity: 0.8; }
 .pos-drill-chip {
   font-size: 0.78rem;
   font-family: monospace;

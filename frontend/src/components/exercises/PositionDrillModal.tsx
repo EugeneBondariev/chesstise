@@ -9,6 +9,19 @@ const FILE_RANK_KEYS  = new Set([...Object.keys(FILE_FROM_KEY), ...Object.keys(R
 const PIECE_LABEL: Record<string, string> = { k: 'K', q: 'Q', r: 'R', b: 'B', n: 'N', p: 'P' };
 const PIECE_NAME:  Record<string, string>  = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
 
+const PIECE_ORDER = ['k', 'q', 'r', 'b', 'n', 'p'];
+
+function correctChipOrder(a: Chip, b: Chip): number {
+  const ao = PIECE_ORDER.indexOf(a.actual!.toLowerCase());
+  const bo = PIECE_ORDER.indexOf(b.actual!.toLowerCase());
+  if (ao !== bo) return ao - bo;
+  // white (uppercase) before black within the same piece type
+  const aWhite = a.actual! === a.actual!.toUpperCase();
+  const bWhite = b.actual! === b.actual!.toUpperCase();
+  if (aWhite !== bWhite) return aWhite ? -1 : 1;
+  return a.square.localeCompare(b.square);
+}
+
 function parseFenBoard(fen: string): Map<string, string> {
   const m = new Map<string, string>();
   const rows = fen.split(' ')[0].split('/');
@@ -144,19 +157,23 @@ export default function PositionDrillModal({ fen, onClose }: { fen: string; onCl
             </div>
           )}
 
-          {chips.length > 0 && (
+          {chips.some(c => c.correct) && (
             <div className="pos-drill-chips">
-              {chips.map((c, i) => {
-                let label: string;
-                if (c.correct)   label = c.actual! + c.square;
-                else if (c.duplicate) label = '×' + PIECE_LABEL[c.typedPiece] + c.square;
-                else label = '?' + PIECE_LABEL[c.typedPiece] + c.square;
-                const cls = c.correct ? 'correct' : c.duplicate ? 'duplicate' : 'wrong';
-                const tip = !c.correct
-                  ? (c.actual ? `Actually: ${c.actual}${c.square}` : `${c.square} is empty`)
-                  : '';
+              {[...chips.filter(c => c.correct)].sort(correctChipOrder).map((c, i) => (
+                <span key={i} className="pos-drill-chip correct">
+                  {c.actual!}{c.square}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {chips.some(c => !c.correct) && (
+            <div className="pos-drill-chips pos-drill-chips-errors">
+              {chips.filter(c => !c.correct).map((c, i) => {
+                const label = (c.duplicate ? '×' : '?') + PIECE_LABEL[c.typedPiece] + c.square;
+                const tip = c.actual ? `Actually: ${c.actual}${c.square}` : `${c.square} is empty`;
                 return (
-                  <span key={i} className={`pos-drill-chip ${cls}`} title={tip}>
+                  <span key={i} className={`pos-drill-chip ${c.duplicate ? 'duplicate' : 'wrong'}`} title={tip}>
                     {label}
                   </span>
                 );
