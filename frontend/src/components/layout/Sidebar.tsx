@@ -8,6 +8,9 @@ import { STRUCTURES } from '../../data/structures';
 // import { CURATED_GAMES, PATTERN_LABELS } from '../../data/classicalGamesSelection';
 import { useProfileStore } from '../../store/profileStore';
 import { setGlobalSpeechRate } from '../../utils/speechUtils';
+import { BLUEPRINT_GAMES, CONCEPTS as B1_CONCEPTS } from '../../data/blueprintCorpus';
+import { B2_GAMES, B2_CONCEPTS } from '../../data/b2Corpus';
+import { PLAYER_REGISTRY } from '../../data/playerRegistry';
 
 function formatDuration(ms: number): string {
   const totalMin = Math.floor(ms / 60000);
@@ -26,7 +29,7 @@ const DRILLS = [
   { to: '/cell-guesser',   icon: '⊞', label: 'Cell Guesser',        desc: 'Click the square in the lit quadrant' },
   { to: '/square-color',   icon: '◐', label: 'Square Color',         desc: 'Dark or light? Press D / L shortcut'  },
   { to: '/blind-pathing',  icon: '⤳', label: 'Blind Pathing',        desc: 'Type the destination square from memory' },
-  { to: '/calculation',    icon: '⁺', label: 'Calculation Trainer',  desc: 'Piece moves, reachability and forks' },
+  // { to: '/calculation', icon: '⁺', label: 'Calculation Trainer', desc: 'Piece moves, reachability and forks' },
 ];
 
 function NavItem({ to, icon, label, desc }: { to: string; icon: string; label: string; desc: string }) {
@@ -104,7 +107,7 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         <span className="nav-icon bp-icon-b1" aria-hidden="true">♙</span>
         <span className="nav-text-group">
           <span className="nav-label">Blindfold Literacy (B1)</span>
-          <span className="nav-desc" aria-hidden="true">Core concepts · 27 games</span>
+          <span className="nav-desc" aria-hidden="true">Core concepts · {BLUEPRINT_GAMES.length} games · {B1_CONCEPTS.length} ideas</span>
         </span>
       </NavLink>
 
@@ -117,7 +120,7 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         <span className="nav-icon bp-icon-b2" aria-hidden="true">♘</span>
         <span className="nav-text-group">
           <span className="nav-label">Blindfold Literacy (B2)</span>
-          <span className="nav-desc" aria-hidden="true">Subconcepts · 32 games</span>
+          <span className="nav-desc" aria-hidden="true">Subconcepts · {B2_GAMES.length} games · {B2_CONCEPTS.length} ideas</span>
         </span>
       </NavLink>
 
@@ -130,7 +133,7 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         <span className="nav-icon bp-icon-c1" aria-hidden="true">♕</span>
         <span className="nav-text-group">
           <span className="nav-label">Masters Games (C1)</span>
-          <span className="nav-desc" aria-hidden="true">Open exploration · {251} players</span>
+          <span className="nav-desc" aria-hidden="true">Open exploration · {PLAYER_REGISTRY.length} players</span>
         </span>
       </NavLink>
 

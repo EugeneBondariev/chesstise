@@ -19,7 +19,7 @@ export default function MastersCorpus() {
         <div className="bp-hero-text">
           <h1 className="bp-title">Masters Games (C1)</h1>
           <p className="bp-subtitle">
-            {ALL_PLAYERS.length} players · open exploration · pick any master and study their games
+            {ALL_PLAYERS.length} players · 525,887 games · open exploration · pick any master and study their games
           </p>
         </div>
       </div>

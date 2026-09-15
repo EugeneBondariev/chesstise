@@ -6,6 +6,7 @@ interface ProfileState {
   cellGuesserRuns: RunResult[];
   squareColorRuns: RunResult[];
   blindPathingRuns: RunResult[];
+  calculationRuns: RunResult[];
   speechRate: number;
   markedGames: string[];
   autoAdvanceMs: number;
@@ -17,6 +18,7 @@ interface ProfileState {
   addSquareColorRun: (run: RunResult) => void;
   addBlindPathingRun: (run: RunResult) => void;
   removeBlindPathingRun: (date: string) => void;
+  addCalculationRun: (run: RunResult) => void;
   setSpeechRate: (rate: number) => void;
   toggleMarkedGame: (id: string) => void;
   setAutoAdvanceMs: (ms: number) => void;
@@ -31,6 +33,7 @@ export const useProfileStore = create<ProfileState>()(
       cellGuesserRuns: [],
       squareColorRuns: [],
       blindPathingRuns: [],
+      calculationRuns: [],
       speechRate: 2,
       markedGames: [],
       autoAdvanceMs: 4000,
@@ -50,6 +53,9 @@ export const useProfileStore = create<ProfileState>()(
 
       removeBlindPathingRun: (date) =>
         set(state => ({ blindPathingRuns: state.blindPathingRuns.filter(r => r.date !== date) })),
+
+      addCalculationRun: (run) =>
+        set(state => ({ calculationRuns: [...state.calculationRuns, run] })),
 
       setSpeechRate: (rate) => set({ speechRate: rate }),
 

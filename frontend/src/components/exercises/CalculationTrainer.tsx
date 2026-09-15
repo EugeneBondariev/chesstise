@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useProfileStore } from '../../store/profileStore';
 import type { Square } from 'chess.js';
 import {
   ALL_SQUARES, getValidMoves, getSquareColor, PIECE_NAMES,
@@ -168,7 +169,10 @@ export default function CalculationTrainer() {
   const [status, setStatus]   = useState<'idle' | 'correct' | 'wrong'>('idle');
   const [answered, setAnswered] = useState(0);
   const [correct, setCorrect]   = useState(0);
-  const explanationRef = useRef<HTMLParagraphElement>(null);
+  const explanationRef  = useRef<HTMLParagraphElement>(null);
+  const startTimeRef    = useRef(Date.now());
+  const savedRef        = useRef(false);
+  const addCalculationRun = useProfileStore(s => s.addCalculationRun);
 
   const advance = useCallback(() => {
     if (answered >= ROUND) return;
@@ -239,6 +243,17 @@ export default function CalculationTrainer() {
 
   const isDone = answered >= ROUND;
 
+  useEffect(() => {
+    if (!isDone || savedRef.current) return;
+    savedRef.current = true;
+    addCalculationRun({
+      timeMs: Date.now() - startTimeRef.current,
+      correct,
+      total: ROUND,
+      date: new Date().toISOString(),
+    });
+  }, [isDone]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (isDone) {
     return (
       <div className="exercise-page">
@@ -254,6 +269,7 @@ export default function CalculationTrainer() {
         <button className="game-btn" onClick={() => {
           setQ(nextQuestion()); setNumBuf(''); setSqBuf('');
           setStatus('idle'); setAnswered(0); setCorrect(0);
+          startTimeRef.current = Date.now(); savedRef.current = false;
         }}>
           New Round
         </button>
