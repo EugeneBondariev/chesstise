@@ -76,7 +76,7 @@ function TrainingTab() {
       <SettingRow
         label="Cadence"
         value={`${(autoAdvanceMs / 1000).toFixed(1)}s`}
-        description="Pause after each correct move before the board auto-advances. Lower = faster drilling, more pressure to keep up."
+        description="During auto-play (▶), how long the board stays on each position before moving to the next move. Short = fast clip, leaves little time to picture the position. Long = leisurely, room to breathe between moves."
       >
         <input
           type="range" min={500} max={8000} step={250}
@@ -91,8 +91,8 @@ function TrainingTab() {
 
       <SettingRow
         label="Novelty"
-        value={`${noveltyMultiplier}×`}
-        description="How strongly the system favors games you haven't seen recently. Higher = more variety and exposure to new games. Lower = more repetition of familiar positions."
+        value={`${noveltyMultiplier}× (${((autoAdvanceMs * noveltyMultiplier) / 1000).toFixed(1)}s)`}
+        description={`Inactivity watchdog during auto-play. If you don't touch the board for Cadence × Novelty seconds, playback stops and the last move is re-read aloud — so you can't zone out. Currently: ${(autoAdvanceMs / 1000).toFixed(1)}s × ${noveltyMultiplier} = ${((autoAdvanceMs * noveltyMultiplier) / 1000).toFixed(1)}s grace period. Higher = more forgiving. Lower = keeps you sharp.`}
       >
         <input
           type="range" min={0.5} max={3} step={0.25}

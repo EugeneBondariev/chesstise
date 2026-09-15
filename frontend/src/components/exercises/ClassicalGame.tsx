@@ -10,6 +10,7 @@ import CollapsibleBoard from '../common/CollapsibleBoard';
 import { useGameStatsStore } from '../../store/gameStatsStore';
 import { useProfileStore } from '../../store/profileStore';
 import GameStats from './GameStats';
+import PositionDrillModal from './PositionDrillModal';
 
 const FILE_FROM_KEY: Record<string, string> = { a: 'a', s: 'b', d: 'c', f: 'd', j: 'e', k: 'f', l: 'g', ';': 'h' };
 const RANK_FROM_KEY: Record<string, number>  = { a: 1, s: 2, d: 3, f: 4, j: 5, k: 6, l: 7, ';': 8 };
@@ -178,6 +179,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const [recallBuffer,   setRecallBuffer]  = useState('');
   const [recallAttempts, setRecallAttempts] = useState(0);
   const [isPlaying,      setIsPlaying]     = useState(false);
+  const [positionDrillOpen, setPositionDrillOpen] = useState(false);
   const lastSpokenRef      = useRef('');
   const prevQRef           = useRef('');
   const keyHandlerRef      = useRef<((e: KeyboardEvent) => void) | null>(null);
@@ -492,6 +494,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   }
 
   keyHandlerRef.current = (e: KeyboardEvent) => {
+    if (positionDrillOpen) return;
     const active = document.activeElement as HTMLElement | null;
     if (active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
     const { key } = e;
@@ -499,6 +502,8 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     lastInteractionRef.current = Date.now();
 
     if (key === 'Control') { highlightBufferRef.current = ''; stopSpeaking(); return; }
+
+    if (key === 'p') { e.preventDefault(); setPositionDrillOpen(true); return; }
 
     if (key === ' ') {
       e.preventDefault();
@@ -771,13 +776,20 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           </div>
 
           <div className="cg-legend">
-            Space = play/pause | g/← = back | h/→ = next | n = flag novelty | m = memorize | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | [file][rank] = highlight
+            Space = play/pause | g/← = back | h/→ = next | n = flag novelty | m = memorize | p = position scan | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | [file][rank] = highlight
             {recallMode && ' | memorize: [piece][file][rank] — s=K d=R f=P j=N k=B l=Q | Esc=skip'}
           </div>
 
           <GameStats game={game} onJumpTo={handleJumpTo} />
         </div>
       </div>
+
+      {positionDrillOpen && (
+        <PositionDrillModal
+          fen={currentFen}
+          onClose={() => setPositionDrillOpen(false)}
+        />
+      )}
     </div>
   );
 }

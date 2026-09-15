@@ -5,7 +5,7 @@ import { WHITE_OPENINGS, BLACK_OPENINGS } from '../../data/openings';
 import { TRAINER_WHITE, TRAINER_BLACK } from '../../data/openingTrainers';
 import { STRUCTURES } from '../../data/structures';
 import { PLAYER_REGISTRY } from '../../data/playerRegistry';
-import { CURATED_GAMES, PATTERN_LABELS } from '../../data/classicalGamesSelection';
+// import { CURATED_GAMES, PATTERN_LABELS } from '../../data/classicalGamesSelection';
 import { useProfileStore } from '../../store/profileStore';
 import { setGlobalSpeechRate } from '../../utils/speechUtils';
 
@@ -92,22 +92,7 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
   const cellRuns            = useProfileStore(s => s.cellGuesserRuns);
   const colorRuns           = useProfileStore(s => s.squareColorRuns);
   const blindRuns           = useProfileStore(s => s.blindPathingRuns);
-  const speechRate          = useProfileStore(s => s.speechRate);
-  const setSpeechRate       = useProfileStore(s => s.setSpeechRate);
-  const autoAdvanceMs       = useProfileStore(s => s.autoAdvanceMs);
-  const setAutoAdvanceMs    = useProfileStore(s => s.setAutoAdvanceMs);
-  const noveltyMultiplier   = useProfileStore(s => s.noveltyMultiplier);
-  const setNoveltyMultiplier = useProfileStore(s => s.setNoveltyMultiplier);
-  const dailyTarget         = useProfileStore(s => s.dailyTarget);
-  const setDailyTarget      = useProfileStore(s => s.setDailyTarget);
-  const readsByDate         = useProfileStore(s => s.readsByDate);
-
-  const today     = new Date().toISOString().slice(0, 10);
-  const todayCount = readsByDate[today] ?? 0;
-  const weekCount  = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    return readsByDate[d.toISOString().slice(0, 10)] ?? 0;
-  }).reduce((a, b) => a + b, 0);
+  const speechRate = useProfileStore(s => s.speechRate);
 
   const totalDrillMs = [...cellRuns, ...colorRuns, ...blindRuns].reduce((sum, r) => sum + r.timeMs, 0);
 
@@ -142,10 +127,10 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
         aria-label="Blindfold Literacy B1 — curated game corpus"
       >
-        <span className="nav-icon" aria-hidden="true">📖</span>
+        <span className="nav-icon bp-icon-b1" aria-hidden="true">♙</span>
         <span className="nav-text-group">
           <span className="nav-label">Blindfold Literacy (B1)</span>
-          <span className="nav-desc" aria-hidden="true">Curated corpus · 27 games</span>
+          <span className="nav-desc" aria-hidden="true">Core concepts · 27 games</span>
         </span>
       </NavLink>
 
@@ -155,40 +140,27 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
         aria-label="Blindfold Literacy B2 — subconcepts and secondary openings"
       >
-        <span className="nav-icon" aria-hidden="true">📗</span>
+        <span className="nav-icon bp-icon-b2" aria-hidden="true">♘</span>
         <span className="nav-text-group">
           <span className="nav-label">Blindfold Literacy (B2)</span>
           <span className="nav-desc" aria-hidden="true">Subconcepts · 32 games</span>
         </span>
       </NavLink>
 
-      {/* ── Session log + Masters Games (C1) ── */}
-      <div className="sidebar-session">
-        <span className="sidebar-session-label">Today</span>
-        <span className={`sidebar-session-count${todayCount >= dailyTarget ? ' done' : ''}`}>
-          {todayCount}
+      {/* ── Masters Games C1 ── */}
+      <NavLink
+        to="/cross-search"
+        className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
+        aria-label="Masters Games C1 — open exploration of master play"
+      >
+        <span className="nav-icon bp-icon-c1" aria-hidden="true">♕</span>
+        <span className="nav-text-group">
+          <span className="nav-label">Masters Games (C1)</span>
+          <span className="nav-desc" aria-hidden="true">Open exploration · masters library</span>
         </span>
-        <span className="sidebar-session-sep">/</span>
-        <input
-          className="sidebar-session-target"
-          type="number"
-          min={1}
-          max={200}
-          value={dailyTarget}
-          onChange={e => { const n = Number(e.target.value); if (n > 0) setDailyTarget(n); }}
-          aria-label="Daily reading target"
-          title="Daily reading target"
-        />
-        {weekCount > 0 && (
-          <span className="sidebar-session-week" title={`${weekCount} games read in the last 7 days`}>
-            {weekCount} wk
-          </span>
-        )}
-      </div>
-
-      <details className="sidebar-group">
-        <summary className="sidebar-group-btn">Masters Games (C1)</summary>
-        <SimpleNavItem to="/cross-search" label="⇄ Cross-player search" />
+      </NavLink>
+      <details className="sidebar-group sidebar-group-indent">
+        <summary className="sidebar-group-btn sidebar-group-btn-sub">Find a player</summary>
         <PlayerSearch />
       </details>
 
@@ -219,8 +191,8 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         </ul>
       </details>
 
-      {/* ── Classical Games ── */}
-      <details className="sidebar-group">
+      {/* ── Classical Games — commented out, covered by B1/B2/C1 track ── */}
+      {/* <details className="sidebar-group">
         <summary className="sidebar-group-btn">Classical Games</summary>
         <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {CURATED_GAMES.map(g => (
@@ -232,7 +204,7 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
             />
           ))}
         </ul>
-      </details>
+      </details> */}
 
       {showDrillStats && dailyRows.length > 0 && createPortal(
         <div className="modal-backdrop" onClick={() => setShowDrillStats(false)}>
@@ -318,55 +290,6 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
           <SimpleNavItem to="/endgame" label="Endgame Drills" />
         </ul>
       </details>
-
-      {/* ── Voice speed ── */}
-      <div className="sidebar-speech">
-        <span className="sidebar-speech-label">🔊 Speed</span>
-        <input
-          type="range"
-          min={1}
-          max={10}
-          step={0.5}
-          value={speechRate}
-          onChange={e => setSpeechRate(Number(e.target.value))}
-          className="sidebar-speech-slider"
-          aria-label="Voice speed"
-        />
-        <span className="sidebar-speech-value">{speechRate}×</span>
-      </div>
-
-      {/* ── Playback cadence ── */}
-      <div className="sidebar-speech">
-        <span className="sidebar-speech-label">▶ Cadence</span>
-        <input
-          type="range"
-          min={1000}
-          max={12000}
-          step={500}
-          value={autoAdvanceMs}
-          onChange={e => setAutoAdvanceMs(Number(e.target.value))}
-          className="sidebar-speech-slider"
-          aria-label="Auto-advance cadence"
-        />
-        <span className="sidebar-speech-value">{(autoAdvanceMs / 1000).toFixed(1)}s</span>
-      </div>
-
-      {/* ── Novelty sensitivity ── */}
-      <div className="sidebar-speech">
-        <span className="sidebar-speech-label">⚡ Novelty</span>
-        <input
-          type="range"
-          min={1}
-          max={3}
-          step={0.25}
-          value={noveltyMultiplier}
-          onChange={e => setNoveltyMultiplier(Number(e.target.value))}
-          className="sidebar-speech-slider"
-          aria-label="Novelty sensitivity"
-          title={`Pause if no tap for ${(autoAdvanceMs * noveltyMultiplier / 1000).toFixed(1)}s`}
-        />
-        <span className="sidebar-speech-value">{noveltyMultiplier}×</span>
-      </div>
 
       {/* ── Auth ── */}
       {/* <div className="sidebar-auth">

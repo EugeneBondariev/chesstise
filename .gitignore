@@ -14,3 +14,4 @@ backend/ChessTise.API/appsettings.Development.json
 .DS_Store
 Thumbs.db
 *.user
+.claude/scheduled_tasks.lock

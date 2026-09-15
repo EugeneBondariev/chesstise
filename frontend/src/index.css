@@ -2302,6 +2302,28 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   background: rgba(74,158,255,0.15);
 }
 
+/* Track level icons — pawn → knight → queen */
+.bp-icon-b1, .bp-icon-b2, .bp-icon-c1 {
+  font-size: 1.35rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  flex-shrink: 0;
+}
+.bp-icon-b1 { color: #94a3b8; }
+.bp-icon-b2 { color: #7dd3fc; }
+.bp-icon-c1 { color: #fbbf24; }
+
+/* Indented sub-accordion below C1 */
+.sidebar-group-indent { margin-left: 0.5rem; }
+.sidebar-group-btn-sub {
+  font-size: 0.78rem !important;
+  color: var(--muted) !important;
+  padding: 0.35rem 1rem !important;
+}
+
 /* Games view */
 .bp-games-view { padding: 0 1rem 2rem; }
 .bp-pending-banner {
@@ -2968,17 +2990,18 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 /* ── Settings gear button ── */
 .settings-gear-btn {
   position: fixed;
-  top: 0.6rem;
-  right: 0.9rem;
+  top: 0.55rem;
+  right: 0.85rem;
   z-index: 200;
   background: none;
   border: none;
   color: var(--muted);
-  font-size: 1.25rem;
   cursor: pointer;
-  padding: 0.25rem 0.35rem;
+  padding: 0.3rem;
   border-radius: 6px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.15s, background 0.15s;
 }
 .settings-gear-btn:hover {
@@ -3143,3 +3166,96 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 }
 .cg-favorite-btn:hover { color: #fbbf24; }
 .cg-favorite-btn.active { color: #fbbf24; }
+
+/* ── Position Drill Modal ── */
+.pos-drill-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.pos-drill-modal {
+  background: #1a1d2e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+.pos-drill-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.pos-drill-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.pos-drill-counter {
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent, #4a9eff);
+  font-weight: 600;
+}
+.pos-drill-body {
+  padding: 1.1rem 1.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.pos-drill-input-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.pos-drill-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.pos-drill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.pos-drill-chip {
+  font-size: 0.78rem;
+  font-family: monospace;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pos-drill-chip.correct   { background: rgba(74,222,128,0.15); color: #4ade80; }
+.pos-drill-chip.wrong     { background: rgba(248,113,113,0.15); color: #f87171; }
+.pos-drill-chip.duplicate { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+.pos-drill-chip.missed    { background: rgba(255,255,255,0.07); color: var(--muted); }
+.pos-drill-missed-section { display: flex; flex-direction: column; gap: 0.5rem; }
+.pos-drill-missed-title {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+.pos-drill-perfect {
+  color: #4ade80;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.pos-drill-done-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0;
+}
