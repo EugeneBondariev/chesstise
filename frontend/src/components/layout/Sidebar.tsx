@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { WHITE_OPENINGS, BLACK_OPENINGS } from '../../data/openings';
 import { TRAINER_WHITE, TRAINER_BLACK } from '../../data/openingTrainers';
 import { STRUCTURES } from '../../data/structures';
-import { PLAYER_REGISTRY } from '../../data/playerRegistry';
+// import { PLAYER_REGISTRY } from '../../data/playerRegistry';
 // import { CURATED_GAMES, PATTERN_LABELS } from '../../data/classicalGamesSelection';
 import { useProfileStore } from '../../store/profileStore';
 import { setGlobalSpeechRate } from '../../utils/speechUtils';
@@ -61,32 +61,6 @@ function SimpleNavItem({ to, label, title }: { to: string; label: string; title?
   );
 }
 
-function PlayerSearch() {
-  const [q, setQ] = useState('');
-  const filtered = q.trim()
-    ? PLAYER_REGISTRY.filter(p => p.name.toLowerCase().includes(q.toLowerCase()))
-    : PLAYER_REGISTRY;
-  return (
-    <>
-      <input
-        className="sidebar-player-search"
-        type="search"
-        placeholder="Filter players…"
-        value={q}
-        onChange={e => setQ(e.target.value)}
-        aria-label="Filter players"
-      />
-      <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-        {filtered.map(p => (
-          <SimpleNavItem key={p.id} to={`/players/${p.id}`} label={p.name} />
-        ))}
-        {filtered.length === 0 && (
-          <li style={{ padding: '0.4rem 1rem', opacity: 0.5, fontSize: '0.8rem' }}>No match</li>
-        )}
-      </ul>
-    </>
-  );
-}
 
 export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
   const cellRuns            = useProfileStore(s => s.cellGuesserRuns);
@@ -149,20 +123,16 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
 
       {/* ── Masters Games C1 ── */}
       <NavLink
-        to="/cross-search"
+        to="/masters"
         className={({ isActive }) => `nav-item bp-foundations-link${isActive ? ' active' : ''}`}
         aria-label="Masters Games C1 — open exploration of master play"
       >
         <span className="nav-icon bp-icon-c1" aria-hidden="true">♕</span>
         <span className="nav-text-group">
           <span className="nav-label">Masters Games (C1)</span>
-          <span className="nav-desc" aria-hidden="true">Open exploration · masters library</span>
+          <span className="nav-desc" aria-hidden="true">Open exploration · {251} players</span>
         </span>
       </NavLink>
-      <details className="sidebar-group sidebar-group-indent">
-        <summary className="sidebar-group-btn sidebar-group-btn-sub">Find a player</summary>
-        <PlayerSearch />
-      </details>
 
       {/* ── Drills ── */}
       <div className="sidebar-drills-wrapper">

@@ -2302,6 +2302,79 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   background: rgba(74,158,255,0.15);
 }
 
+/* ── Masters Corpus page ── */
+.masters-search-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem 1.25rem;
+  max-width: 320px;
+}
+.masters-filter-input {
+  flex: 1;
+  background: var(--surface, #1e2230);
+  border: 1px solid var(--border, #3a3f55);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.85rem;
+  padding: 0.45rem 0.75rem;
+  outline: none;
+}
+.masters-filter-input:focus { border-color: var(--accent, #4a9eff); }
+.masters-filter-clear {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.3rem;
+}
+.masters-filter-clear:hover { color: var(--text); }
+.masters-no-results {
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0 1rem;
+}
+.masters-player-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0.3rem;
+  padding: 0 1rem 2rem;
+}
+.masters-player-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.82rem;
+  text-align: left;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.masters-player-btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--border, #3a3f55);
+}
+.masters-cross-section {
+  padding: 0 1rem 2rem;
+  margin-top: 0.5rem;
+}
+.masters-cross-toggle {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  transition: color 0.12s;
+}
+.masters-cross-toggle:hover { color: var(--text); }
+.masters-cross-body { margin-top: 0.75rem; }
+
 /* Track level icons — pawn → knight → queen */
 .bp-icon-b1, .bp-icon-b2, .bp-icon-c1 {
   font-size: 1.35rem;
@@ -2488,7 +2561,7 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   padding: 2rem 0;
 }
 .bp-prog-table {
-  width: 100%;
+  width: auto;
   border-collapse: collapse;
   font-size: 0.83rem;
 }
@@ -2496,18 +2569,20 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   text-align: left;
   color: var(--muted);
   font-weight: 500;
-  padding: 0.3rem 0.6rem 0.5rem;
+  padding: 0.3rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--border, #3a3f55);
   white-space: nowrap;
 }
+.bp-prog-table th:not(:first-child) { padding-left: 0.75rem; }
 .bp-prog-table td {
-  padding: 0.45rem 0.6rem;
+  padding: 0.4rem 0.75rem 0.4rem 0;
   border-bottom: 1px solid rgba(255,255,255,0.04);
   vertical-align: middle;
 }
+.bp-prog-table td:not(:first-child) { padding-left: 0.75rem; }
 .bp-prog-table tr:last-child td { border-bottom: none; }
-.bp-prog-rank { color: var(--muted); width: 2.5rem; }
-.bp-prog-name { max-width: 28rem; }
+.bp-prog-rank { color: var(--muted); white-space: nowrap; }
+.bp-prog-name { }
 .bp-prog-num { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
 .bp-prog-spm {
   white-space: nowrap;
