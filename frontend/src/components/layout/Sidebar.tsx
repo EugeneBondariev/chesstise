@@ -137,6 +137,16 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
         </span>
       </NavLink>
 
+      {/* ── Favorites ── */}
+      <NavLink
+        to="/favorites"
+        className={({ isActive }) => `nav-item nav-item-favorites${isActive ? ' active' : ''}`}
+        aria-label="Favorites — your starred games"
+      >
+        <span className="nav-icon" aria-hidden="true">★</span>
+        <span className="nav-label">Favorites</span>
+      </NavLink>
+
       {/* ── Drills ── */}
       <div className="sidebar-drills-wrapper">
         <details className="sidebar-group">
