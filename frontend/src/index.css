@@ -3226,6 +3226,25 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   color: var(--muted);
   margin: 0.5rem 0 0;
 }
+.settings-build-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border, rgba(255,255,255,0.07));
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.settings-build-hash {
+  font-family: monospace;
+  background: rgba(255,255,255,0.05);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  color: var(--text-dim, #94a3b8);
+  user-select: all;
+}
+.settings-build-date { color: var(--muted); }
 
 /* ── Favorites star on game page ── */
 .cg-favorite-btn {

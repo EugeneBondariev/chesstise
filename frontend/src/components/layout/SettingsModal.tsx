@@ -172,6 +172,12 @@ function DataTab() {
           Import replaces all current data permanently.
         </p>
       </SettingRow>
+
+      <div className="settings-build-info">
+        <span>Build</span>
+        <code className="settings-build-hash">{__BUILD_HASH__}</code>
+        <span className="settings-build-date">{__BUILD_DATE__}</span>
+      </div>
     </div>
   );
 }
