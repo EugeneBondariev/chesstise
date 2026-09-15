@@ -2445,6 +2445,58 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 .bp-cov-none { color: var(--border, #3a3f55); }
 .bp-cov-sep { color: var(--muted); }
 
+/* ── Blueprint Progress ── */
+.bp-progress-view {
+  padding: 0 0.25rem;
+}
+.bp-prog-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.bp-prog-stat { color: var(--text); }
+.bp-prog-dot { color: var(--border, #3a3f55); }
+.bp-prog-empty {
+  color: var(--muted);
+  font-size: 0.88rem;
+  padding: 2rem 0;
+}
+.bp-prog-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+.bp-prog-table th {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 500;
+  padding: 0.3rem 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--border, #3a3f55);
+  white-space: nowrap;
+}
+.bp-prog-table td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.bp-prog-table tr:last-child td { border-bottom: none; }
+.bp-prog-rank { color: var(--muted); width: 2.5rem; }
+.bp-prog-name { max-width: 28rem; }
+.bp-prog-num { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
+.bp-prog-spm {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  font-weight: 600;
+  color: var(--accent, #4a9eff);
+}
+.bp-prog-perfect td { background: rgba(74,222,128,0.06); }
+.bp-prog-perfect .bp-prog-spm { color: #4ade80; }
+
 /* ── Game Stats ── */
 .game-stats {
   display: flex;

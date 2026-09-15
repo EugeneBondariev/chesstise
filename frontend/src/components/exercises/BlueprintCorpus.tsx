@@ -10,6 +10,7 @@ import {
   type GameCategory,
   type ConceptGroup,
 } from '../../data/blueprintCorpus';
+import { useGameStatsStore } from '../../store/gameStatsStore';
 
 const GROUP_COLORS: Record<ConceptGroup, string> = {
   opening:   'bp-tag-opening',
@@ -23,7 +24,7 @@ const CATEGORY_ORDER: GameCategory[] = ['e4-openings', 'd4-c4-openings', 'tactic
 
 export default function BlueprintCorpus() {
   const navigate = useNavigate();
-  const [view, setView] = useState<'games' | 'coverage'>('games');
+  const [view, setView] = useState<'games' | 'coverage' | 'progress'>('games');
 
   const verifiedCount = BLUEPRINT_GAMES.filter(g => g.id !== null).length;
   const totalConcepts = CONCEPTS.length;
@@ -53,13 +54,21 @@ export default function BlueprintCorpus() {
           >
             Coverage Map
           </button>
+          <button
+            className={`bp-toggle-btn${view === 'progress' ? ' active' : ''}`}
+            onClick={() => setView('progress')}
+          >
+            Progress
+          </button>
         </div>
       </div>
 
       {view === 'games' ? (
         <GamesView navigate={navigate} verifiedCount={verifiedCount} />
-      ) : (
+      ) : view === 'coverage' ? (
         <CoverageView navigate={navigate} />
+      ) : (
+        <ProgressView games={BLUEPRINT_GAMES} navigate={navigate} />
       )}
     </div>
   );
@@ -123,6 +132,111 @@ function GamesView({ navigate, verifiedCount }: { navigate: ReturnType<typeof us
           </section>
         );
       })}
+    </div>
+  );
+}
+
+function ProgressView({
+  games,
+  navigate,
+}: {
+  games: { id: string | null; title: string }[];
+  navigate: ReturnType<typeof useNavigate>;
+}) {
+  const replays = useGameStatsStore(s => s.replays);
+
+  const rows = games
+    .filter(g => g.id !== null)
+    .map(game => {
+      const completed = replays.filter(
+        r =>
+          r.gameId === game.id &&
+          r.totalTimeMs !== undefined &&
+          r.moves.length > 0 &&
+          r.moves[r.moves.length - 1] !== null,
+      );
+      if (completed.length === 0) return null;
+
+      const best = completed.reduce((a, b) =>
+        a.totalTimeMs! / a.moves.length <= b.totalTimeMs! / b.moves.length ? a : b,
+      );
+
+      const practiced = best.moves.filter(m => m !== null);
+      const correctFirst = practiced.filter(m => m!.attempts === 1).length;
+      const accuracy = practiced.length > 0 ? Math.round((correctFirst / practiced.length) * 100) : 0;
+      const secPerMove = best.totalTimeMs! / 1000 / best.moves.length;
+
+      return {
+        game,
+        globalIdx: games.indexOf(game) + 1,
+        moveCount: best.moves.length,
+        bestTimeMs: best.totalTimeMs!,
+        accuracy,
+        secPerMove,
+        tryCount: completed.length,
+      };
+    })
+    .filter((r): r is NonNullable<typeof r> => r !== null)
+    .sort((a, b) => b.secPerMove - a.secPerMove);
+
+  const totalVerified = games.filter(g => g.id !== null).length;
+  const perfect = rows.filter(r => r.accuracy === 100).length;
+
+  function fmtTime(ms: number) {
+    const s = Math.round(ms / 1000);
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m > 0 ? `${m}m ${sec.toString().padStart(2, '0')}s` : `${sec}s`;
+  }
+
+  return (
+    <div className="bp-progress-view">
+      <div className="bp-prog-summary">
+        <span className="bp-prog-stat">{rows.length} / {totalVerified} attempted</span>
+        <span className="bp-prog-dot">·</span>
+        <span className="bp-prog-stat">
+          {totalVerified > 0 ? Math.round((rows.length / totalVerified) * 100) : 0}% started
+        </span>
+        <span className="bp-prog-dot">·</span>
+        <span className="bp-prog-stat">{perfect} perfect</span>
+      </div>
+      {rows.length === 0 ? (
+        <p className="bp-prog-empty">No completed games yet — finish a replay to see your stats here.</p>
+      ) : (
+        <table className="bp-prog-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Game</th>
+              <th>Moves</th>
+              <th>Best time</th>
+              <th>Accuracy</th>
+              <th>sec/move</th>
+              <th>Tries</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, rank) => (
+              <tr key={row.game.id} className={row.accuracy === 100 ? 'bp-prog-perfect' : ''}>
+                <td className="bp-prog-rank">{rank + 1}</td>
+                <td className="bp-prog-name">
+                  <button
+                    className="bp-cov-game-link"
+                    onClick={() => navigate(`/games/${row.game.id}`)}
+                  >
+                    #{row.globalIdx} {row.game.title}
+                  </button>
+                </td>
+                <td className="bp-prog-num">{row.moveCount}</td>
+                <td className="bp-prog-num">{fmtTime(row.bestTimeMs)}</td>
+                <td className="bp-prog-num">{row.accuracy}%</td>
+                <td className="bp-prog-spm">{row.secPerMove.toFixed(1)}s</td>
+                <td className="bp-prog-num">{row.tryCount}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
