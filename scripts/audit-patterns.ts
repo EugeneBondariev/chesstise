@@ -1,35 +1,34 @@
-// Standalone PGN pattern auditor — run with node scripts/audit-patterns.js <mode> [args]
+// Standalone PGN pattern auditor — run with: npx tsx scripts/audit-patterns.ts <mode> [args]
 // Modes:
 //   audit-all          — print pattern matrix for the 20 curated games
 //   audit <id> <idx>   — show patterns for one game  (e.g. audit kasparov 373)
 //   search <id> <pat>  — find decisive games with a given pattern (e.g. search kasparov B1)
 //   search-multi <id> <pat1,pat2,...>  — all patterns must be present
 
-'use strict';
-const fs   = require('fs');
-const path = require('path');
+import * as fs   from 'fs';
+import * as path from 'path';
 
 const DATA_DIR = path.join(__dirname, '..', 'frontend', 'src', 'data');
 
-function readPgn(playerId) {
+function readPgn(playerId: string): string | null {
   const f = path.join(DATA_DIR, `${playerId}_games.pgn`);
   if (!fs.existsSync(f)) return null;
   return fs.readFileSync(f, 'utf8');
 }
 
-function getChunks(pgn) {
+function getChunks(pgn: string): string[] {
   return pgn.split(/(?=^\[Event\s)/m).filter(c => c.trim());
 }
 
-function getTags(chunk) {
-  const tags = {};
+function getTags(chunk: string): Record<string, string> {
+  const tags: Record<string, string> = {};
   for (const m of chunk.matchAll(/^\[(\w+)\s+"([^"]*)"\]/gm)) {
     tags[m[1]] = m[2];
   }
   return tags;
 }
 
-function stripAnnotations(mv) {
+function stripAnnotations(mv: string): string {
   let s = mv.replace(/\{[^}]*\}/g, ' ');
   for (let i = 0; i < 8; i++) s = s.replace(/\([^()]*\)/g, ' ');
   s = s.replace(/\$\d+/g, ' ');
@@ -38,7 +37,7 @@ function stripAnnotations(mv) {
   return s;
 }
 
-function parseMoves(chunk) {
+function parseMoves(chunk: string): string[] {
   const tagMatches = [...chunk.matchAll(/^\[.*\]\s*$/gm)];
   const last = tagMatches[tagMatches.length - 1];
   const start = last ? chunk.indexOf(last[0]) + last[0].length : 0;
@@ -48,7 +47,14 @@ function parseMoves(chunk) {
   );
 }
 
-function detectPatterns(moves) {
+interface Patterns {
+  A1: boolean; A2: boolean; A3: boolean; A4: boolean;
+  A5: boolean; A6: boolean; A7: boolean;
+  B1: boolean; B2: boolean; B3: boolean; B4: boolean;
+  C1: boolean; H1: boolean; H2: boolean;
+}
+
+function detectPatterns(moves: string[]): Patterns {
   const white = moves.filter((_, i) => i % 2 === 0);
   const black = moves.filter((_, i) => i % 2 === 1);
 
@@ -76,7 +82,7 @@ function detectPatterns(moves) {
 
 // ── modes ────────────────────────────────────────────────────────────────────
 
-function auditGame(playerId, idx) {
+function auditGame(playerId: string, idx: number): void {
   const pgn = readPgn(playerId);
   if (!pgn) { console.log('Player not found:', playerId); return; }
   const chunks = getChunks(pgn);
@@ -91,8 +97,8 @@ function auditGame(playerId, idx) {
   console.log('Moves:', moves.length);
 }
 
-function auditAll() {
-  const CURATED = [
+function auditAll(): void {
+  const CURATED: [string, number][] = [
     ['anderssen',54],['anderssen',117],['morphy',124],
     ['lasker',174],['capablanca',244],['alekhine',903],
     ['capablanca',555],['botvinnik',376],
@@ -101,7 +107,7 @@ function auditAll() {
     ['karpov',498],['kasparov',373],['kasparov',1511],
     ['kramnik',1496],['anand',2671],['carlsen',1586],
   ];
-  const KEYS = ['A1','A2','A3','A4','A5','A6','A7','B1','B2','B3','B4','C1','H1','H2'];
+  const KEYS: (keyof Patterns)[] = ['A1','A2','A3','A4','A5','A6','A7','B1','B2','B3','B4','C1','H1','H2'];
   const header = ['Game ID + White vs Black'.padEnd(44), ...KEYS].join(' ');
   console.log(header);
   console.log('-'.repeat(header.length));
@@ -120,11 +126,15 @@ function auditAll() {
   }
 }
 
-function searchGames(playerId, patternFn, maxResults = 15) {
+function searchGames(
+  playerId: string,
+  patternFn: (p: Patterns, tags: Record<string, string>) => boolean,
+  maxResults = 15,
+): void {
   const pgn = readPgn(playerId);
   if (!pgn) { console.log('Player not found:', playerId); return; }
-  const chunks  = getChunks(pgn);
-  let   found   = 0;
+  const chunks = getChunks(pgn);
+  let   found  = 0;
   for (let i = 0; i < chunks.length; i++) {
     if (found >= maxResults) break;
     try {
@@ -138,7 +148,7 @@ function searchGames(playerId, patternFn, maxResults = 15) {
       const active = Object.entries(p).filter(([, v]) => v).map(([k]) => k).join(' ');
       console.log(`  ${playerId}-${i}: ${tags.White} vs ${tags.Black}  ${tags.Date || '?'}  [${tags.ECO || '?'}]  ${tags.Result}  | ${active}`);
       found++;
-    } catch {}
+    } catch { /* skip malformed chunks */ }
   }
   if (found === 0) console.log('  (no matches)');
 }
@@ -154,16 +164,16 @@ if (mode === 'audit-all') {
 } else if (mode === 'search') {
   const [playerId, pat] = rest;
   console.log(`Searching ${playerId} for ${pat}…`);
-  searchGames(playerId, p => p[pat]);
+  searchGames(playerId, p => p[pat as keyof Patterns]);
 } else if (mode === 'search-multi') {
   const [playerId, patStr] = rest;
-  const pats = patStr.split(',');
+  const pats = patStr.split(',') as (keyof Patterns)[];
   console.log(`Searching ${playerId} for [${pats.join(' + ')}]…`);
   searchGames(playerId, p => pats.every(k => p[k]));
 } else {
   console.log('Usage:');
-  console.log('  node scripts/audit-patterns.js audit-all');
-  console.log('  node scripts/audit-patterns.js audit <playerId> <idx>');
-  console.log('  node scripts/audit-patterns.js search <playerId> <pattern>');
-  console.log('  node scripts/audit-patterns.js search-multi <playerId> <pat1,pat2,...>');
+  console.log('  npx tsx scripts/audit-patterns.ts audit-all');
+  console.log('  npx tsx scripts/audit-patterns.ts audit <playerId> <idx>');
+  console.log('  npx tsx scripts/audit-patterns.ts search <playerId> <pattern>');
+  console.log('  npx tsx scripts/audit-patterns.ts search-multi <playerId> <pat1,pat2,...>');
 }
