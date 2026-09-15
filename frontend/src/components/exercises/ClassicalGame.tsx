@@ -11,6 +11,7 @@ import { useGameStatsStore } from '../../store/gameStatsStore';
 import { useProfileStore } from '../../store/profileStore';
 import GameStats from './GameStats';
 import PositionDrillModal from './PositionDrillModal';
+import { B1_ANNOTATIONS_MAP } from '../../data/b1Annotations';
 
 const FILE_FROM_KEY: Record<string, string> = { a: 'a', s: 'b', d: 'c', f: 'd', j: 'e', k: 'f', l: 'g', ';': 'h' };
 const RANK_FROM_KEY: Record<string, number>  = { a: 1, s: 2, d: 3, f: 4, j: 5, k: 6, l: 7, ';': 8 };
@@ -207,6 +208,12 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const toggleMarkedGame   = useProfileStore(s => s.toggleMarkedGame);
   const isFavorite         = markedGames.includes(game.id);
 
+  const annotationMap = useMemo(() => {
+    const ann = B1_ANNOTATIONS_MAP.get(game.id);
+    if (!ann) return null;
+    return new Map(ann.moves.map(m => [m.idx, m.comment]));
+  }, [game.id]);
+
   useEffect(() => {
     const el = boardContainerRef.current;
     if (!el) return;
@@ -294,8 +301,10 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   }, [game]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function advanceWithSpeech(idx: number) {
-    const cls = moveClassifications[idx];
-    say(spokenMove(game.moves[idx]) + (cls ? `, ${cls}` : ''));
+    const cls     = moveClassifications[idx];
+    const comment = annotationMap?.get(idx);
+    const text    = spokenMove(game.moves[idx]) + (cls ? `, ${cls}` : '') + (comment ? '. ' + comment : '');
+    say(text);
     const newIdx = idx + 1;
     setPlyIdx(newIdx);
     setCommentary(null);
@@ -701,11 +710,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
               const wi = pair * 2;
               const bi = pair * 2 + 1;
               const jumpTo = (idx: number) => {
-                const cls = moveClassifications[idx];
+                const cls     = moveClassifications[idx];
+                const comment = annotationMap?.get(idx);
+                const text    = spokenMove(game.moves[idx]) + (cls ? `, ${cls}` : '') + (comment ? '. ' + comment : '');
                 setPlyIdx(idx + 1);
                 setBoardExpanded(true);
                 setCommentary(null);
-                say(spokenMove(game.moves[idx]) + (cls ? `, ${cls}` : ''));
+                say(text);
               };
               const wCls = moveClassifications[wi];
               const bCls = game.moves[bi] !== undefined ? moveClassifications[bi] : undefined;

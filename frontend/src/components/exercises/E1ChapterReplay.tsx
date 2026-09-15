@@ -209,6 +209,8 @@ export default function E1ChapterReplay({ chapter }: { chapter: E1Chapter }) {
       lastInteractionRef.current = Date.now();
       const key = e.key;
 
+      if (key === 'Control') { stopSpeaking(); return; }
+
       if (key === 'p') { e.preventDefault(); setPositionDrillOpen(true); return; }
 
       // auto-advance with space
@@ -337,6 +339,7 @@ export default function E1ChapterReplay({ chapter }: { chapter: E1Chapter }) {
           <p>• <strong>J</strong> — step forward one move</p>
           <p>• <strong>← / Backspace</strong> — step back</p>
           <p>• <strong>P</strong> — position scan</p>
+          <p>• <strong>Ctrl</strong> — stop narration</p>
         </div>
       </details>
 
