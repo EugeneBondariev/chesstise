@@ -3309,6 +3309,19 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 .cg-favorite-btn:hover { color: #fbbf24; }
 .cg-favorite-btn.active { color: #fbbf24; }
 
+/* ── Restart button ── */
+.cg-restart-btn {
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid var(--border, #30363d);
+  background: transparent;
+  color: var(--muted, #8b949e);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.cg-restart-btn:hover { color: var(--fg, #e6edf3); border-color: var(--fg, #e6edf3); }
+
 /* ── Time-control badge ── */
 .cg-tc-badge {
   display: inline-block;

@@ -469,6 +469,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     advanceWithSpeech(plyIdx);
   }
 
+  function handleRestart() {
+    setIsPlaying(false);
+    setPlyIdx(0);
+    setCommentary(null);
+    say('Starting position.');
+  }
+
   function handleF() {
     if (recallPending) {
       recallBufferRef.current = '';
@@ -854,7 +861,12 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           </div>
 
           <div className="prompt-card" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem' }}>
-            {isGameOver && <span>Game over — {game.result}</span>}
+            {isGameOver && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span>Game over — {game.result}</span>
+                <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>
+              </div>
+            )}
 
             {commentary?.loading && (
               <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Fetching commentary…</span>
