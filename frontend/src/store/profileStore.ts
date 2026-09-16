@@ -12,6 +12,7 @@ interface ProfileState {
   autoAdvanceMs: number;
   noveltyMultiplier: number;
   dailyTarget: number;
+  boardMaxWidth: number;
   readCounts: Record<string, number>;   // gameId → total reads all time
   readsByDate: Record<string, number>;  // 'YYYY-MM-DD' → reads that day
   addCellGuesserRun: (run: RunResult) => void;
@@ -24,6 +25,7 @@ interface ProfileState {
   setAutoAdvanceMs: (ms: number) => void;
   setNoveltyMultiplier: (n: number) => void;
   setDailyTarget: (n: number) => void;
+  setBoardMaxWidth: (n: number) => void;
   logRead: (gameId: string) => void;
 }
 
@@ -39,6 +41,7 @@ export const useProfileStore = create<ProfileState>()(
       autoAdvanceMs: 4000,
       noveltyMultiplier: 1.5,
       dailyTarget: 5,
+      boardMaxWidth: 360,
       readCounts: {},
       readsByDate: {},
 
@@ -68,6 +71,7 @@ export const useProfileStore = create<ProfileState>()(
       setAutoAdvanceMs:      (ms) => set({ autoAdvanceMs: ms }),
       setNoveltyMultiplier:  (n)  => set({ noveltyMultiplier: n }),
       setDailyTarget:        (n)  => set({ dailyTarget: n }),
+      setBoardMaxWidth:      (n)  => set({ boardMaxWidth: n }),
 
       logRead: (gameId) => set(state => {
         const today = new Date().toISOString().slice(0, 10);

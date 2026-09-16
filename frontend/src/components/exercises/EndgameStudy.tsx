@@ -137,15 +137,17 @@ export default function EndgameStudy() {
             <p className="endgame-turn">{pos.whiteToMove ? 'White to move.' : 'Black to move.'}</p>
           </div>
 
-          <CollapsibleBoard>
-            <Chessboard
-              position={resultFen}
-              boardWidth={360}
-              arePiecesDraggable={false}
-              animationDuration={300}
-              showBoardNotation={false}
-              boardOrientation={pos.whiteToMove ? 'white' : 'black'}
-            />
+          <CollapsibleBoard defaultOrientation={pos.whiteToMove ? 'white' : 'black'}>
+            {(orientation) => (
+              <Chessboard
+                position={resultFen}
+                boardWidth={360}
+                arePiecesDraggable={false}
+                animationDuration={300}
+                showBoardNotation={false}
+                boardOrientation={orientation}
+              />
+            )}
           </CollapsibleBoard>
 
           {status === 'idle' && (

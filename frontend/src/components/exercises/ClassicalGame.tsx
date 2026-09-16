@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Chess } from 'chess.js';
 import type { Square } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
@@ -6,6 +7,7 @@ import { speak, stopSpeaking, playSound, playCongratsSound, playAlertSound, play
 import { fetchLichessEval, fetchGeminiExplain, fetchGroqIntro, fetchGroqQuestion, formatEval } from '../../api/ai';
 import type { LichessEval } from '../../api/ai';
 import type { ClassicalGame as GameData } from '../../data/classicalGames';
+import { PLAYER_REGISTRY } from '../../data/playerRegistry';
 import CollapsibleBoard from '../common/CollapsibleBoard';
 import { useGameStatsStore } from '../../store/gameStatsStore';
 import { useProfileStore } from '../../store/profileStore';
@@ -165,6 +167,12 @@ interface Commentary {
 }
 
 export default function ClassicalGame({ game }: { game: GameData }) {
+  const navigate = useNavigate();
+  const backPlayer = useMemo(
+    () => PLAYER_REGISTRY.find(p => game.id.startsWith(p.id + '-')),
+    [game.id],
+  );
+
   const { fens, arrows: preArrows } = useMemo(() => buildPositions(game.moves), [game]);
   const [plyIdx,              setPlyIdx]             = useState(0);
   const [commentary,          setCommentary]         = useState<Commentary | null>(null);
@@ -173,7 +181,8 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const [positionEvals,       setPositionEvals]      = useState<(LichessEval | null)[]>([]);
 
   const [customQ,        setCustomQ]       = useState('');
-  const [boardWidth,     setBoardWidth]    = useState(() => Math.min(360, window.innerWidth - 32));
+  const boardMaxWidth      = useProfileStore(s => s.boardMaxWidth);
+  const [boardWidth,     setBoardWidth]    = useState(() => Math.min(boardMaxWidth, window.innerWidth - 32));
   const [highlightedSquare, setHighlightedSquare] = useState<Square | null>(null);
   const [recallMode,     setRecallMode]    = useState(false);
   const [recallPending,  setRecallPending] = useState(false);
@@ -181,7 +190,10 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const [recallAttempts, setRecallAttempts] = useState(0);
   const [isPlaying,      setIsPlaying]     = useState(false);
   const [positionDrillOpen, setPositionDrillOpen] = useState(false);
-  const lastSpokenRef      = useRef('');
+  const [hideMoves,      setHideMoves]     = useState(true);
+  const [hideBuffer,     setHideBuffer]    = useState('');
+  const lastSpokenRef    = useRef('');
+  const hideBufferRef    = useRef('');
   const prevQRef           = useRef('');
   const keyHandlerRef      = useRef<((e: KeyboardEvent) => void) | null>(null);
   const questionInputRef   = useRef<HTMLInputElement>(null);
@@ -218,11 +230,15 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     const el = boardContainerRef.current;
     if (!el) return;
     const obs = new ResizeObserver(([entry]) => {
-      setBoardWidth(Math.min(360, Math.floor(entry.contentRect.width)));
+      setBoardWidth(Math.min(boardMaxWidth, Math.floor(entry.contentRect.width)));
     });
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [boardMaxWidth]);
+
+  useEffect(() => {
+    setBoardWidth(w => Math.min(boardMaxWidth, w));
+  }, [boardMaxWidth]);
 
   // Keep ref in sync so timeout callbacks can read current playing state without stale closure
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
@@ -260,6 +276,8 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     lastSpokenRef.current = text;
     speak(text);
   }
+
+  useEffect(() => { hideBufferRef.current = ''; setHideBuffer(''); }, [plyIdx]);
 
   useEffect(() => {
     if (currentReplayIdRef.current) {
@@ -311,6 +329,18 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     if (newIdx >= game.moves.length && !hasLoggedReadRef.current) {
       hasLoggedReadRef.current = true;
       logRead(game.id);
+    }
+  }
+
+  function handleHidePredict(buf: string) {
+    if (plyIdx >= game.moves.length) return;
+    const { compareKey, disambigType } = moveInfo(game.moves[plyIdx], plyIdx);
+    const decoded = decodeInputKeys(buf, disambigType);
+    if (!decoded) { playSound(false); return; }
+    if (decoded === compareKey) {
+      advanceWithSpeech(plyIdx);
+    } else {
+      playSound(false);
     }
   }
 
@@ -563,6 +593,35 @@ export default function ClassicalGame({ game }: { game: GameData }) {
       return;
     }
 
+    // Hide-moves prediction buffer — same key system, but navigation keys still fall through
+    if (hideMoves && !recallMode && plyIdx < game.moves.length) {
+      if (key === 'Escape' && hideBufferRef.current.length > 0) {
+        e.preventDefault(); hideBufferRef.current = ''; setHideBuffer(''); return;
+      }
+      if (key === 'Backspace' && hideBufferRef.current.length > 0) {
+        e.preventDefault();
+        hideBufferRef.current = hideBufferRef.current.slice(0, -1);
+        setHideBuffer(hideBufferRef.current);
+        return;
+      }
+      const bufLen = hideBufferRef.current.length;
+      const validKey = bufLen === 0 ? ALL_PIECE_KEYS.has(key) : FILE_RANK_KEYS.has(key);
+      if (validKey) {
+        e.preventDefault();
+        hideBufferRef.current += key;
+        setHideBuffer(hideBufferRef.current);
+        const { disambigType } = moveInfo(game.moves[plyIdx], plyIdx);
+        const targetLen = disambigType !== null ? 4 : 3;
+        if (hideBufferRef.current.length === targetLen) {
+          const buf = hideBufferRef.current;
+          hideBufferRef.current = '';
+          setHideBuffer('');
+          handleHidePredict(buf);
+        }
+        return;
+      }
+    }
+
     if (key === 'ArrowLeft'  || key === 'g') { highlightBufferRef.current = ''; e.preventDefault(); handleF(); return; }
     if (key === 'ArrowRight' || key === 'h') { highlightBufferRef.current = ''; e.preventDefault(); handleJ(); return; }
     if (key === 'ArrowDown')  { highlightBufferRef.current = ''; e.preventDefault(); handleK(); return; }
@@ -602,7 +661,16 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     : `After move ${plyIdx}: ${game.moves[plyIdx - 1]}`;
 
   return (
-    <div className="exercise-page">
+    <div className="exercise-page" style={{ maxWidth: Math.max(boardMaxWidth + 420, 400), marginLeft: 'auto', marginRight: 'auto' }}>
+      {backPlayer && (
+        <button
+          className="cg-back-btn"
+          onClick={() => navigate(`/players/${backPlayer.id}`)}
+          aria-label={`Back to ${backPlayer.name}`}
+        >
+          ← {backPlayer.name}
+        </button>
+      )}
       <h1 className="exercise-title">
         {game.white} vs {game.black}
         {game.year  ? ` (${game.year})`  : ''}
@@ -619,7 +687,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
       </h1>
 
       <div className="exercise-body">
-        <div className="board-col">
+        <div className="board-col" style={{ width: boardMaxWidth }}>
           <div className="prompt-card" style={{ justifyContent: 'space-between' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{posLabel}</span>
             <button
@@ -636,6 +704,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
               title="Toggle memorize mode (m)"
             >
               {recallMode ? '🎯 Memorize' : 'Memorize'}
+            </button>
+            <button
+              className={`cg-recall-toggle${hideMoves ? ' active' : ''}`}
+              onClick={() => setHideMoves(h => !h)}
+              title="Hide move list and predict next move"
+            >
+              {hideMoves ? 'Moves hidden' : 'Hide moves'}
             </button>
             <span className="round-counter">
               {plyIdx} / {game.moves.length}
@@ -667,17 +742,20 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           <div ref={boardContainerRef} style={{ width: '100%' }}>
             {!recallMode && (
               <CollapsibleBoard isExpanded={boardExpanded} onToggle={() => setBoardExpanded(b => !b)}>
-                <Chessboard
-                  position={currentFen}
-                  boardWidth={boardWidth}
-                  arePiecesDraggable={false}
-                  customArrows={arrows}
-                  animationDuration={200}
-                  showBoardNotation={false}
-                  customDarkSquareStyle={{ backgroundColor: '#3d5a6e' }}
-                  customLightSquareStyle={{ backgroundColor: '#7a96a8' }}
-                  customSquareStyles={highlightedSquare ? { [highlightedSquare]: { backgroundColor: '#e8c240' } } : {}}
-                />
+                {(orientation) => (
+                  <Chessboard
+                    position={currentFen}
+                    boardWidth={boardWidth}
+                    boardOrientation={orientation}
+                    arePiecesDraggable={false}
+                    customArrows={arrows}
+                    animationDuration={200}
+                    showBoardNotation={false}
+                    customDarkSquareStyle={{ backgroundColor: '#3d5a6e' }}
+                    customLightSquareStyle={{ backgroundColor: '#7a96a8' }}
+                    customSquareStyles={highlightedSquare ? { [highlightedSquare]: { backgroundColor: '#e8c240' } } : {}}
+                  />
+                )}
               </CollapsibleBoard>
             )}
           </div>
@@ -705,7 +783,23 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
           </div>
 
-          {!recallMode && <div className="cg-pgn">
+          {!recallMode && hideMoves && plyIdx < game.moves.length && (() => {
+            const { disambigType } = moveInfo(game.moves[plyIdx], plyIdx);
+            const slotCount = disambigType !== null ? 4 : 3;
+            return (
+              <div className="cg-predict-row">
+                <span className="cg-recall-keys">
+                  {Array.from({ length: slotCount }, (_, i) => (
+                    <span key={i} className={`cg-recall-key${hideBuffer[i] ? ' filled' : ''}`}>
+                      {bufferSlotDisplay(hideBuffer, i, disambigType)}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            );
+          })()}
+
+          {!recallMode && !hideMoves && <div className="cg-pgn">
             {Array.from({ length: Math.ceil(game.moves.length / 2) }, (_, pair) => {
               const wi = pair * 2;
               const bi = pair * 2 + 1;
@@ -713,10 +807,15 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                 const cls     = moveClassifications[idx];
                 const comment = annotationMap?.get(idx);
                 const text    = spokenMove(game.moves[idx]) + (cls ? `, ${cls}` : '') + (comment ? '. ' + comment : '');
-                setPlyIdx(idx + 1);
+                const newIdx  = idx + 1;
+                setPlyIdx(newIdx);
                 setBoardExpanded(true);
                 setCommentary(null);
                 say(text);
+                if (newIdx >= game.moves.length && !hasLoggedReadRef.current) {
+                  hasLoggedReadRef.current = true;
+                  logRead(game.id);
+                }
               };
               const wCls = moveClassifications[wi];
               const bCls = game.moves[bi] !== undefined ? moveClassifications[bi] : undefined;

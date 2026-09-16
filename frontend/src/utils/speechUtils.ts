@@ -179,7 +179,7 @@ export function playSound(correct: boolean): void {
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(280, t);
       osc.frequency.linearRampToValueAtTime(180, t + 0.3);
-      gain.gain.setValueAtTime(0.2, t);
+      gain.gain.setValueAtTime(0.1, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
       osc.start(t);
       osc.stop(t + 0.4);

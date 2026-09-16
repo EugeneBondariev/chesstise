@@ -106,8 +106,7 @@ export default function PlayerPage() {
 
   const player = playerId ? findPlayerEntry(playerId) : undefined;
 
-  const markedGames    = useProfileStore(s => s.markedGames);
-  const toggleMarked   = useProfileStore(s => s.toggleMarkedGame);
+  const readCounts = useProfileStore(s => s.readCounts);
 
   const [games,          setGames]          = useState<ClassicalGame[]>([]);
   const [loading,        setLoading]        = useState(true);
@@ -161,8 +160,8 @@ export default function PlayerPage() {
       rows = rows.filter(g => g.eco && ecoToOpening(g.eco) === openingFilter);
     }
 
-    if (studiedFilter === 'studied')   rows = rows.filter(g =>  markedGames.includes(g.id));
-    if (studiedFilter === 'unstudied') rows = rows.filter(g => !markedGames.includes(g.id));
+    if (studiedFilter === 'studied')   rows = rows.filter(g =>  (readCounts[g.id] ?? 0) > 0);
+    if (studiedFilter === 'unstudied') rows = rows.filter(g => !(readCounts[g.id] ?? 0));
     if (patternFilter) rows = rows.filter(g => detectPattern(g.moves, patternFilter));
 
     rows = [...rows].sort((a, b) => {
@@ -182,7 +181,7 @@ export default function PlayerPage() {
     });
 
     return rows;
-  }, [games, search, resultFilter, openingFilter, studiedFilter, patternFilter, markedGames, sortKey, sortDir, player]);
+  }, [games, search, resultFilter, openingFilter, studiedFilter, patternFilter, readCounts, sortKey, sortDir, player]);
 
   if (!player) {
     return (
@@ -204,13 +203,20 @@ export default function PlayerPage() {
 
   return (
     <div className="exercise-page player-page">
+      <button
+        className="cg-back-btn"
+        onClick={() => navigate('/masters')}
+        aria-label="Back to players list"
+      >
+        ← Masters
+      </button>
       <h1 className="exercise-title">{player.name}</h1>
 
       {!loading && (() => {
-        const playerStudied = games.filter(g => markedGames.includes(g.id)).length;
+        const playerStudied = games.filter(g => (readCounts[g.id] ?? 0) > 0).length;
         const playerTotal   = games.length;
         const playerPct     = playerTotal ? Math.round((playerStudied / playerTotal) * 100) : 0;
-        const allStudied    = markedGames.length;
+        const allStudied    = Object.values(readCounts).filter(n => n > 0).length;
         const allPct        = TOTAL_GAME_COUNT ? Math.round((allStudied / TOTAL_GAME_COUNT) * 100) : 0;
         return (
           <div className="player-stats" aria-label="Study progress">
@@ -325,19 +331,15 @@ export default function PlayerPage() {
                   return (
                     <tr
                       key={g.id}
-                      className={`player-row result-row-${r.toLowerCase()}${markedGames.includes(g.id) ? ' studied' : ''}`}
+                      className={`player-row result-row-${r.toLowerCase()}${(readCounts[g.id] ?? 0) > 0 ? ' studied' : ''}`}
                       onClick={() => navigate(`/games/${g.id}`)}
                       style={{ cursor: 'pointer' }}
                       tabIndex={0}
                       onKeyDown={e => { if (e.key === 'Enter') navigate(`/games/${g.id}`); }}
                       aria-label={`${g.white} vs ${g.black}${g.year ? `, ${g.year}` : ''}, ${g.result}`}
                     >
-                      <td
-                        className="col-studied"
-                        onClick={e => { e.stopPropagation(); toggleMarked(g.id); }}
-                        title={markedGames.includes(g.id) ? 'Remove studied mark' : 'Mark as studied'}
-                      >
-                        {markedGames.includes(g.id) ? '✓' : '○'}
+                      <td className="col-studied">
+                        {(readCounts[g.id] ?? 0) > 0 ? '✓' : '○'}
                       </td>
                       <td>{g.year ?? '—'}</td>
                       <td>{g.white}</td>

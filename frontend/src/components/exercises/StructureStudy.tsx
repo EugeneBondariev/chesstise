@@ -28,14 +28,16 @@ export default function StructureStudy() {
       <div className="exercise-body">
         <div className="board-col">
           <CollapsibleBoard>
-            <Chessboard
-              position={structure.fen}
-              boardWidth={BOARD_SIZE}
-              boardOrientation="white"
-              showBoardNotation={false}
-              arePiecesDraggable={false}
-              animationDuration={0}
-            />
+            {(orientation) => (
+              <Chessboard
+                position={structure.fen}
+                boardWidth={BOARD_SIZE}
+                boardOrientation={orientation}
+                showBoardNotation={false}
+                arePiecesDraggable={false}
+                animationDuration={0}
+              />
+            )}
           </CollapsibleBoard>
         </div>
 

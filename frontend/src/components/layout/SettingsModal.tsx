@@ -47,6 +47,8 @@ function TrainingTab() {
   const setNoveltyMultiplier = useProfileStore(s => s.setNoveltyMultiplier);
   const dailyTarget        = useProfileStore(s => s.dailyTarget);
   const setDailyTarget     = useProfileStore(s => s.setDailyTarget);
+  const boardMaxWidth      = useProfileStore(s => s.boardMaxWidth);
+  const setBoardMaxWidth   = useProfileStore(s => s.setBoardMaxWidth);
 
   return (
     <div className="settings-rows">
@@ -111,6 +113,22 @@ function TrainingTab() {
         />
         <div className="settings-slider-labels">
           <span>1</span><span>20</span>
+        </div>
+      </SettingRow>
+
+      <SettingRow
+        label="Board size"
+        value={`${boardMaxWidth}px`}
+        description="Maximum width of the chess board. Increase on large screens to see the board more clearly. The board never exceeds the available layout width."
+      >
+        <input
+          type="range" min={260} max={1200} step={20}
+          value={boardMaxWidth}
+          onChange={e => setBoardMaxWidth(Number(e.target.value))}
+          className="settings-slider"
+        />
+        <div className="settings-slider-labels">
+          <span>260px</span><span>1200px</span>
         </div>
       </SettingRow>
     </div>

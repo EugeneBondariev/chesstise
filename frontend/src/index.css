@@ -527,6 +527,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
   display: flex;
   gap: 1.25rem;
   align-items: flex-start;
+  justify-content: center;
 }
 
 .board-col { display: flex; flex-direction: column; gap: 0.75rem; width: 360px; max-width: 100%; flex-shrink: 0; overflow: hidden; }
@@ -2150,6 +2151,8 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 .calc-continue { font-size: 0.75rem; color: var(--muted); display: block; margin-top: 0.4rem; }
 
 /* ── Classical Game PGN strip ── */
+.cg-predict-row { margin-top: 0.6rem; }
+
 .cg-pgn {
   font-family: 'Courier New', monospace;
   font-size: 0.82rem;
@@ -2671,7 +2674,14 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
 
 /* ── Collapsible board ── */
 .collapsible-board { margin-bottom: 1.25rem; }
-.board-toggle-btn {
+.board-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.board-toggle-btn,
+.board-flip-btn {
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
@@ -2679,10 +2689,10 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius);
   cursor: pointer;
-  margin-bottom: 0.5rem;
   letter-spacing: 0.03em;
 }
-.board-toggle-btn:hover { color: var(--text); border-color: var(--accent); }
+.board-toggle-btn:hover,
+.board-flip-btn:hover { color: var(--text); border-color: var(--accent); }
 
 /* ── Cross-player search ── */
 .cross-search-bar {
@@ -3266,6 +3276,23 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   user-select: all;
 }
 .settings-build-date { color: var(--muted); }
+
+/* ── Back navigation button ── */
+.cg-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  margin-bottom: 0.5rem;
+  transition: color 0.15s;
+  letter-spacing: 0.01em;
+}
+.cg-back-btn:hover { color: var(--text); }
 
 /* ── Favorites star on game page ── */
 .cg-favorite-btn {

@@ -132,6 +132,7 @@ export default function E1ChapterReplay({ chapter }: { chapter: E1Chapter }) {
   const autoAdvanceMs     = useProfileStore(s => s.autoAdvanceMs);
   const noveltyMultiplier = useProfileStore(s => s.noveltyMultiplier);
   const logRead           = useProfileStore(s => s.logRead);
+  const boardMaxWidth     = useProfileStore(s => s.boardMaxWidth);
   const startReplay       = useGameStatsStore(s => s.startReplay);
   const recordMove        = useGameStatsStore(s => s.recordMove);
   const finishReplay      = useGameStatsStore(s => s.finishReplay);
@@ -140,10 +141,12 @@ export default function E1ChapterReplay({ chapter }: { chapter: E1Chapter }) {
   useEffect(() => {
     const el = boardContainerRef.current;
     if (!el) return;
-    const obs = new ResizeObserver(([e]) => setBoardWidth(Math.min(360, Math.floor(e.contentRect.width))));
+    const obs = new ResizeObserver(([e]) => setBoardWidth(Math.min(boardMaxWidth, Math.floor(e.contentRect.width))));
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [boardMaxWidth]);
+
+  useEffect(() => { setBoardWidth(w => Math.min(boardMaxWidth, w)); }, [boardMaxWidth]);
 
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
 
@@ -284,21 +287,23 @@ export default function E1ChapterReplay({ chapter }: { chapter: E1Chapter }) {
   const customArrows = arrow ? [[arrow[0], arrow[1], 'rgba(100,180,255,0.5)']] as [Square, Square, string][] : [];
 
   return (
-    <div className="exercise-page">
+    <div className="exercise-page" style={{ maxWidth: Math.max(boardMaxWidth + 420, 400), marginLeft: 'auto', marginRight: 'auto' }}>
       <h1 className="exercise-title e1-chapter-title">{chapter.title}</h1>
       {chapter.intro && (
         <p className="e1-intro">{chapter.intro}</p>
       )}
 
-      <div ref={boardContainerRef} className="cg-board-container">
-        <CollapsibleBoard>
-          <Chessboard
-            position={currentFen}
-            boardWidth={boardWidth}
-            customArrows={customArrows}
-            boardOrientation={chapter.fen.includes(' b ') ? 'black' : 'white'}
-            isDraggablePiece={() => false}
-          />
+      <div ref={boardContainerRef} className="cg-board-container" style={{ width: boardMaxWidth, maxWidth: '100%' }}>
+        <CollapsibleBoard defaultOrientation={chapter.fen.includes(' b ') ? 'black' : 'white'}>
+          {(orientation) => (
+            <Chessboard
+              position={currentFen}
+              boardWidth={boardWidth}
+              customArrows={customArrows}
+              boardOrientation={orientation}
+              isDraggablePiece={() => false}
+            />
+          )}
         </CollapsibleBoard>
       </div>
 

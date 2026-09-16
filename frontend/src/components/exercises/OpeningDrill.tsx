@@ -208,17 +208,19 @@ export default function OpeningDrill() {
             </div>
           )}
 
-          <CollapsibleBoard>
-            <Chessboard
-              position={position}
-              boardWidth={BOARD_SIZE}
-              boardOrientation={orient}
-              showBoardNotation={false}
-              arePiecesDraggable={false}
-              onSquareClick={done ? undefined : handleSquareClick}
-              customSquareStyles={customStyles}
-              animationDuration={150}
-            />
+          <CollapsibleBoard defaultOrientation={orient}>
+            {(orientation) => (
+              <Chessboard
+                position={position}
+                boardWidth={BOARD_SIZE}
+                boardOrientation={orientation}
+                showBoardNotation={false}
+                arePiecesDraggable={false}
+                onSquareClick={done ? undefined : handleSquareClick}
+                customSquareStyles={customStyles}
+                animationDuration={150}
+              />
+            )}
           </CollapsibleBoard>
 
           {done && (
