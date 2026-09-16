@@ -841,7 +841,13 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
           <div ref={boardContainerRef} style={{ width: '100%' }}>
             {!recallMode && (
-              <CollapsibleBoard isExpanded={boardExpanded} onToggle={() => setBoardExpanded(b => !b)}>
+              <CollapsibleBoard
+                isExpanded={boardExpanded}
+                onToggle={() => setBoardExpanded(b => !b)}
+                extraButtons={plyIdx > 0 ? (
+                  <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>
+                ) : undefined}
+              >
                 {(orientation) => (
                   <Chessboard
                     position={currentFen}
@@ -862,7 +868,6 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
           <div className="prompt-card" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem' }}>
             {isGameOver && <span>Game over — {game.result}</span>}
-            {plyIdx > 0 && <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>}
 
             {commentary?.loading && (
               <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Fetching commentary…</span>

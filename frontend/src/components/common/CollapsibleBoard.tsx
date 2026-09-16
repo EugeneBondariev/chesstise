@@ -5,9 +5,10 @@ interface Props {
   isExpanded?: boolean;
   onToggle?: () => void;
   defaultOrientation?: 'white' | 'black';
+  extraButtons?: React.ReactNode;
 }
 
-export default function CollapsibleBoard({ children, isExpanded, onToggle, defaultOrientation = 'white' }: Props) {
+export default function CollapsibleBoard({ children, isExpanded, onToggle, defaultOrientation = 'white', extraButtons }: Props) {
   const [localVisible, setLocalVisible] = useState(true);
   const [flipped, setFlipped] = useState(false);
 
@@ -34,6 +35,7 @@ export default function CollapsibleBoard({ children, isExpanded, onToggle, defau
         >
           ⇅ Flip
         </button>
+        {extraButtons}
       </div>
       {visible && <div className="board-wrap">{children(orientation)}</div>}
     </div>
