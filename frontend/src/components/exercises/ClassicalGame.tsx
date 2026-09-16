@@ -274,6 +274,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const [hideMoves,      setHideMoves]     = useState(true);
   const [hideBuffer,     setHideBuffer]    = useState('');
   const [tagPickerPly,   setTagPickerPly]  = useState<number | null>(null);
+  const [zenMode,        setZenMode]       = useState(true);
   const lastSpokenRef    = useRef('');
   const hideBufferRef    = useRef('');
   const prevQRef           = useRef('');
@@ -761,7 +762,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
   return (
     <div className="exercise-page" style={{ maxWidth: Math.max(boardMaxWidth + 420, 400), marginLeft: 'auto', marginRight: 'auto' }}>
-      {backPlayer && (
+      {!zenMode && backPlayer && (
         <button
           className="cg-back-btn"
           onClick={() => navigate(`/players/${backPlayer.id}`)}
@@ -770,24 +771,27 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           ← {backPlayer.name}
         </button>
       )}
-      <h1 className="exercise-title">
-        {game.white}{game.whiteElo ? ` (${game.whiteElo})` : ''} vs {game.black}{game.blackElo ? ` (${game.blackElo})` : ''}
-        {game.year  ? ` (${game.year})`  : ''}
-        {game.event ? ` · ${game.event}` : ''}
-        {game.timeControl && <span className="cg-tc-badge">{game.timeControl}</span>}
-        {' '}— {game.result}
-        <button
-          className={`cg-favorite-btn${isFavorite ? ' active' : ''}`}
-          onClick={() => toggleMarkedGame(game.id)}
-          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          {isFavorite ? '★' : '☆'}
-        </button>
-      </h1>
+      {!zenMode && (
+        <h1 className="exercise-title">
+          {game.white}{game.whiteElo ? ` (${game.whiteElo})` : ''} vs {game.black}{game.blackElo ? ` (${game.blackElo})` : ''}
+          {game.year  ? ` (${game.year})`  : ''}
+          {game.event ? ` · ${game.event}` : ''}
+          {game.timeControl && <span className="cg-tc-badge">{game.timeControl}</span>}
+          {' '}— {game.result}
+          <button
+            className={`cg-favorite-btn${isFavorite ? ' active' : ''}`}
+            onClick={() => toggleMarkedGame(game.id)}
+            title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            {isFavorite ? '★' : '☆'}
+          </button>
+        </h1>
+      )}
 
       <div className="exercise-body">
         <div className="board-col" style={{ width: boardMaxWidth }}>
+          {!zenMode && (
           <div className="prompt-card" style={{ justifyContent: 'space-between' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>
               {posLabel}
@@ -826,6 +830,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
               )}
             </span>
           </div>
+          )}
 
           {recallPending && (() => {
             const { disambigType } = plyIdx < game.moves.length ? moveInfo(game.moves[plyIdx], plyIdx) : { disambigType: null as DisambigType };
@@ -850,9 +855,18 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                 isExpanded={boardExpanded}
                 onToggle={() => setBoardExpanded(b => !b)}
                 defaultOrientation={playerOrientation}
-                extraButtons={plyIdx > 0 ? (
-                  <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>
-                ) : undefined}
+                extraButtons={
+                  <>
+                    {plyIdx > 0 && <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>}
+                    <button
+                      className={`cg-zen-btn${zenMode ? ' active' : ''}`}
+                      onClick={() => setZenMode(z => !z)}
+                      title={zenMode ? 'Show controls' : 'Zen mode'}
+                    >
+                      {zenMode ? '☰' : '✕'}
+                    </button>
+                  </>
+                }
               >
                 {(orientation) => (
                   <Chessboard
@@ -872,6 +886,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
             )}
           </div>
 
+          {!zenMode && (
           <div className="prompt-card" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem' }}>
             {isGameOver && <span>Game over — {game.result}</span>}
 
@@ -891,9 +906,8 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                 )}
               </>
             )}
-
-
           </div>
+          )}
 
           {!recallMode && hideMoves && plyIdx < game.moves.length && (() => {
             const { disambigType } = moveInfo(game.moves[plyIdx], plyIdx);
@@ -911,7 +925,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
             );
           })()}
 
-          {!recallMode && !hideMoves && <div className="cg-pgn">
+          {!zenMode && !recallMode && !hideMoves && <div className="cg-pgn">
             {Array.from({ length: Math.ceil(game.moves.length / 2) }, (_, pair) => {
               const wi = pair * 2;
               const bi = pair * 2 + 1;
@@ -973,7 +987,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
             })}
           </div>}
 
-          <div className="cg-question">
+          {!zenMode && <div className="cg-question">
             <input
               ref={questionInputRef}
               className="cg-question-input"
@@ -1001,8 +1015,9 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                 if (e.key === 'Escape') { questionInputRef.current?.blur(); }
               }}
             />
-          </div>
+          </div>}
 
+          {!zenMode && (
           <div className="cg-mobile-bar">
             <button className="cg-mob-btn" onClick={() => { setIsPlaying(p => !p); lastInteractionRef.current = Date.now(); }} aria-label={isPlaying ? 'Pause' : 'Play'}>{isPlaying ? '⏸' : '▶'}</button>
             <button className="cg-mob-btn" onClick={handleF} aria-label="Back">← Back</button>
@@ -1010,13 +1025,16 @@ export default function ClassicalGame({ game }: { game: GameData }) {
             <button className="cg-mob-btn" onClick={handleK} aria-label="Commentary">💬</button>
             <button className="cg-mob-btn" onClick={() => speak(lastSpokenRef.current)} aria-label="Re-read">↺</button>
           </div>
+          )}
 
+          {!zenMode && (
           <div className="cg-legend">
             Space = play/pause | g/← = back | h/→ = next | t = tag move | n = flag | m = memorize | p = position scan | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | [file][rank] = highlight
             {recallMode && ' | memorize: [piece][file][rank] — s=K d=R f=P j=N k=B l=Q | Esc=skip'}
           </div>
+          )}
 
-          <GameStats game={game} onJumpTo={handleJumpTo} />
+          {!zenMode && <GameStats game={game} onJumpTo={handleJumpTo} />}
         </div>
       </div>
 
