@@ -249,6 +249,11 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     [game.id],
   );
 
+  const playerOrientation = useMemo<'white' | 'black'>(() => {
+    if (!backPlayer) return 'white';
+    return game.white.toLowerCase().includes(backPlayer.mainPlayer) ? 'white' : 'black';
+  }, [backPlayer, game]);
+
   const { fens, arrows: preArrows } = useMemo(() => buildPositions(game.moves), [game]);
   const [plyIdx,              setPlyIdx]             = useState(0);
   const [commentary,          setCommentary]         = useState<Commentary | null>(null);
@@ -844,6 +849,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
               <CollapsibleBoard
                 isExpanded={boardExpanded}
                 onToggle={() => setBoardExpanded(b => !b)}
+                defaultOrientation={playerOrientation}
                 extraButtons={plyIdx > 0 ? (
                   <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>
                 ) : undefined}
