@@ -1,12 +1,15 @@
 export interface ClassicalGame {
-  id:     string;
-  white:  string;
-  black:  string;
-  year:   number | null;
-  event:  string | null;
-  result: '1-0' | '0-1' | '1/2-1/2';
-  moves:  string[];  // SAN, alternating white/black
-  eco:    string | null;
+  id:        string;
+  white:     string;
+  black:     string;
+  year:      number | null;
+  event:     string | null;
+  result:    '1-0' | '0-1' | '1/2-1/2';
+  moves:     string[];  // SAN, alternating white/black
+  eco:       string | null;
+  whiteElo:  number | null;
+  blackElo:  number | null;
+  timeControl: string | null;
 }
 
 export interface GmGroup {
@@ -19,13 +22,16 @@ export interface GmGroup {
 
 const CARLSEN_GAMES: ClassicalGame[] = [
   {
-    id:     'carlsen-1',
-    white:  'Unknown',
-    black:  'Magnus Carlsen',
-    year:   null,
-    event:  null,
-    result: '0-1',
-    eco:    null,
+    id:          'carlsen-1',
+    white:       'Unknown',
+    black:       'Magnus Carlsen',
+    year:        null,
+    event:       null,
+    result:      '0-1',
+    eco:         null,
+    whiteElo:    null,
+    blackElo:    null,
+    timeControl: null,
     moves: [
       'e4',    'Nf6',   'e5',    'Nd5',   'd4',    'd6',
       'Nf3',   'Bg4',   'Bc4',   'e6',    'O-O',   'Nb6',
@@ -42,13 +48,16 @@ const CARLSEN_GAMES: ClassicalGame[] = [
     ],
   },
   {
-    id:     'carlsen-2',
-    white:  'Magnus Carlsen',
-    black:  'Unknown',
-    year:   null,
-    event:  null,
-    result: '1-0',
-    eco:    null,
+    id:          'carlsen-2',
+    white:       'Magnus Carlsen',
+    black:       'Unknown',
+    year:        null,
+    event:       null,
+    result:      '1-0',
+    eco:         null,
+    whiteElo:    null,
+    blackElo:    null,
+    timeControl: null,
     moves: [
       'e4',    'e6',    'd4',    'd5',    'Nc3',   'Bb4',
       'e5',    'Ne7',   'a3',    'Bxc3+', 'bxc3',  'b6',

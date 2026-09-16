@@ -1,5 +1,16 @@
 import type { ClassicalGame } from '../data/classicalGames';
 
+// Extract "base|inc" time control from event names like "1st 3-0 Thu 1st Jan 2026"
+function extractTimeControl(eventName: string | null): string | null {
+  if (!eventName) return null;
+  const m = eventName.match(/\b(\d{1,3})-(\d{1,2})\b/);
+  if (!m) return null;
+  const base = parseInt(m[1], 10);
+  const inc  = parseInt(m[2], 10);
+  if (base < 1 || base > 180 || inc < 0 || inc > 60) return null;
+  return `${base}|${inc}`;
+}
+
 function stripAnnotations(movetext: string): string {
   // Remove comments: { ... }
   let s = movetext.replace(/\{[^}]*\}/g, ' ');
@@ -46,15 +57,21 @@ export function parsePgn(raw: string, idPrefix: string): ClassicalGame[] {
     if (moves.length === 0) continue;
 
     const year = tags['Date'] ? parseInt(tags['Date'].slice(0, 4), 10) : null;
+    const event = tags['Event'] ?? null;
+    const whiteEloRaw = tags['WhiteElo'] ? parseInt(tags['WhiteElo'], 10) : null;
+    const blackEloRaw = tags['BlackElo'] ? parseInt(tags['BlackElo'], 10) : null;
 
     games.push({
-      id:     `${idPrefix}-${i}`,
-      white:  tags['White'],
-      black:  tags['Black'],
-      year:   isNaN(year as number) ? null : year,
-      event:  tags['Event'] ?? null,
-      result: result as '1-0' | '0-1' | '1/2-1/2',
-      eco:    tags['ECO'] ?? null,
+      id:          `${idPrefix}-${i}`,
+      white:       tags['White'],
+      black:       tags['Black'],
+      year:        isNaN(year as number) ? null : year,
+      event,
+      result:      result as '1-0' | '0-1' | '1/2-1/2',
+      eco:         tags['ECO'] ?? null,
+      whiteElo:    whiteEloRaw != null && !isNaN(whiteEloRaw) ? whiteEloRaw : null,
+      blackElo:    blackEloRaw != null && !isNaN(blackEloRaw) ? blackEloRaw : null,
+      timeControl: extractTimeControl(event),
       moves,
     });
   }

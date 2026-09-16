@@ -672,9 +672,10 @@ export default function ClassicalGame({ game }: { game: GameData }) {
         </button>
       )}
       <h1 className="exercise-title">
-        {game.white} vs {game.black}
+        {game.white}{game.whiteElo ? ` (${game.whiteElo})` : ''} vs {game.black}{game.blackElo ? ` (${game.blackElo})` : ''}
         {game.year  ? ` (${game.year})`  : ''}
         {game.event ? ` · ${game.event}` : ''}
+        {game.timeControl && <span className="cg-tc-badge">{game.timeControl}</span>}
         {' '}— {game.result}
         <button
           className={`cg-favorite-btn${isFavorite ? ' active' : ''}`}
