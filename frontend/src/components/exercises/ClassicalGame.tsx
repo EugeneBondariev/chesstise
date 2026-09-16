@@ -861,12 +861,8 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           </div>
 
           <div className="prompt-card" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem' }}>
-            {isGameOver && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span>Game over — {game.result}</span>
-                <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>
-              </div>
-            )}
+            {isGameOver && <span>Game over — {game.result}</span>}
+            {plyIdx > 0 && <button className="cg-restart-btn" onClick={handleRestart}>↺ Start over</button>}
 
             {commentary?.loading && (
               <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Fetching commentary…</span>
