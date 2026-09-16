@@ -13,8 +13,9 @@ interface ProfileState {
   noveltyMultiplier: number;
   dailyTarget: number;
   boardMaxWidth: number;
-  readCounts: Record<string, number>;   // gameId → total reads all time
-  readsByDate: Record<string, number>;  // 'YYYY-MM-DD' → reads that day
+  readCounts:  Record<string, number>;   // gameId → total reads all time
+  readsByDate: Record<string, number>;   // 'YYYY-MM-DD' → reads that day
+  moveTags:    Record<string, string>;   // "gameId:moveIndex" → tag
   addCellGuesserRun: (run: RunResult) => void;
   addSquareColorRun: (run: RunResult) => void;
   addBlindPathingRun: (run: RunResult) => void;
@@ -25,8 +26,10 @@ interface ProfileState {
   setAutoAdvanceMs: (ms: number) => void;
   setNoveltyMultiplier: (n: number) => void;
   setDailyTarget: (n: number) => void;
-  setBoardMaxWidth: (n: number) => void;
-  logRead: (gameId: string) => void;
+  setBoardMaxWidth:  (n: number) => void;
+  logRead:           (gameId: string) => void;
+  setMoveTag:        (gameId: string, moveIndex: number, tag: string) => void;
+  removeMoveTag:     (gameId: string, moveIndex: number) => void;
 }
 
 export const useProfileStore = create<ProfileState>()(
@@ -42,8 +45,9 @@ export const useProfileStore = create<ProfileState>()(
       noveltyMultiplier: 1.5,
       dailyTarget: 5,
       boardMaxWidth: 360,
-      readCounts: {},
+      readCounts:  {},
       readsByDate: {},
+      moveTags:    {},
 
       addCellGuesserRun: (run) =>
         set(state => ({ cellGuesserRuns: [...state.cellGuesserRuns, run] })),
@@ -79,6 +83,16 @@ export const useProfileStore = create<ProfileState>()(
           readCounts:  { ...state.readCounts,  [gameId]: (state.readCounts[gameId]  ?? 0) + 1 },
           readsByDate: { ...state.readsByDate, [today]:  (state.readsByDate[today]  ?? 0) + 1 },
         };
+      }),
+
+      setMoveTag: (gameId, moveIndex, tag) => set(state => ({
+        moveTags: { ...state.moveTags, [`${gameId}:${moveIndex}`]: tag },
+      })),
+
+      removeMoveTag: (gameId, moveIndex) => set(state => {
+        const next = { ...state.moveTags };
+        delete next[`${gameId}:${moveIndex}`];
+        return { moveTags: next };
       }),
     }),
     { name: 'chesstise-profile' },

@@ -14,6 +14,7 @@ import { useProfileStore } from '../../store/profileStore';
 import GameStats from './GameStats';
 import PositionDrillModal from './PositionDrillModal';
 import { B1_ANNOTATIONS_MAP } from '../../data/b1Annotations';
+import { MOVE_TAG_GROUPS } from '../../data/moveTags';
 
 const FILE_FROM_KEY: Record<string, string> = { a: 'a', s: 'b', d: 'c', f: 'd', j: 'e', k: 'f', l: 'g', ';': 'h' };
 const RANK_FROM_KEY: Record<string, number>  = { a: 1, s: 2, d: 3, f: 4, j: 5, k: 6, l: 7, ';': 8 };
@@ -166,6 +167,81 @@ interface Commentary {
   loading: boolean;
 }
 
+function TagPicker({
+  san,
+  initialTag,
+  onSave,
+  onClose,
+}: {
+  san: string;
+  initialTag: string | undefined;
+  onSave: (tag: string | null) => void;
+  onClose: () => void;
+}) {
+  const [search, setSearch] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    if (!q) return MOVE_TAG_GROUPS;
+    return MOVE_TAG_GROUPS
+      .map(g => ({ ...g, tags: g.tags.filter(t => t.toLowerCase().includes(q)) }))
+      .filter(g => g.tags.length > 0);
+  }, [search]);
+
+  return (
+    <div
+      className="tag-picker-overlay"
+      onClick={onClose}
+      onKeyDown={e => { if (e.key === 'Escape') onClose(); }}
+      tabIndex={-1}
+    >
+      <div className="tag-picker-modal" onClick={e => e.stopPropagation()}>
+        <div className="tag-picker-header">
+          Tag decisive move: <strong>{san}</strong>
+          {initialTag && <span className="tag-picker-current"> · current: {initialTag}</span>}
+        </div>
+        <div className="tag-picker-input-row">
+          <input
+            ref={inputRef}
+            className="tag-picker-search"
+            placeholder="Type free-text tag or search… (Enter to save)"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && search.trim()) onSave(search.trim());
+              if (e.key === 'Escape') onClose();
+            }}
+          />
+          {initialTag && (
+            <button className="tag-picker-clear" onClick={() => onSave(null)}>Clear</button>
+          )}
+        </div>
+        <div className="tag-picker-groups">
+          {filtered.map(g => (
+            <div key={g.label} className="tag-picker-group">
+              <div className="tag-picker-group-label">{g.label}</div>
+              <div className="tag-picker-tags">
+                {g.tags.map(t => (
+                  <button
+                    key={t}
+                    className={`tag-picker-tag${t === initialTag ? ' selected' : ''}`}
+                    onClick={() => onSave(t)}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ClassicalGame({ game }: { game: GameData }) {
   const navigate = useNavigate();
   const backPlayer = useMemo(
@@ -192,6 +268,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const [positionDrillOpen, setPositionDrillOpen] = useState(false);
   const [hideMoves,      setHideMoves]     = useState(true);
   const [hideBuffer,     setHideBuffer]    = useState('');
+  const [tagPickerPly,   setTagPickerPly]  = useState<number | null>(null);
   const lastSpokenRef    = useRef('');
   const hideBufferRef    = useRef('');
   const prevQRef           = useRef('');
@@ -216,6 +293,9 @@ export default function ClassicalGame({ game }: { game: GameData }) {
   const noveltyMultiplier  = useProfileStore(s => s.noveltyMultiplier);
   const logRead            = useProfileStore(s => s.logRead);
   const readCounts         = useProfileStore(s => s.readCounts);
+  const moveTags           = useProfileStore(s => s.moveTags);
+  const setMoveTag         = useProfileStore(s => s.setMoveTag);
+  const removeMoveTag      = useProfileStore(s => s.removeMoveTag);
   const markedGames        = useProfileStore(s => s.markedGames);
   const toggleMarkedGame   = useProfileStore(s => s.toggleMarkedGame);
   const isFavorite         = markedGames.includes(game.id);
@@ -534,6 +614,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
 
   keyHandlerRef.current = (e: KeyboardEvent) => {
     if (positionDrillOpen) return;
+    if (tagPickerPly !== null) return;
     const active = document.activeElement as HTMLElement | null;
     if (active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
     const { key } = e;
@@ -543,6 +624,12 @@ export default function ClassicalGame({ game }: { game: GameData }) {
     if (key === 'Control') { highlightBufferRef.current = ''; stopSpeaking(); return; }
 
     if (key === 'p') { e.preventDefault(); setPositionDrillOpen(true); return; }
+
+    if (key === 't' && plyIdx > 0 && !recallMode && !recallPending) {
+      e.preventDefault();
+      setTagPickerPly(plyIdx - 1);
+      return;
+    }
 
     if (key === ' ') {
       e.preventDefault();
@@ -690,7 +777,12 @@ export default function ClassicalGame({ game }: { game: GameData }) {
       <div className="exercise-body">
         <div className="board-col" style={{ width: boardMaxWidth }}>
           <div className="prompt-card" style={{ justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{posLabel}</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>
+              {posLabel}
+              {plyIdx > 0 && moveTags[`${game.id}:${plyIdx - 1}`] && (
+                <> · <span className="cg-current-tag">◈ {moveTags[`${game.id}:${plyIdx - 1}`]}</span></>
+              )}
+            </span>
             <button
               className={`cg-play-btn${isPlaying ? ' playing' : ''}`}
               onClick={() => { setIsPlaying(p => !p); lastInteractionRef.current = Date.now(); }}
@@ -830,7 +922,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                     tabIndex={0}
                     onKeyDown={e => e.key === 'Enter' && jumpTo(wi)}
                   >
-                    {game.moves[wi]}{wCls && <span className={`cg-move-cls cg-move-${wCls}`}>{CLASS_ICON[wCls]}</span>}
+                    {game.moves[wi]}{wCls && <span className={`cg-move-cls cg-move-${wCls}`}>{CLASS_ICON[wCls]}</span>}{moveTags[`${game.id}:${wi}`] && <span className="cg-move-tag" title={moveTags[`${game.id}:${wi}`]}>◈</span>}
                   </span>
                   {annotationMap?.has(wi) && (
                     <button
@@ -847,7 +939,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
                       tabIndex={0}
                       onKeyDown={e => e.key === 'Enter' && jumpTo(bi)}
                     >
-                      {game.moves[bi]}{bCls && <span className={`cg-move-cls cg-move-${bCls}`}>{CLASS_ICON[bCls]}</span>}
+                      {game.moves[bi]}{bCls && <span className={`cg-move-cls cg-move-${bCls}`}>{CLASS_ICON[bCls]}</span>}{moveTags[`${game.id}:${bi}`] && <span className="cg-move-tag" title={moveTags[`${game.id}:${bi}`]}>◈</span>}
                     </span>
                   )}
                   {game.moves[bi] !== undefined && annotationMap?.has(bi) && (
@@ -901,7 +993,7 @@ export default function ClassicalGame({ game }: { game: GameData }) {
           </div>
 
           <div className="cg-legend">
-            Space = play/pause | g/← = back | h/→ = next | n = flag novelty | m = memorize | p = position scan | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | [file][rank] = highlight
+            Space = play/pause | g/← = back | h/→ = next | t = tag move | n = flag | m = memorize | p = position scan | ↓ = commentary | ↑ = ask | r = re-read | Ctrl = stop | [file][rank] = highlight
             {recallMode && ' | memorize: [piece][file][rank] — s=K d=R f=P j=N k=B l=Q | Esc=skip'}
           </div>
 
@@ -913,6 +1005,19 @@ export default function ClassicalGame({ game }: { game: GameData }) {
         <PositionDrillModal
           fen={currentFen}
           onClose={() => setPositionDrillOpen(false)}
+        />
+      )}
+
+      {tagPickerPly !== null && (
+        <TagPicker
+          san={game.moves[tagPickerPly]}
+          initialTag={moveTags[`${game.id}:${tagPickerPly}`]}
+          onSave={tag => {
+            if (tag) setMoveTag(game.id, tagPickerPly, tag);
+            else removeMoveTag(game.id, tagPickerPly);
+            setTagPickerPly(null);
+          }}
+          onClose={() => setTagPickerPly(null)}
         />
       )}
     </div>

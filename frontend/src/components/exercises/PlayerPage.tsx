@@ -4,7 +4,7 @@ import { findPlayerEntry, TOTAL_GAME_COUNT } from '../../data/playerRegistry';
 import type { ClassicalGame } from '../../data/classicalGames';
 import { useProfileStore } from '../../store/profileStore';
 
-type SortKey = 'year' | 'white' | 'black' | 'result' | 'event' | 'moves' | 'eco';
+type SortKey = 'year' | 'white' | 'black' | 'result' | 'event' | 'moves' | 'eco' | 'eloGap';
 type SortDir = 'asc' | 'desc';
 type ResultFilter = 'all' | 'win' | 'draw' | 'loss';
 type PatternFilter = '' | 'bishop_replaces_rook' | 'pawn_before_knight' | 'bxf3_qxf3' | 'opposite_castling';
@@ -92,6 +92,12 @@ function ecoToOpening(eco: string): string {
   return eco;
 }
 
+function eloGapForPlayer(game: ClassicalGame, mainPlayer: string): number | null {
+  if (!game.whiteElo || !game.blackElo) return null;
+  const asWhite = game.white.toLowerCase().includes(mainPlayer);
+  return asWhite ? game.whiteElo - game.blackElo : game.blackElo - game.whiteElo;
+}
+
 function resultForPlayer(game: ClassicalGame, mainPlayer: string): 'W' | 'D' | 'L' {
   const isPlayer = (name: string) => name.toLowerCase().includes(mainPlayer);
   const asWhite = isPlayer(game.white);
@@ -107,6 +113,7 @@ export default function PlayerPage() {
   const player = playerId ? findPlayerEntry(playerId) : undefined;
 
   const readCounts = useProfileStore(s => s.readCounts);
+  const moveTags   = useProfileStore(s => s.moveTags);
 
   const [games,          setGames]          = useState<ClassicalGame[]>([]);
   const [loading,        setLoading]        = useState(true);
@@ -115,6 +122,7 @@ export default function PlayerPage() {
   const [openingFilter,  setOpeningFilter]  = useState('');
   const [studiedFilter,  setStudiedFilter]  = useState<'all' | 'unstudied' | 'studied'>('all');
   const [patternFilter,  setPatternFilter]  = useState<PatternFilter>('');
+  const [tagFilter,      setTagFilter]      = useState('');
   const [sortKey,        setSortKey]        = useState<SortKey>('year');
   const [sortDir,        setSortDir]        = useState<SortDir>('desc');
 
@@ -136,6 +144,25 @@ export default function PlayerPage() {
     }
     return [...names].sort();
   }, [games]);
+
+  const tagsByGame = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    for (const [key, tag] of Object.entries(moveTags)) {
+      const colon = key.lastIndexOf(':');
+      if (colon === -1) continue;
+      const gameId = key.slice(0, colon);
+      (map[gameId] ??= []).push(tag);
+    }
+    return map;
+  }, [moveTags]);
+
+  const uniqueTags = useMemo(() => {
+    const seen = new Set<string>();
+    for (const g of games) {
+      for (const t of tagsByGame[g.id] ?? []) seen.add(t);
+    }
+    return [...seen].sort();
+  }, [games, tagsByGame]);
 
   const filtered = useMemo(() => {
     if (!player) return [];
@@ -163,6 +190,7 @@ export default function PlayerPage() {
     if (studiedFilter === 'studied')   rows = rows.filter(g =>  (readCounts[g.id] ?? 0) > 0);
     if (studiedFilter === 'unstudied') rows = rows.filter(g => !(readCounts[g.id] ?? 0));
     if (patternFilter) rows = rows.filter(g => detectPattern(g.moves, patternFilter));
+    if (tagFilter) rows = rows.filter(g => (tagsByGame[g.id] ?? []).includes(tagFilter));
 
     rows = [...rows].sort((a, b) => {
       let va: string | number, vb: string | number;
@@ -174,6 +202,7 @@ export default function PlayerPage() {
         case 'event':  va = (a.event ?? '').toLowerCase();         vb = (b.event ?? '').toLowerCase(); break;
         case 'moves':  va = a.moves.length;                        vb = b.moves.length; break;
         case 'eco':    va = (a.eco ?? '').toLowerCase();           vb = (b.eco ?? '').toLowerCase(); break;
+        case 'eloGap': va = eloGapForPlayer(a, player.mainPlayer) ?? -9999; vb = eloGapForPlayer(b, player.mainPlayer) ?? -9999; break;
         default:       return 0;
       }
       const cmp = va < vb ? -1 : va > vb ? 1 : 0;
@@ -181,7 +210,7 @@ export default function PlayerPage() {
     });
 
     return rows;
-  }, [games, search, resultFilter, openingFilter, studiedFilter, patternFilter, readCounts, sortKey, sortDir, player]);
+  }, [games, search, resultFilter, openingFilter, studiedFilter, patternFilter, tagFilter, tagsByGame, readCounts, sortKey, sortDir, player]);
 
   if (!player) {
     return (
@@ -294,6 +323,20 @@ export default function PlayerPage() {
               ))}
             </div>
 
+            {uniqueTags.length > 0 && (
+              <select
+                className="perspective-select"
+                value={tagFilter}
+                onChange={e => setTagFilter(e.target.value)}
+                aria-label="Filter by decisive moment tag"
+              >
+                <option value="">All tags</option>
+                {uniqueTags.map(t => (
+                  <option key={t} value={t}>◈ {t}</option>
+                ))}
+              </select>
+            )}
+
             <span className="player-count">{filtered.length} game{filtered.length !== 1 ? 's' : ''}</span>
           </div>
 
@@ -323,6 +366,10 @@ export default function PlayerPage() {
                   <th onClick={() => toggleSort('moves')} style={{ cursor: 'pointer' }}>
                     Moves{sortIndicator('moves')}
                   </th>
+                  <th onClick={() => toggleSort('eloGap')} style={{ cursor: 'pointer' }} title="Main player Elo minus opponent Elo">
+                    Gap{sortIndicator('eloGap')}
+                  </th>
+                  <th>Tags</th>
                 </tr>
               </thead>
               <tbody>
@@ -352,12 +399,24 @@ export default function PlayerPage() {
                       </td>
                       <td className="col-event-val">{g.event ?? '—'}</td>
                       <td>{Math.ceil(g.moves.length / 2)}</td>
+                      <td className="col-elo-gap">
+                        {(() => {
+                          const gap = eloGapForPlayer(g, player.mainPlayer);
+                          if (gap == null) return '—';
+                          return <span className={gap <= -200 ? 'elo-gap-upset' : undefined}>{gap > 0 ? '+' : ''}{gap}</span>;
+                        })()}
+                      </td>
+                      <td className="col-tags">
+                        {(tagsByGame[g.id] ?? []).map((t, i) => (
+                          <span key={i} className="cg-tag-pill" title={t}>◈</span>
+                        ))}
+                      </td>
                     </tr>
                   );
                 })}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={8} style={{ textAlign: 'center', padding: '1.5rem', opacity: 0.5 }}>
+                    <td colSpan={10} style={{ textAlign: 'center', padding: '1.5rem', opacity: 0.5 }}>
                       No games match
                     </td>
                   </tr>
