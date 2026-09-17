@@ -3,6 +3,7 @@ import {
   useEffect,
   useRef,
   useCallback,
+  useMemo,
 } from 'react';
 import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
@@ -581,8 +582,42 @@ export default function ExplorerTrainer() {
   }, [phase, isPlayerTurn, applyPlayerMove, handleUndo, backToSetup]);
 
   // ── Alternatives data ──────────────────────────────────────────────────────
-  const lastEntry      = history.length > 0 ? history[history.length - 1] : null;
-  const altMoves       = lastEntry?.explorerData ?? null;
+  const lastEntry = history.length > 0 ? history[history.length - 1] : null;
+
+  // FEN before the last move (used for on-demand fetch when snapshot is missing)
+  const fenBeforeLastMove = useMemo(() => {
+    if (history.length === 0) return startFen;
+    if (history.length === 1) return startFen;
+    return history[history.length - 2].fen;
+  }, [history, startFen]);
+
+  const [altsFetched,  setAltsFetched]  = useState<MasterMove[] | null>(null);
+  const [altsLoading,  setAltsLoading]  = useState(false);
+  const altsFetchFenRef = useRef<string | null>(null);
+
+  // On-demand fetch when the cached snapshot is missing
+  useEffect(() => {
+    if (!showAlternatives) {
+      altsFetchFenRef.current = null;
+      setAltsFetched(null);
+      setAltsLoading(false);
+      return;
+    }
+    if (lastEntry?.explorerData != null) return;
+    const target = fenBeforeLastMove;
+    if (altsFetchFenRef.current === target) return;
+    altsFetchFenRef.current = target;
+    setAltsFetched(null);
+    setAltsLoading(true);
+    fetchExplorerMoves(target, { ratings: selectedRatings, speeds: selectedSpeeds }).then(moves => {
+      if (altsFetchFenRef.current !== target) return;
+      setAltsFetched(moves);
+      setAltsLoading(false);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showAlternatives, lastEntry, fenBeforeLastMove]);
+
+  const altMoves       = lastEntry?.explorerData ?? altsFetched;
   const altTotal       = altMoves
     ? altMoves.reduce((s, m) => s + m.white + m.draws + m.black, 0)
     : 0;
@@ -744,7 +779,7 @@ export default function ExplorerTrainer() {
                 </>
               ) : (
                 <div style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>
-                  No data available
+                  {altsLoading ? 'Loading…' : 'No data available'}
                 </div>
               )}
             </div>
