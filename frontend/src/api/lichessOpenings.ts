@@ -44,22 +44,16 @@ export async function fetchExplorerMoves(
   const key = `${fen}|${ratings.join(',')}|${speeds.join(',')}`;
   if (explorerCache.has(key)) return explorerCache.get(key)!;
   try {
-    const params = new URLSearchParams({
-      variant:     'standard',
-      fen,
-      moves:       '12',
-      topGames:    '0',
-      recentGames: '0',
-    });
-    ratings.forEach(r => params.append('ratings', String(r)));
-    speeds.forEach(s  => params.append('speeds',  s));
-    const res = await fetch(`https://explorer.lichess.ovh/lichess?${params.toString()}`);
+    const ratingParams = ratings.map(r => `ratings=${r}`).join('&');
+    const speedParams  = speeds.map(s => `speeds=${encodeURIComponent(s)}`).join('&');
+    const url = `https://explorer.lichess.ovh/lichess?variant=standard&fen=${encodeURIComponent(fen)}&moves=12&topGames=0&recentGames=0&${ratingParams}&${speedParams}`;
+    const res = await fetch(url);
     if (!res.ok) return [];
     const data = await res.json();
     const moves: MasterMove[] = (data.moves ?? []).filter(
       (m: MasterMove) => m.white + m.draws + m.black >= 5,
     );
-    explorerCache.set(key, moves);
+    if (moves.length > 0) explorerCache.set(key, moves);
     return moves;
   } catch {
     return [];

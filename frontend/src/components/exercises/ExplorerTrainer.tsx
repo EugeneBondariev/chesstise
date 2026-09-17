@@ -288,7 +288,7 @@ export default function ExplorerTrainer() {
   // ── Board sizing ───────────────────────────────────────────────────────────
   const boardMaxWidth = useProfileStore(s => s.boardMaxWidth);
   const containerRef  = useRef<HTMLDivElement>(null);
-  const [boardWidth,  setBoardWidth]       = useState(360);
+  const [boardWidth,  setBoardWidth]       = useState(() => Math.min(boardMaxWidth, window.innerWidth - 32));
 
   useEffect(() => {
     const el = containerRef.current;
@@ -581,14 +581,15 @@ export default function ExplorerTrainer() {
   }, [phase, isPlayerTurn, applyPlayerMove, handleUndo, backToSetup]);
 
   // ── Alternatives data ──────────────────────────────────────────────────────
-  const lastUserEntry = [...history].reverse().find(h => !h.byComputer);
-  const altMoves      = lastUserEntry?.explorerData ?? null;
-  const altTotal      = altMoves
+  const lastEntry      = history.length > 0 ? history[history.length - 1] : null;
+  const altMoves       = lastEntry?.explorerData ?? null;
+  const altTotal       = altMoves
     ? altMoves.reduce((s, m) => s + m.white + m.draws + m.black, 0)
     : 0;
   const sortedAltMoves = altMoves
     ? [...altMoves].sort((a, b) => (b.white + b.draws + b.black) - (a.white + a.draws + a.black))
     : [];
+  const highlightSan   = lastEntry?.san ?? null;
 
   // ── Status line ───────────────────────────────────────────────────────────
   const isOutOfBook = explorerData !== null && explorerData.length === 0 && !explorerLoading;
@@ -658,6 +659,9 @@ export default function ExplorerTrainer() {
               boardOrientation={playerColor}
               animationDuration={200}
               customArrows={lastArrows}
+              showBoardNotation={false}
+              customDarkSquareStyle={{ backgroundColor: '#3d5a6e' }}
+              customLightSquareStyle={{ backgroundColor: '#7a96a8' }}
             />
           </div>
 
@@ -702,7 +706,7 @@ export default function ExplorerTrainer() {
               {sortedAltMoves.length > 0 ? (
                 <>
                   <div className="et-section-label" style={{ marginBottom: '0.35rem' }}>
-                    Alternatives at last user move
+                    {lastEntry?.byComputer ? 'Computer chose from' : 'Your alternatives'}
                     &nbsp;<span style={{ color: 'var(--muted)', fontWeight: 400 }}>
                       ({altTotal.toLocaleString()} games)
                     </span>
@@ -724,9 +728,9 @@ export default function ExplorerTrainer() {
                         const w     = Math.round((m.white / total) * 100);
                         const d     = Math.round((m.draws / total) * 100);
                         const b     = Math.round((m.black / total) * 100);
-                        const isUser = m.san === lastUserEntry?.san;
+                        const isHighlighted = m.san === highlightSan;
                         return (
-                          <tr key={m.san} className={`et-alt-row${isUser ? ' user-move' : ''}`}>
+                          <tr key={m.san} className={`et-alt-row${isHighlighted ? ' user-move' : ''}`}>
                             <td className="et-alt-move">{m.san}</td>
                             <td>{freq}%</td>
                             <td className="et-alt-w">{w}%</td>
