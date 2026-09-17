@@ -6,7 +6,13 @@ export interface MasterMove {
   black: number;
 }
 
-const cache = new Map<string, MasterMove[]>();
+export interface ExplorerOptions {
+  ratings?: number[];
+  speeds?:  string[];
+}
+
+const cache         = new Map<string, MasterMove[]>();
+const explorerCache = new Map<string, MasterMove[]>();
 
 export async function fetchMasterMoves(fen: string): Promise<MasterMove[]> {
   if (cache.has(fen)) return cache.get(fen)!;
@@ -20,6 +26,40 @@ export async function fetchMasterMoves(fen: string): Promise<MasterMove[]> {
       (m: MasterMove) => m.white + m.draws + m.black >= 30,
     );
     cache.set(fen, moves);
+    return moves;
+  } catch {
+    return [];
+  }
+}
+
+const VALID_RATINGS = [400, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2500];
+const VALID_SPEEDS  = ['bullet', 'blitz', 'rapid', 'classical'];
+
+export async function fetchExplorerMoves(
+  fen: string,
+  options: ExplorerOptions = {},
+): Promise<MasterMove[]> {
+  const ratings = (options.ratings ?? [1600, 1800, 2000]).filter(r => VALID_RATINGS.includes(r));
+  const speeds  = (options.speeds  ?? ['blitz', 'rapid']).filter(s => VALID_SPEEDS.includes(s));
+  const key = `${fen}|${ratings.join(',')}|${speeds.join(',')}`;
+  if (explorerCache.has(key)) return explorerCache.get(key)!;
+  try {
+    const params = new URLSearchParams({
+      variant:     'standard',
+      fen,
+      moves:       '12',
+      topGames:    '0',
+      recentGames: '0',
+    });
+    ratings.forEach(r => params.append('ratings', String(r)));
+    speeds.forEach(s  => params.append('speeds',  s));
+    const res = await fetch(`https://explorer.lichess.ovh/lichess?${params.toString()}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    const moves: MasterMove[] = (data.moves ?? []).filter(
+      (m: MasterMove) => m.white + m.draws + m.black >= 5,
+    );
+    explorerCache.set(key, moves);
     return moves;
   } catch {
     return [];

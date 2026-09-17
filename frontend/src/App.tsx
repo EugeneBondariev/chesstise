@@ -14,6 +14,7 @@ import OpeningRecall from './components/exercises/OpeningRecall';
 import CalculationTrainer from './components/exercises/CalculationTrainer';
 import OpeningTrainerComponent from './components/exercises/OpeningTrainer';
 import PuzzleDrill from './components/exercises/PuzzleDrill';
+import ExplorerTrainer from './components/exercises/ExplorerTrainer';
 import BlueprintCorpus from './components/exercises/BlueprintCorpus';
 import BlueprintCorpusB2 from './components/exercises/BlueprintCorpusB2';
 import MastersCorpus from './components/exercises/MastersCorpus';
@@ -72,6 +73,7 @@ export default function App() {
         <Route path="/calculation"         element={<CalculationTrainer />} />
         <Route path="/opening-trainer/:id" element={<OpeningTrainerPage />} />
         <Route path="/puzzle"              element={<PuzzleDrill />} />
+        <Route path="/explorer"            element={<ExplorerTrainer />} />
       </Routes>
     </AppLayout>
   );

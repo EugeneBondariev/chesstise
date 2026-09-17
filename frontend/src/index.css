@@ -1960,6 +1960,192 @@ details[open] > .sidebar-group-btn::after { transform: rotate(90deg); }
   gap: 0.5rem;
 }
 
+/* ── Explorer Trainer ── */
+.et-setup {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.et-setup-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 0.4rem;
+}
+.et-setup-desc kbd {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.05em 0.35em;
+  font-size: 0.8em;
+  color: var(--text);
+}
+
+.et-section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.et-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.et-preset-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.et-preset-btn:hover { color: var(--text); border-color: var(--muted); }
+.et-preset-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.et-fen-input {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-family: 'Courier New', monospace;
+  padding: 0.4rem 0.65rem;
+  outline: none;
+  width: 100%;
+}
+.et-fen-input:focus { border-color: var(--accent); }
+.et-fen-input::placeholder { color: var(--muted); }
+
+.et-color-toggle {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.et-color-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.et-color-btn:hover { color: var(--text); border-color: var(--muted); }
+.et-color-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.et-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+}
+
+.et-check-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+.et-check-label input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 0.9rem;
+  height: 0.9rem;
+  cursor: pointer;
+}
+
+.et-start-btn {
+  margin-top: 0.75rem;
+  align-self: flex-start;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.55rem 2rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.et-start-btn:hover { opacity: 0.88; }
+
+.et-status {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.4rem;
+  font-style: italic;
+}
+
+.et-out-of-book {
+  color: var(--yellow);
+}
+
+.et-alternatives {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+}
+
+.et-alt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+.et-alt-table th {
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.et-alt-row td {
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid rgba(48, 54, 61, 0.4);
+}
+.et-alt-row:last-child td { border-bottom: none; }
+.et-alt-row:hover td { background: var(--surface-2); }
+.et-alt-row.user-move td {
+  background: rgba(88, 166, 255, 0.08);
+}
+.et-alt-row.user-move .et-alt-move {
+  color: var(--accent);
+  font-weight: 700;
+}
+.et-alt-move {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: var(--text);
+}
+.et-alt-w { color: #d4d4d4; }
+.et-alt-d { color: var(--muted); }
+.et-alt-b { color: #8b8b8b; }
+
 /* ── Endgame Study ── */
 .endgame-progress {
   display: flex;

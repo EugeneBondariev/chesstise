@@ -229,6 +229,10 @@ export default function Sidebar({ isOpen }: { isOpen?: boolean }) {
       {/* ── Openings ── */}
       <details className="sidebar-group">
         <summary className="sidebar-group-btn">Openings <span className="sidebar-wip">in progress</span></summary>
+        <div className="sidebar-sub-label">Explorer Trainer</div>
+        <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          <SimpleNavItem to="/explorer" label="Play vs Explorer" />
+        </ul>
         <div className="sidebar-sub-label" aria-hidden="true">Interactive — White</div>
         <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {TRAINER_WHITE.map(o => (
