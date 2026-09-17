@@ -11,8 +11,7 @@ export interface ExplorerOptions {
   speeds?:  string[];
 }
 
-const cache         = new Map<string, MasterMove[]>();
-const explorerCache = new Map<string, MasterMove[]>();
+const cache = new Map<string, MasterMove[]>();
 
 export async function fetchMasterMoves(fen: string): Promise<MasterMove[]> {
   if (cache.has(fen)) return cache.get(fen)!;
@@ -41,8 +40,6 @@ export async function fetchExplorerMoves(
 ): Promise<MasterMove[]> {
   const ratings = (options.ratings ?? [1600, 1800, 2000]).filter(r => VALID_RATINGS.includes(r));
   const speeds  = (options.speeds  ?? ['blitz', 'rapid']).filter(s => VALID_SPEEDS.includes(s));
-  const key = `${fen}|${ratings.join(',')}|${speeds.join(',')}`;
-  if (explorerCache.has(key)) return explorerCache.get(key)!;
   try {
     const ratingParams = ratings.map(r => `ratings=${r}`).join('&');
     const speedParams  = speeds.map(s => `speeds=${encodeURIComponent(s)}`).join('&');
@@ -50,11 +47,9 @@ export async function fetchExplorerMoves(
     const res = await fetch(url);
     if (!res.ok) return [];
     const data = await res.json();
-    const moves: MasterMove[] = (data.moves ?? []).filter(
+    return (data.moves ?? []).filter(
       (m: MasterMove) => m.white + m.draws + m.black >= 5,
     );
-    if (moves.length > 0) explorerCache.set(key, moves);
-    return moves;
   } catch {
     return [];
   }
