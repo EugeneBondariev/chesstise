@@ -278,7 +278,6 @@ export default function ExplorerTrainer() {
   const [history,       setHistory]        = useState<HistoryEntry[]>([]);
   const [explorerData,  setExplorerData]   = useState<MasterMove[] | null>(null);
   const [explorerLoading, setExplorerLoading] = useState(false);
-  const [outOfBook,     setOutOfBook]      = useState(false);
   const [inputBuf,      setInputBuf]       = useState('');
   const inputBufRef     = useRef('');
   const [isAmbiguous,   setIsAmbiguous]    = useState(false);
@@ -325,7 +324,6 @@ export default function ExplorerTrainer() {
     setHistory([]);
     setExplorerData(null);
     setExplorerLoading(false);
-    setOutOfBook(false);
     setInputBuf('');
     inputBufRef.current = '';
     setIsAmbiguous(false);
@@ -361,31 +359,48 @@ export default function ExplorerTrainer() {
   useEffect(() => {
     if (phase !== 'playing') return;
     if (isPlayerTurn) return;
-    if (outOfBook) return;
     if (explorerLoading) return;
     if (explorerData === null) return;
 
-    if (explorerData.length === 0) {
-      setOutOfBook(true);
-      return;
-    }
-
-    // Capture data snapshot for the timeout closure
-    const movesToPick = explorerData;
     const fenSnapshot = fen;
 
+    if (explorerData.length === 0) {
+      // Out of book: play a random legal move
+      computerTimerRef.current = setTimeout(() => {
+        if (chessRef.current.fen() !== fenSnapshot) return;
+        const legalMoves = chessRef.current.moves({ verbose: true });
+        if (legalMoves.length === 0) return;
+        const pick = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+        try {
+          const result = chessRef.current.move(pick.san);
+          if (!result) return;
+          const newFen = chessRef.current.fen();
+          const arrows: [Square, Square][] = [[result.from as Square, result.to as Square]];
+          setLastArrows(arrows);
+          setFen(newFen);
+          setHistory(prev => [
+            ...prev,
+            { san: pick.san, fen: newFen, byComputer: true, explorerData: null },
+          ]);
+          speak(spokenSan(pick.san));
+        } catch {}
+      }, 700);
+      return () => {
+        if (computerTimerRef.current) clearTimeout(computerTimerRef.current);
+      };
+    }
+
+    // In book: pick weighted random move
+    const movesToPick = explorerData;
+
     computerTimerRef.current = setTimeout(() => {
-      // Still same position?
       if (chessRef.current.fen() !== fenSnapshot) return;
       const pick = weightedPick(movesToPick);
-      if (!pick) { setOutOfBook(true); return; }
-
-      // Save explorer data for this position before moving
+      if (!pick) return;
       const explorerSnapshot = movesToPick;
-
       try {
         const result = chessRef.current.move(pick.san);
-        if (!result) { setOutOfBook(true); return; }
+        if (!result) return;
         const newFen = chessRef.current.fen();
         const arrows: [Square, Square][] = [[result.from as Square, result.to as Square]];
         setLastArrows(arrows);
@@ -395,16 +410,14 @@ export default function ExplorerTrainer() {
           { san: pick.san, fen: newFen, byComputer: true, explorerData: explorerSnapshot },
         ]);
         speak(spokenSan(pick.san));
-      } catch {
-        setOutOfBook(true);
-      }
+      } catch {}
     }, 700);
 
     return () => {
       if (computerTimerRef.current) clearTimeout(computerTimerRef.current);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fen, phase, isPlayerTurn, outOfBook, explorerLoading, explorerData]);
+  }, [fen, phase, isPlayerTurn, explorerLoading, explorerData]);
 
   // ── Apply player move ──────────────────────────────────────────────────────
   const applyPlayerMove = useCallback((san: string) => {
@@ -441,14 +454,12 @@ export default function ExplorerTrainer() {
         chessRef.current.undo();
         const newFen = chessRef.current.fen();
         setFen(newFen);
-        setOutOfBook(false);
         setShowAlternatives(false);
         return newHistory.slice(0, -1);
       }
 
       const newFen = chessRef.current.fen();
       setFen(newFen);
-      setOutOfBook(false);
       setShowAlternatives(false);
       return newHistory;
     });
@@ -580,19 +591,20 @@ export default function ExplorerTrainer() {
     : [];
 
   // ── Status line ───────────────────────────────────────────────────────────
+  const isOutOfBook = explorerData !== null && explorerData.length === 0 && !explorerLoading;
   let statusText = '';
   if (chessRef.current.isGameOver()) {
     if (chessRef.current.isCheckmate())  statusText = 'Checkmate!';
     else if (chessRef.current.isStalemate()) statusText = 'Stalemate — draw';
     else statusText = 'Game over — draw';
-  } else if (outOfBook) {
-    statusText = 'Out of book — no more explorer data';
   } else if (isAmbiguous) {
     statusText = 'Ambiguous — retry with source: [piece][source][file][rank]';
   } else if (explorerLoading) {
     statusText = 'Loading…';
   } else if (isPlayerTurn) {
     statusText = `Your turn (${playerColor === 'white' ? 'White' : 'Black'})`;
+  } else if (isOutOfBook) {
+    statusText = 'Out of book — playing random move';
   } else {
     statusText = 'Computer thinking…';
   }
@@ -623,7 +635,7 @@ export default function ExplorerTrainer() {
     <div className="exercise-page exercise-page--wide">
       <div className="exercise-body" style={{ alignItems: 'flex-start' }}>
         {/* Left: board column */}
-        <div className="board-col" ref={containerRef}>
+        <div className="board-col" ref={containerRef} style={{ width: boardMaxWidth }}>
           {/* Input buffer display */}
           <div className="cg-recall-row" aria-hidden="true" style={{ marginBottom: '0.5rem' }}>
             <span className="cg-recall-keys">
@@ -650,7 +662,7 @@ export default function ExplorerTrainer() {
           </div>
 
           {/* Status */}
-          <div className={`et-status${outOfBook ? ' et-out-of-book' : ''}`} aria-live="polite">
+          <div className={`et-status${isOutOfBook ? ' et-out-of-book' : ''}`} aria-live="polite">
             {statusText}
           </div>
 
