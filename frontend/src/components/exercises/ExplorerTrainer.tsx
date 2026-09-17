@@ -9,7 +9,7 @@ import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import type { Square } from 'chess.js';
 import {
-  fetchExplorerMoves,
+  fetchMasterMoves,
   weightedPick,
 } from '../../api/lichessOpenings';
 import type { MasterMove } from '../../api/lichessOpenings';
@@ -149,28 +149,13 @@ function buildPgn(history: HistoryEntry[]): string {
 // ── Setup phase component ────────────────────────────────────────────────────
 
 interface SetupProps {
-  onStart: (
-    startFen: string,
-    playerColor: 'white' | 'black',
-    ratings: number[],
-    speeds: string[],
-  ) => void;
+  onStart: (startFen: string, playerColor: 'white' | 'black') => void;
 }
-
-const ALL_RATINGS = [400, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2500];
-const ALL_SPEEDS  = ['bullet', 'blitz', 'rapid', 'classical'];
 
 function SetupPanel({ onStart }: SetupProps) {
   const [selectedPreset, setSelectedPreset] = useState<string>(PRESETS[0].label);
   const [customFen,      setCustomFen]      = useState('');
   const [playerColor,    setPlayerColor]    = useState<'white' | 'black'>('white');
-  const [ratings,        setRatings]        = useState<number[]>([1600, 1800, 2000]);
-  const [speeds,         setSpeeds]         = useState<string[]>(['blitz', 'rapid']);
-
-  const toggleRating = (r: number) =>
-    setRatings(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r]);
-  const toggleSpeed = (s: string) =>
-    setSpeeds(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
 
   const handleStart = () => {
     let fen = customFen.trim();
@@ -178,9 +163,8 @@ function SetupPanel({ onStart }: SetupProps) {
       const preset = PRESETS.find(p => p.label === selectedPreset);
       fen = preset?.fen ?? STARTING_FEN;
     }
-    // Validate FEN
     try { new Chess(fen); } catch { fen = STARTING_FEN; }
-    onStart(fen, playerColor, ratings.length ? ratings : [1600, 1800, 2000], speeds.length ? speeds : ['blitz', 'rapid']);
+    onStart(fen, playerColor);
   };
 
   return (
@@ -226,34 +210,6 @@ function SetupPanel({ onStart }: SetupProps) {
         >Black</button>
       </div>
 
-      <div className="et-section-label" style={{ marginTop: '0.75rem' }}>Rating range</div>
-      <div className="et-checkboxes">
-        {ALL_RATINGS.map(r => (
-          <label key={r} className="et-check-label">
-            <input
-              type="checkbox"
-              checked={ratings.includes(r)}
-              onChange={() => toggleRating(r)}
-            />
-            {r}
-          </label>
-        ))}
-      </div>
-
-      <div className="et-section-label" style={{ marginTop: '0.75rem' }}>Time controls</div>
-      <div className="et-checkboxes">
-        {ALL_SPEEDS.map(s => (
-          <label key={s} className="et-check-label">
-            <input
-              type="checkbox"
-              checked={speeds.includes(s)}
-              onChange={() => toggleSpeed(s)}
-            />
-            {s}
-          </label>
-        ))}
-      </div>
-
       <button className="et-start-btn" onClick={handleStart}>
         Start
       </button>
@@ -268,10 +224,8 @@ export default function ExplorerTrainer() {
   const [phase, setPhase] = useState<'setup' | 'playing'>('setup');
 
   // ── Setup params (carried into playing phase) ──────────────────────────────
-  const [startFen,       setStartFen]       = useState(STARTING_FEN);
-  const [playerColor,    setPlayerColor]    = useState<'white' | 'black'>('white');
-  const [selectedRatings, setSelectedRatings] = useState<number[]>([1600, 1800, 2000]);
-  const [selectedSpeeds,  setSelectedSpeeds]  = useState<string[]>(['blitz', 'rapid']);
+  const [startFen,    setStartFen]    = useState(STARTING_FEN);
+  const [playerColor, setPlayerColor] = useState<'white' | 'black'>('white');
 
   // ── Playing state ──────────────────────────────────────────────────────────
   const chessRef        = useRef(new Chess());
@@ -308,19 +262,12 @@ export default function ExplorerTrainer() {
     : playerColor === 'black';
 
   // ── Start playing ──────────────────────────────────────────────────────────
-  const startPlaying = useCallback((
-    fen_: string,
-    color: 'white' | 'black',
-    ratings_: number[],
-    speeds_: string[],
-  ) => {
+  const startPlaying = useCallback((fen_: string, color: 'white' | 'black') => {
     if (computerTimerRef.current) clearTimeout(computerTimerRef.current);
     const chess = new Chess(fen_);
     chessRef.current = chess;
     setStartFen(fen_);
     setPlayerColor(color);
-    setSelectedRatings(ratings_);
-    setSelectedSpeeds(speeds_);
     setFen(fen_);
     setHistory([]);
     setExplorerData(null);
@@ -347,7 +294,7 @@ export default function ExplorerTrainer() {
     let cancelled = false;
     setExplorerLoading(true);
     setExplorerData(null);
-    fetchExplorerMoves(fen, { ratings: selectedRatings, speeds: selectedSpeeds }).then(moves => {
+    fetchMasterMoves(fen).then(moves => {
       if (cancelled) return;
       setExplorerData(moves);
       setExplorerLoading(false);
@@ -609,7 +556,7 @@ export default function ExplorerTrainer() {
     altsFetchFenRef.current = target;
     setAltsFetched(null);
     setAltsLoading(true);
-    fetchExplorerMoves(target, { ratings: selectedRatings, speeds: selectedSpeeds }).then(moves => {
+    fetchMasterMoves(target).then(moves => {
       if (altsFetchFenRef.current !== target) return;
       setAltsFetched(moves);
       setAltsLoading(false);
@@ -722,7 +669,7 @@ export default function ExplorerTrainer() {
             </button>
             <button
               className="ot-reset-btn"
-              onClick={() => startPlaying(startFen, playerColor, selectedRatings, selectedSpeeds)}
+              onClick={() => startPlaying(startFen, playerColor)}
             >
               Restart
             </button>
